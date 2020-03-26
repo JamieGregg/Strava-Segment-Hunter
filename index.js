@@ -10,18 +10,17 @@ var strava = new require("strava")({
   "client_secret" : process.env.CLIENT_SECRET,
   "redirect_url"  : "www.google.com"
 });
-
+var segmentId = 902447
 
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
   res.sendFile('public/index.html', {root: __dirname })
-
 });
 
 app.listen(8000, () => {
   console.log("server is now running")
-  findClubMembers();
+  findDailyRecords()
 });
 
 function findAthlete(){
@@ -47,6 +46,23 @@ function findClubMembers(){
     var objJSON = JSON.parse(JSON.stringify(data));
     console.log(objJSON);
   });
+}
+
+function findSegmentInfo() {
+  strava.segments.get(segmentId, function(err,data) {
+    var objJSON = JSON.parse(JSON.stringify(data))
+    console.log(objJSON)
+  })
+}
+
+function findDailyRecords(){
+  var params = {
+    "date_range" : "today"
+  }
+  strava.segments.leaderboard.get(902447, params, function(err,data){
+    var objJSON = JSON.parse(JSON.stringify(data))
+    console.log(objJSON)
+  })
 }
 
 function findClubMembership(){
