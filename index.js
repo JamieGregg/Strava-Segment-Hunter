@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 require('dotenv').config();
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}))
+
 var strava = new require("strava")({
   "access_token"  : process.env.ACCESS_TOKEN,
   "client_id"     : process.env.CLIENT_ID,
@@ -11,8 +12,8 @@ var strava = new require("strava")({
   "redirect_url"  : "www.google.com"
 });
 
-var segmentId = 902447 //Scarva leaderboard
-var clubId = 55274 //DCC leaderboard
+//902447 Scarva Drag
+//55274 DCC leaderboard
 
 app.use(express.static(__dirname + '/public'));
 
@@ -22,64 +23,85 @@ app.get('/', (req, res) => {
 
 app.listen(8000, () => {
   console.log("server is now running")
-  amountOfEfforts()
+  findDailyRecords(12600803, amountOfEfforts(12600803), 0)
 });
 
+//Find information the person with the key (Me)
 function findAthlete(){
   strava.athlete.get(function(err, res) {
         console.log(res);
-    });
+  });
 }
 
-function findClub(){
+//Finding information on a club
+function findClub(clubId){
   strava.clubs.get(clubId, function(err,res){
     console.log(res);
   })
 }
 
-function findClubMembers(){
+//Finding all the members in a club
+function findClubMembers(clubId, totalMembership){
   var params = {
     "id": clubId,
     "page" : 1,
-    "per_page": findClubMembership
+    "per_page": totalMembership
   }
 
-  strava.clubs.members.get(55274, params, function(err,data){
+  strava.clubs.members.get(clubId, params, function(err,data){
     var objJSON = JSON.parse(JSON.stringify(data));
     console.log(objJSON);
   });
 }
 
-function findSegmentInfo() {
-  strava.segments.get(segmentId, function(err,data) {
+//Finding the information on any segment
+function findSegmentInfo(segId) {
+  strava.segments.get(segId, function(err,data) {
     var objJSON = JSON.parse(JSON.stringify(data))
     console.log(objJSON)
   })
 }
 
-function findDailyRecords(){
-  var params = {
-    "date_range" : "today"
+//Finding the total results of the day
+function findDailyRecords(segId, segTotal, clubId){
+  var objJSON = "";
+
+  if(clubId != 0) {
+    var paramsClub = {
+      "date_range" : "today",
+      "per_page" : segTotal,
+      "club_id" : clubId
+    }
+    strava.segments.leaderboard.get(segId, paramsClub, function(err,data){
+      objJSON = JSON.parse(JSON.stringify(data))
+      console.log(objJSON)
+    })
+  } else {
+    var paramsNoClub = {
+      "date_range" : "today",
+      "per_page" : segTotal
+    }
+    strava.segments.leaderboard.get(segId, paramsNoClub, function(err,data){
+      objJSON = JSON.parse(JSON.stringify(data))
+      console.log(objJSON)
+    })
   }
-  strava.segments.leaderboard.get(segmentId, params, function(err,data){
-    var objJSON = JSON.parse(JSON.stringify(data))
-    console.log(objJSON)
-  })
 }
 
-function amountOfEfforts(){
+//Returning the anount of times a segment has been done that day.
+function amountOfEfforts(segId){
   var params = {
     "date_range" : "today"
   }
 
-  strava.segments.leaderboard.get(segmentId, params, function(err,data){
+  strava.segments.leaderboard.get(segId, params, function(err,data){
     var objJSON = JSON.parse(JSON.stringify(data.effort_count))
     console.log("Amount of times completed today: " + objJSON)
+    return objJSON
   })
 }
 
-
-function findClubMembership(){
+function findClubTotalMembership(clubId){
   strava.clubs.get(clubId, function(err,res){
     var objJSON = JSON.parse(JSON.stringify(res.member_count))
     return objJSON
