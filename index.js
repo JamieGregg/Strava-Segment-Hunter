@@ -11,15 +11,11 @@ var strava = new require("strava")({
   "redirect_url"  : "www.google.com"
 });
 
+
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
   res.sendFile('public/index.html', {root: __dirname })
-  var t = res.body.users;
-  var rows = res.body.rowdata;
-  var r = rows[rows.length - 1];
-  r.parentNode.insertBefore(getTemplateRow(), r);
-
 
 });
 
@@ -58,8 +54,4 @@ function findClubMembership(){
     var objJSON = JSON.parse(JSON.stringify(res.member_count))
     return objJSON
   })
-}
-
-function appendTable(){
-  v
 }
