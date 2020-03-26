@@ -11,8 +11,10 @@ var strava = new require("strava")({
   "redirect_url"  : "www.google.com"
 });
 
+app.use(express.static(__dirname + '/public'));
+
 app.get('/', (req, res) => {
-  res.send("hello")
+  res.sendFile('public/index.html', {root: __dirname })
 });
 
 app.listen(8000, () => {
