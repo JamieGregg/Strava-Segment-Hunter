@@ -12,9 +12,6 @@ var strava = new require("strava")({
 });
 
 app.get('/', (req, res) => {
-  //findAthlete();
-  //findClub();
-
   res.send("hello")
 });
 
@@ -39,22 +36,18 @@ function findClubMembers(){
   var params = {
     "id": 55274,
     "page" : 1,
-    "per_page": 100
+    "per_page": findClubMembership
   }
 
   strava.clubs.members.get(55274, params, function(err,data){
-    //parseJsonAsync(data).then(jsonData => console.log(jsonData))
-    //console.log(obj.firstname)
-    var obj = JSON.stringify(data);
-    var objJSON = JSON.parse(obj);
-    console.log(objJSON[1].firstname);
-  })
+    var objJSON = JSON.parse(JSON.stringify(data));
+    console.log(objJSON);
+  });
 }
 
-const parseJsonAsync = (jsonString) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(JSON.parse(jsonString))
-    })
+function findClubMembership(){
+  strava.clubs.get(55274, function(err,res){
+    var objJSON = JSON.parse(JSON.stringify(res.member_count))
+    return objJSON
   })
 }
