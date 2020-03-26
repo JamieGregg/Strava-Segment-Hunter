@@ -10,7 +10,9 @@ var strava = new require("strava")({
   "client_secret" : process.env.CLIENT_SECRET,
   "redirect_url"  : "www.google.com"
 });
-var segmentId = 902447
+
+var segmentId = 902447 //Scarva leaderboard
+var clubId = 55274 //DCC leaderboard
 
 app.use(express.static(__dirname + '/public'));
 
@@ -20,7 +22,7 @@ app.get('/', (req, res) => {
 
 app.listen(8000, () => {
   console.log("server is now running")
-  findDailyRecords()
+  amountOfEfforts()
 });
 
 function findAthlete(){
@@ -30,14 +32,14 @@ function findAthlete(){
 }
 
 function findClub(){
-  strava.clubs.get(55274, function(err,res){
+  strava.clubs.get(clubId, function(err,res){
     console.log(res);
   })
 }
 
 function findClubMembers(){
   var params = {
-    "id": 55274,
+    "id": clubId,
     "page" : 1,
     "per_page": findClubMembership
   }
@@ -59,14 +61,26 @@ function findDailyRecords(){
   var params = {
     "date_range" : "today"
   }
-  strava.segments.leaderboard.get(902447, params, function(err,data){
+  strava.segments.leaderboard.get(segmentId, params, function(err,data){
     var objJSON = JSON.parse(JSON.stringify(data))
     console.log(objJSON)
   })
 }
 
+function amountOfEfforts(){
+  var params = {
+    "date_range" : "today"
+  }
+
+  strava.segments.leaderboard.get(segmentId, params, function(err,data){
+    var objJSON = JSON.parse(JSON.stringify(data.effort_count))
+    console.log("Amount of times completed today: " + objJSON)
+  })
+}
+
+
 function findClubMembership(){
-  strava.clubs.get(55274, function(err,res){
+  strava.clubs.get(clubId, function(err,res){
     var objJSON = JSON.parse(JSON.stringify(res.member_count))
     return objJSON
   })
