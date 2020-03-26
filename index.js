@@ -12,11 +12,49 @@ var strava = new require("strava")({
 });
 
 app.get('/', (req, res) => {
-  strava.athlete.get(function(err, res) {
-        console.log(res);
-    });
+  //findAthlete();
+  //findClub();
+
+  res.send("hello")
 });
 
 app.listen(8000, () => {
   console.log("server is now running")
+  findClubMembers();
 });
+
+function findAthlete(){
+  strava.athlete.get(function(err, res) {
+        console.log(res);
+    });
+}
+
+function findClub(){
+  strava.clubs.get(55274, function(err,res){
+    console.log(res);
+  })
+}
+
+function findClubMembers(){
+  var params = {
+    "id": 55274,
+    "page" : 1,
+    "per_page": 100
+  }
+
+  strava.clubs.members.get(55274, params, function(err,data){
+    //parseJsonAsync(data).then(jsonData => console.log(jsonData))
+    //console.log(obj.firstname)
+    var obj = JSON.stringify(data);
+    var objJSON = JSON.parse(obj);
+    console.log(objJSON[1].firstname);
+  })
+}
+
+const parseJsonAsync = (jsonString) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(JSON.parse(jsonString))
+    })
+  })
+}
