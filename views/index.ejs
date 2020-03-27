@@ -23,11 +23,6 @@
 </head>
 <body>
 
-	<table>
-		
-	</table>
-
-	<!--
 	<div class="limiter">
 		<div class="container-table100">
 			<div class="wrap-table100">
@@ -46,11 +41,13 @@
 					<div class="table100-body js-pscroll">
 						<table class="users">
 							<tbody>
-								<tr class="row100 body rowdata">
-									<td class="cell100 column1">Like a butterfly</td>
-									<td class="cell100 column2">Boxing</td>
-									<td class="cell100 column3">9:00 AM - 11:00 AM</td>
+							<% for(var i=0; i < data.length; i++) { %>
+								<tr>
+									<td><%- data[i][0] %></td>
+									<td><%- data[i][1] %></td>
+									<td><%- data[i][2] %></td>
 								</tr>
+								<% } %>
 							</tbody>
 						</table>
 					</div>
@@ -58,7 +55,7 @@
 			</div>
 		</div>
 	</div>
--->
+
 
 <!--===============================================================================================-->
 	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>

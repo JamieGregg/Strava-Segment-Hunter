@@ -39,11 +39,12 @@ app.get('/', (req, res) => {
 
   var segmentId = 902447;
   var totalNumber = 0;
-  var clubId = 55274;
-  var timeFrame = "this_year"
+  var clubId = 0;
+  var timeFrame = "today"
   var params = {
     "date_range": timeFrame
   }
+  var segment = []
 
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
     total = JSON.parse(JSON.stringify(data.effort_count))
@@ -59,7 +60,7 @@ app.get('/', (req, res) => {
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
         }
-        console.log(segment)
+        res.render('index', {data: segment});
       })
 
     } else {
@@ -73,35 +74,16 @@ app.get('/', (req, res) => {
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
         }
-        console.log(segment)
+        console.log(segment.length)
+        res.render('index', {data: segment});
       })
     }
   })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //amountOfEfforts(902447, 0);
-  //console.log("amazing " + details.printDetails())
-  res.render('index');
 });
 
 app.listen(8000, () => {
   console.log("server is now running")
 
-
-  //findDailyRecords(902447, 0, 0)
-  //findSegmentInfo(902447)
 });
 
 //Find information the person with the key (Me)
