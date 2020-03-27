@@ -53,7 +53,9 @@ app.get('/', (req, res) => {
       "name": objJSON.name,
       "distance": convertingMetersToMiles(objJSON.distance),
       "average_grade": objJSON.average_grade,
-      "link": "https://www.strava.com/segments/" + objJSON.id 
+      "link": "https://www.strava.com/segments/" + objJSON.id,
+      "efforts": objJSON.effort_count,
+      "location": objJSON.state
     }
   })
 
