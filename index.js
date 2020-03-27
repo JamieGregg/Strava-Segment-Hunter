@@ -45,6 +45,15 @@ app.get('/', (req, res) => {
     "date_range": timeFrame
   }
   var segment = []
+  var segmentInfo = []
+
+  strava.segments.get(segmentId, function(err, data) {
+    var objJSON = JSON.parse(JSON.stringify(data))
+    segmentInfo = {
+      "name": objJSON.name,
+      "distance": convertingMetersToMiles(objJSON.distance),
+      "average_grade": objJSON.average_grade }
+  })
 
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
     total = JSON.parse(JSON.stringify(data.effort_count))
@@ -60,7 +69,7 @@ app.get('/', (req, res) => {
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
-        res.render('index', {data: segment});
+        res.render('index', {data: segment, segmentInfo: segmentInfo});
       })
 
     } else {
@@ -71,19 +80,21 @@ app.get('/', (req, res) => {
       strava.segments.leaderboard.get(segmentId, paramsNoClub, function(err, data) {
         var numberOfEntry = data.entries.length
 
-
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
-        console.log(segment.length)
-        res.render('index', {data: segment});
+
+        res.render('index', {data: segment,  segmentInfo: segmentInfo});
       })
     }
   })
+
+
 });
 
 app.listen(8000, () => {
   console.log("server is now running")
+
 });
 
 //Find information the person with the key (Me)
@@ -141,11 +152,11 @@ function findSegmentInfo(segId) {
 }
 
 function convertingMetersToMiles(meters) {
-  return (meters * 0.000621371).toFixed(3)
+  return (meters * 0.000621371).toFixed(2) + " miles"
 }
 
 function convertingMilesToKM(miles) {
-  return (miles * 1.60934).toFixed(3)
+  return (miles * 1.60934).toFixed(2)
 }
 
 function convertSecondsToMinutes(seconds){
