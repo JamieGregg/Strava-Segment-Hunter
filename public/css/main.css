@@ -29,6 +29,9 @@
   padding: 2px 16px;
 }
 
+h1 { color: rgb(109, 122, 224); font-family: 'Raleway',sans-serif; font-size: 45px; font-weight: 800; line-height: 72px; margin: 0 0 24px; text-align: center }
+
+h2 { color: #000; font-family: 'Raleway',sans-serif; font-size: 20px; font-weight: 300; line-height: 36px; margin: 0 0 24px; text-align: left; }
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 * {
@@ -303,7 +306,7 @@ th, td {
 .table100.ver2 th {
   font-family: Lato-Bold;
   font-size: 18px;
-  color: #fa4251;
+  color: rgb(109, 122, 224);
   line-height: 1.4;
 
   background-color: transparent;
@@ -465,7 +468,7 @@ th, td {
 .table100.ver5 th {
   font-family: Lato-Bold;
   font-size: 14px;
-  color: #555555;
+  color: #fc4c02;
   line-height: 1.4;
   text-transform: uppercase;
 
@@ -478,7 +481,7 @@ th, td {
   color: #808080;
   line-height: 1.4;
 
-  background-color: #f7f7f7;
+  background-color: #fc4c02;
 }
 
 .table100.ver5 .table100-body tr {
