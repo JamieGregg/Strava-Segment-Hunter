@@ -1,8 +1,8 @@
 //Setting up modules
 const express = require('express')
 const bodyParser = require('body-parser')
-//let ejs = require('ejs')
 const app = express();
+let segment = []
 
 require('dotenv').config();
 app.set('view engine', 'ejs');
@@ -18,6 +18,17 @@ var strava = new require("strava")({
   "redirect_url": "www.google.com"
 });
 
+function SegmentData() {
+  this.segmentInfo = []
+}
+SegmentData.prototype.setSegmentInfo = function(segmentInfo){
+  this.segmentInfo = segmentInfo
+}
+SegmentData.prototype.printDetails = function(){
+  console.log(this.segmentInfo)
+}
+
+let details = new SegmentData();
 
 //902447 Scarva Drag
 //55274 DCC leaderboard
@@ -25,12 +36,69 @@ var strava = new require("strava")({
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
+
+  var segmentId = 902447;
+  var totalNumber = 0;
+  var clubId = 55274;
+  var timeFrame = "this_year"
+  var params = {
+    "date_range": timeFrame
+  }
+
+  strava.segments.leaderboard.get(segmentId, params, function(err, data) {
+    total = JSON.parse(JSON.stringify(data.effort_count))
+    if (clubId != 0) {
+      var paramsClub = {
+        "date_range": timeFrame,
+        "per_page": 100,
+        "club_id": clubId
+      }
+      strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+        var numberOfEntry = data.entries.length
+
+        for(let i =0; i < numberOfEntry; i++){
+          segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+        }
+        console.log(segment)
+      })
+
+    } else {
+      var paramsNoClub = {
+        "date_range": timeFrame,
+        "per_page": 100
+      }
+      strava.segments.leaderboard.get(segmentId, paramsNoClub, function(err, data) {
+        var numberOfEntry = data.entries.length
+
+        for(let i =0; i < numberOfEntry; i++){
+          segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+        }
+        console.log(segment)
+      })
+    }
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //amountOfEfforts(902447, 0);
+  //console.log("amazing " + details.printDetails())
   res.render('index');
 });
 
 app.listen(8000, () => {
   console.log("server is now running")
-  amountOfEfforts(902447, 0)
+
 
   //findDailyRecords(902447, 0, 0)
   //findSegmentInfo(902447)
@@ -77,56 +145,6 @@ function findClubTotalMembership(clubId) {
 
 
 //SEGMENT INFORMATION
-
-//Returning the anount of times a segment has been done that day.
-function amountOfEfforts(segId, clubId) {
-  var params = {
-    "date_range": "this_year"
-  }
-
-  strava.segments.leaderboard.get(segId, params, function(err, data) {
-    var total = JSON.parse(JSON.stringify(data.effort_count))
-    console.log("Amount of efforts method: " + total)
-    findDailyRecords(segId,total,clubId)
-  })
-}
-
-
-//Finding the total results of the day
-function findDailyRecords(segId, segTotal, clubId) {
-
-  if (clubId != 0) {
-    var paramsClub = {
-      "date_range": "this_year",
-      "per_page": 100,
-      "club_id": clubId
-    }
-    strava.segments.leaderboard.get(segId, paramsClub, function(err, data) {
-      refineDailyRecords(data)
-    })
-
-  } else {
-    var paramsNoClub = {
-      "date_range": "this_year",
-      "per_page": 100
-    }
-
-    strava.segments.leaderboard.get(segId, paramsNoClub, function(err, data) {
-      refineDailyRecords(data)
-    })
-  }
-}
-
-function refineDailyRecords(data){
-    var segment = []
-    var numberOfEntry = data.entries.length
-
-    for(let i =0; i < numberOfEntry; i++){
-      segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
-    }
-
-    console.log(segment)
-}
 
 //Finding the information on any segment
 function findSegmentInfo(segId) {
