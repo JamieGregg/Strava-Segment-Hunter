@@ -1,12 +1,16 @@
 //Setting up modules
 const express = require('express')
 const bodyParser = require('body-parser')
-require('dotenv').config();
+//let ejs = require('ejs')
 const app = express();
+
+require('dotenv').config();
+app.set('view engine', 'ejs');
+
 app.use(bodyParser.urlencoded({
   extended: false
 }))
-let ejs = require('ejs'),
+
 var strava = new require("strava")({
   "access_token": process.env.ACCESS_TOKEN,
   "client_id": process.env.CLIENT_ID,
@@ -21,9 +25,7 @@ var strava = new require("strava")({
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-  res.sendFile('public/index.ejs', {
-    root: __dirname
-  })
+  res.render('index');
 });
 
 app.listen(8000, () => {
