@@ -33,13 +33,13 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Todays Segment</a>
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#today-segment">Todays Segment</a>
           </li>
           <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Todays Leaderboard</a>
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#today-leaderboard">Todays Leaderboard</a>
           </li>
           <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point">Points Leaderboard</a>
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point-leaderboard">Points Leaderboard</a>
           </li>
         </ul>
       </div>
@@ -72,7 +72,7 @@
   </header>
 
   <!-- Todays Segment Section -->
-  <section class="page-section portfolio" id="portfolio">
+  <section class="page-section portfolio" id="today-segment">
     <div class="container">
 
       <!-- Todays Segement Section Heading -->
@@ -102,7 +102,7 @@
   </section>
 
   <!-- Results Section -->
-  <section class="page-section bg-primary text-white mb-0" id="about">
+  <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
     <div class="container">
 
       <!-- Results Section Heading -->
@@ -115,6 +115,38 @@
           <i class="fas fa-star"></i>
         </div>
         <div class="divider-custom-line"></div>
+      </div>
+
+      <div class="filter-club">
+        <form action="/" method="POST">
+          <label for="club">Filter by Clubs</label>
+          <select class="form-control" id="club" name="clubs">
+            <%if (clubId == 0){ %>
+              <option value="everyone" selected >Everyone</option>
+              <option value="dromore">Dromore CC</option>
+              <option value="dromara">Dromara CC</option>
+              <option value="wdw">West Down Wheelers</option>
+            <%} else if(clubId ==55274){ %>
+              <option value="everyone">Everyone</option>
+              <option value="dromore" selected>Dromore CC</option>
+              <option value="dromara">Dromara CC</option>
+              <option value="wdw">West Down Wheelers</option>
+              <%} else if(clubId == 2885){ %>
+                <option value="everyone">Everyone</option>
+                <option value="dromore">Dromore CC</option>
+                <option value="dromara" selected>Dromara CC</option>
+                <option value="wdw">West Down Wheelers</option>
+              <%} else { %>
+                <option value="everyone">Everyone</option>
+                <option value="dromore">Dromore CC</option>
+                <option value="dromara">Dromara CC</option>
+                <option value="wdw" selected>West Down Wheelers</option>
+               <%} %>
+
+
+          </select>
+          <button type="submit" id="submit"name="button">Submit</button>
+        </form>
       </div>
 
       <!-- Results Section Content -->
@@ -140,11 +172,11 @@
   </section>
 
   <!-- Points Section -->
-  <section class="page-section" id="point">
+  <section class="page-section" id="point-leaderboard">
     <div class="container">
 
       <!-- Points Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase">Points Leaderboarcd</h2>
+      <h2 class="page-section-heading text-center text-uppercase">Points Leaderboard</h2>
 
       <!-- Points Divider -->
       <div class="divider-custom">
@@ -464,6 +496,8 @@
       </div>
     </div>
   </div>
+
+
 
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
