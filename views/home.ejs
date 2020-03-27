@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Strava Segment Challenge</title>
+  <title>Segment Challenge</title>
 
   <!-- Custom fonts for this theme -->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -25,7 +25,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
     <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">Strava Segment Challenge</a>
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">Segment Challenge</a>
       <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
@@ -39,7 +39,7 @@
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Todays Leaderboard</a>
           </li>
           <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Get in Contact</a>
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point">Points Leaderboard</a>
           </li>
         </ul>
       </div>
@@ -118,6 +118,44 @@
       </div>
 
       <!-- Results Section Content -->
+      <table class="table table-hover">
+        <thead>
+          <tr class="text-white">
+            <th scope="col">Rank</th>
+            <th scope="col">Name</th>
+            <th scope="col">Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < data.length; i++) { %>
+          <tr class="text-white">
+            <th><%- data[i][2] %></th>
+            <td><%- data[i][0] %></td>
+            <td><%- data[i][1] %></td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Points Section -->
+  <section class="page-section" id="point">
+    <div class="container">
+
+      <!-- Points Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase">Points Leaderboarcd</h2>
+
+      <!-- Points Divider -->
+      <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="divider-custom-line"></div>
+      </div>
+
+      <!-- Points Section Content -->
       <table class="table table-hover">
         <thead>
           <tr>

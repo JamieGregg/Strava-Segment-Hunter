@@ -445,6 +445,9 @@ mark,
   background-color: #fcf8e3;
 }
 
+.light-table{
+  colour: #ffffff
+}
 .list-unstyled {
   padding-left: 0;
   list-style: none;
