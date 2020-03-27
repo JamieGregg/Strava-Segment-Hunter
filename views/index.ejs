@@ -32,8 +32,8 @@
 							<thead>
 								<tr class="row100 head">
 									<th class="cell100 column1">Rank</th>
-									<th class="cell100 column2">Name</th>
-									<th class="cell100 column3">Time</th>
+									<th class="cell100 column3">Name</th>
+									<th class="cell100 column5">Time</th>
 								</tr>
 							</thead>
 						</table>
@@ -42,10 +42,10 @@
 						<table class="users">
 							<tbody>
 							<% for(var i=0; i < data.length; i++) { %>
-								<tr>
-									<td><%- data[i][0] %></td>
-									<td><%- data[i][1] %></td>
-									<td><%- data[i][2] %></td>
+								<tr class"row100 body rowdata">
+									<td class="cell100 column1"><%- data[i][2] %></td>
+									<td class="cell100 column3"><%- data[i][0] %></td>
+									<td class="cell100 column5"><%- data[i][1] %></td>
 								</tr>
 								<% } %>
 							</tbody>

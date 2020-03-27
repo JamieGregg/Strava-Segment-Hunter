@@ -39,8 +39,8 @@ app.get('/', (req, res) => {
 
   var segmentId = 902447;
   var totalNumber = 0;
-  var clubId = 0;
-  var timeFrame = "today"
+  var clubId = 55274;
+  var timeFrame = "this_year"
   var params = {
     "date_range": timeFrame
   }
@@ -58,7 +58,7 @@ app.get('/', (req, res) => {
         var numberOfEntry = data.entries.length
 
         for(let i =0; i < numberOfEntry; i++){
-          segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+          segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
         res.render('index', {data: segment});
       })
@@ -71,8 +71,9 @@ app.get('/', (req, res) => {
       strava.segments.leaderboard.get(segmentId, paramsNoClub, function(err, data) {
         var numberOfEntry = data.entries.length
 
+
         for(let i =0; i < numberOfEntry; i++){
-          segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+          segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
         console.log(segment.length)
         res.render('index', {data: segment});
@@ -83,7 +84,6 @@ app.get('/', (req, res) => {
 
 app.listen(8000, () => {
   console.log("server is now running")
-
 });
 
 //Find information the person with the key (Me)
@@ -146,4 +146,10 @@ function convertingMetersToMiles(meters) {
 
 function convertingMilesToKM(miles) {
   return (miles * 1.60934).toFixed(3)
+}
+
+function convertSecondsToMinutes(seconds){
+  var minutes = Math.floor(seconds / 60);
+  var seconds = ((seconds % 60)/100).toFixed(2);
+  return minutes + ":" + seconds.slice(-2);
 }
