@@ -40,7 +40,7 @@ app.post('/', function(req,res){
     case 'dromore': clubId = 55274; break;
     case 'dromara': clubId = 2885; break;
     case 'wdw': clubId = 12013; break;
-    default: 0;
+    case 'everyone': clubId = 0; break;
   }
   console.log(clubId);
   loadLeaderboard(902447, clubId, req, res)

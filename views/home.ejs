@@ -26,7 +26,8 @@
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
     <div class="container">
       <a class="navbar-brand js-scroll-trigger" href="#page-top">Segment Challenge</a>
-      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+        aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
       </button>
@@ -90,12 +91,14 @@
       <!-- Todays Segment Section Content -->
       <div class="divider-custom">
         <div class="text-center">
-            <h1><%-segmentInfo.name-%></h1>
-						<p class = "lead"><strong>Distance:</strong> <%-segmentInfo.distance-%></p>
-						<p class = "lead"><b>Average Grade:</b> <%-segmentInfo.average_grade-%>%</p>
-						<p class = "lead"><b>Number of Attempts:</b> <%-segmentInfo.efforts-%></p>
-						<p class = "lead"><b>Location:</b> <%-segmentInfo.location-%></p>
-						<a href=<%-segmentInfo.link-%>><p class = "lead">Click here to view on Strava</p></a>
+          <h1><%-segmentInfo.name-%></h1>
+          <p class="lead"><strong>Distance:</strong> <%-segmentInfo.distance-%></p>
+          <p class="lead"><b>Average Grade:</b> <%-segmentInfo.average_grade-%>%</p>
+          <p class="lead"><b>Number of Attempts:</b> <%-segmentInfo.efforts-%></p>
+          <p class="lead"><b>Location:</b> <%-segmentInfo.location-%></p>
+          <a href=<%-segmentInfo.link-%>>
+            <p class="lead">Click here to view on Strava</p>
+          </a>
         </div>
       </div>
     </div>
@@ -117,37 +120,40 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <div class="filter-club">
-        <form action="/" method="POST">
-          <label for="club">Filter by Clubs</label>
-          <select class="form-control" id="club" name="clubs">
-            <%if (clubId == 0){ %>
-              <option value="everyone" selected >Everyone</option>
+      <form action="/" method="POST">
+        <div class="form-row">
+          <div class="col">
+            <select class="form-control" id="club" name="clubs">
+              <%if (clubId == 0){ %>
+              <option value="everyone" selected>Everyone</option>
               <option value="dromore">Dromore CC</option>
               <option value="dromara">Dromara CC</option>
               <option value="wdw">West Down Wheelers</option>
-            <%} else if(clubId ==55274){ %>
+              <%} else if(clubId ==55274){ %>
               <option value="everyone">Everyone</option>
               <option value="dromore" selected>Dromore CC</option>
               <option value="dromara">Dromara CC</option>
               <option value="wdw">West Down Wheelers</option>
               <%} else if(clubId == 2885){ %>
-                <option value="everyone">Everyone</option>
-                <option value="dromore">Dromore CC</option>
-                <option value="dromara" selected>Dromara CC</option>
-                <option value="wdw">West Down Wheelers</option>
+              <option value="everyone">Everyone</option>
+              <option value="dromore">Dromore CC</option>
+              <option value="dromara" selected>Dromara CC</option>
+              <option value="wdw">West Down Wheelers</option>
               <%} else { %>
-                <option value="everyone">Everyone</option>
-                <option value="dromore">Dromore CC</option>
-                <option value="dromara">Dromara CC</option>
-                <option value="wdw" selected>West Down Wheelers</option>
-               <%} %>
+              <option value="everyone">Everyone</option>
+              <option value="dromore">Dromore CC</option>
+              <option value="dromara">Dromara CC</option>
+              <option value="wdw" selected>West Down Wheelers</option>
+              <%} %>
+            </select>
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-light ">Submit</button>
+          </div>
+        </div>
+      </form>
 
-
-          </select>
-          <button type="submit" id="submit"name="button">Submit</button>
-        </form>
-      </div>
+      <br><br>
 
       <!-- Results Section Content -->
       <table class="table table-hover">
@@ -289,7 +295,8 @@
                 <!-- Portfolio Modal - Image -->
                 <img class="img-fluid rounded mb-5" src="img/portfolio/cabin.png" alt="">
                 <!-- Portfolio Modal - Text -->
-                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod
+                  consequuntur itaque. Nam.</p>
                 <button class="btn btn-primary" href="#" data-dismiss="modal">
                   <i class="fas fa-times fa-fw"></i>
                   Close Window
@@ -328,7 +335,8 @@
                 <!-- Portfolio Modal - Image -->
                 <img class="img-fluid rounded mb-5" src="img/portfolio/cake.png" alt="">
                 <!-- Portfolio Modal - Text -->
-                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod
+                  consequuntur itaque. Nam.</p>
                 <button class="btn btn-primary" href="#" data-dismiss="modal">
                   <i class="fas fa-times fa-fw"></i>
                   Close Window
@@ -367,7 +375,8 @@
                 <!-- Portfolio Modal - Image -->
                 <img class="img-fluid rounded mb-5" src="img/portfolio/circus.png" alt="">
                 <!-- Portfolio Modal - Text -->
-                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod
+                  consequuntur itaque. Nam.</p>
                 <button class="btn btn-primary" href="#" data-dismiss="modal">
                   <i class="fas fa-times fa-fw"></i>
                   Close Window
@@ -406,7 +415,8 @@
                 <!-- Portfolio Modal - Image -->
                 <img class="img-fluid rounded mb-5" src="img/portfolio/game.png" alt="">
                 <!-- Portfolio Modal - Text -->
-                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod
+                  consequuntur itaque. Nam.</p>
                 <button class="btn btn-primary" href="#" data-dismiss="modal">
                   <i class="fas fa-times fa-fw"></i>
                   Close Window
@@ -445,7 +455,8 @@
                 <!-- Portfolio Modal - Image -->
                 <img class="img-fluid rounded mb-5" src="img/portfolio/safe.png" alt="">
                 <!-- Portfolio Modal - Text -->
-                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod
+                  consequuntur itaque. Nam.</p>
                 <button class="btn btn-primary" href="#" data-dismiss="modal">
                   <i class="fas fa-times fa-fw"></i>
                   Close Window
@@ -484,7 +495,8 @@
                 <!-- Portfolio Modal - Image -->
                 <img class="img-fluid rounded mb-5" src="img/portfolio/submarine.png" alt="">
                 <!-- Portfolio Modal - Text -->
-                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod
+                  consequuntur itaque. Nam.</p>
                 <button class="btn btn-primary" href="#" data-dismiss="modal">
                   <i class="fas fa-times fa-fw"></i>
                   Close Window
