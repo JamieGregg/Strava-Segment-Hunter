@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.urlencoded({
   extended: false
 }))
-
+let ejs = require('ejs'),
 var strava = new require("strava")({
   "access_token": process.env.ACCESS_TOKEN,
   "client_id": process.env.CLIENT_ID,
@@ -21,7 +21,7 @@ var strava = new require("strava")({
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-  res.sendFile('public/index.html', {
+  res.sendFile('public/index.ejs', {
     root: __dirname
   })
 });
