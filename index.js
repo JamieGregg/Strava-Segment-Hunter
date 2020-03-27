@@ -33,7 +33,7 @@ let details = new SegmentData();
 //902447 Scarva Drag
 //55274 DCC leaderboard
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public-updated'));
 
 app.get('/', (req, res) => {
 
@@ -73,7 +73,7 @@ app.get('/', (req, res) => {
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
-        res.render('index', {data: segment, segmentInfo: segmentInfo});
+        res.render('home', {data: segment, segmentInfo: segmentInfo});
       })
 
     } else {
@@ -88,7 +88,7 @@ app.get('/', (req, res) => {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
-        res.render('index', {data: segment,  segmentInfo: segmentInfo});
+        res.render('home', {data: segment,  segmentInfo: segmentInfo});
       })
     }
   })
