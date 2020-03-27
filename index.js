@@ -39,8 +39,8 @@ app.get('/', (req, res) => {
 
   var segmentId = 902447;
   var totalNumber = 0;
-  var clubId = 55274;
-  var timeFrame = "this_year"
+  var clubId = 0;
+  var timeFrame = "today"
   var params = {
     "date_range": timeFrame
   }
@@ -52,7 +52,9 @@ app.get('/', (req, res) => {
     segmentInfo = {
       "name": objJSON.name,
       "distance": convertingMetersToMiles(objJSON.distance),
-      "average_grade": objJSON.average_grade }
+      "average_grade": objJSON.average_grade,
+      "link": "https://www.strava.com/segments/" + objJSON.id 
+    }
   })
 
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
