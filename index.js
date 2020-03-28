@@ -34,8 +34,11 @@ app.listen(8000, () => {
   refreshTokensNow()
 });
 
-refreshTokens();
+//Runs at 23:55 every-night
+saveDataEvening();
 
+//Runs at 11 minutes past-the-hour
+refreshTokens();
 
 //SEGMENT INFORMATION
 //Finding the information on any segment
@@ -173,81 +176,82 @@ function assignEnvVariable(res) {
 
 
 //DATABASE
-function createSchema() {
-  const segLeaderboardSchema = new mongoose.Schema({
-    rank: Number,
-    name: String
-  })
-}
 
-function populateSchema() {
-  const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-  const everyone = new segLeaderboard({
-    rank: 1,
-    name: "Test Data"
+function populateSchema(results) {
+  const segLeaderboardSchema = new mongoose.Schema({
+    points: Number,
+    name: String,
   })
+
+  const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+
+  for(let i = 0; i < results.length; i++){
+    const everyone = new segLeaderboard({
+      points: scoringSystem(i),
+      name: results[i][0]
+    })
+    console.log(scoringSystem(results[i][2]))
+    everyone.save();
+  }
 }
 
 function saveDataEvening(clubId, segmentId) {
-  /*var rule = new schedule.RecurrenceRule()
-  rule.hour = 19
-  rule.minute = 33
-  rule.second = 0
+  var rule = new schedule.RecurrenceRule()
+  rule.hour = 23
+  rule.minute = 55
 
   var j = schedule.scheduleJob(rule, function() {
-    */
-  console.log("Starting the Database method.")
 
-  var timeFrame = "today"
-  var params = {
-    "date_range": timeFrame
-  }
-  var noOfResults = 5
-  var numberOfEntry = 0;
-  var segment = []
-  var segmentInfo = []
+    console.log("Starting the Database method.")
 
-  var strava = new require("strava")({
-    "client_id": process.env.CLIENT_ID,
-    "access_token": process.env.ACCESS_TOKEN,
-    "client_secret": process.env.CLIENT_SECRET,
-    "redirect_url": "localhost:8000/"
-  });
-
-  strava.segments.get(segmentId, function(err, data) {
-    var objJSON = JSON.parse(JSON.stringify(data))
-    segmentInfo = {
-      "name": objJSON.name,
-      "distance": convertingMetersToMiles(objJSON.distance),
-      "average_grade": objJSON.average_grade,
-      "link": "https://www.strava.com/segments/" + objJSON.id,
-      "efforts": objJSON.effort_count,
-      "location": objJSON.state
+    var timeFrame = "today"
+    var params = {
+      "date_range": timeFrame
     }
-  })
+    var noOfResults = 4
+    var numberOfEntry = 0;
+    var segment = []
+    var segmentInfo = []
 
-  console.log(segmentInfo)
+    var strava = new require("strava")({
+      "client_id": process.env.CLIENT_ID,
+      "access_token": process.env.ACCESS_TOKEN,
+      "client_secret": process.env.CLIENT_SECRET,
+      "redirect_url": "localhost:8000/"
+    });
 
-  strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-    total = JSON.parse(JSON.stringify(data.effort_count))
-    //Everyone League Table
-    if (clubId == 0) {
-      var paramsClub = {
-        "date_range": timeFrame,
-        "per_page": noOfResults,
+    strava.segments.get(segmentId, function(err, data) {
+      var objJSON = JSON.parse(JSON.stringify(data))
+      segmentInfo = {
+        "name": objJSON.name,
+        "distance": convertingMetersToMiles(objJSON.distance),
+        "average_grade": objJSON.average_grade,
+        "link": "https://www.strava.com/segments/" + objJSON.id,
+        "efforts": objJSON.effort_count,
+        "location": objJSON.state
       }
-      strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-        console.log(data)
-        numberOfEntry = data.entries.length
+    })
 
-        for (let i = 0; i < numberOfEntry; i++) {
-          segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+    strava.segments.leaderboard.get(segmentId, params, function(err, data) {
+      total = JSON.parse(JSON.stringify(data.effort_count))
+      //Everyone League Table
+      if (clubId == 0) {
+        var paramsClub = {
+          "date_range": timeFrame,
+          "per_page": noOfResults,
         }
-        console.log(segment)
-      })
-    }
+        strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+          numberOfEntry = data.entries.length
+
+          for (let i = 0; i < numberOfEntry; i++) {
+            segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+          }
+          console.log(segment)
+          populateSchema(segment)
+        })
+      }
+    })
   })
-  //})
 }
 
 
@@ -287,4 +291,13 @@ function clubIdFinder(req) {
       break;
   }
   return clubId
+}
+
+function scoringSystem(placing){
+  switch(placing){
+    case 0: return 10; break
+    case 1: return 5; break
+    case 2: return 3; break;
+    case 3: return 1; break;
+  }
 }
