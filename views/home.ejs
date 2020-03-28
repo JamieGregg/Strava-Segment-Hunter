@@ -197,16 +197,24 @@
         <thead>
           <tr>
             <th scope="col">Rank</th>
+            <th scope="col">Points</th>
             <th scope="col">Name</th>
-            <th scope="col">Time</th>
           </tr>
         </thead>
         <tbody>
-          <% for(var i=0; i < data.length; i++) { %>
+          <% var lastPoints = -1; %>
+          <% var rank = 0; %>
+          <% for(var i=0; i < db.length; i++) { %>
           <tr>
-            <td><%- data[i][2] %></td>
-            <td><%- data[i][0] %></td>
-            <td><%- data[i][1] %></td>
+            <td><% if(db[i].points != lastPoints) {  %>
+                      <% rank++ %>
+                      <%-rank %>
+                      <% lastPoints = db[i].points %>
+                <%} else { %>
+                      <%- rank %>
+                <%}%></td>
+            <td><%- db[i].points %></td>
+            <td><%- db[i].name %></td>
           </tr>
           <% } %>
         </tbody>

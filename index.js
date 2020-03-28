@@ -5,11 +5,14 @@ const fetch = require('node-fetch')
 const mongoose = require('mongoose')
 const schedule = require('node-schedule')
 const app = express();
+
 let segment = []
 let clubId = 0;
 let segmentId = 2849215;
 require('dotenv').config();
+
 app.set('view engine', 'ejs');
+
 app.use(bodyParser.urlencoded({
   extended: false
 }))
@@ -17,6 +20,13 @@ app.use(bodyParser.urlencoded({
 mongoose.connect('mongodb://localhost:27017/segLeaderboard', {
   useNewUrlParser: true
 })
+
+const segLeaderboardSchema = new mongoose.Schema({
+  points: Number,
+  name: String,
+})
+
+const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
 
 app.use(express.static(__dirname + '/public-updated'));
 
@@ -53,6 +63,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var numberOfEntry = 0;
   var segment = []
   var segmentInfo = []
+  var databaseLeaderboard = []
 
   var strava = new require("strava")({
     "client_id": process.env.CLIENT_ID,
@@ -73,6 +84,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     }
   })
 
+
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
     total = JSON.parse(JSON.stringify(data.effort_count))
     if (clubId != 0) {
@@ -87,11 +99,18 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
         for (let i = 0; i < numberOfEntry; i++) {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
+
+        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+        segLeaderboard.find(function(err, person){
+          databaseLeaderboard = person
+        })
+
         res.render('home', {
           data: segment,
           segmentInfo: segmentInfo,
           clubId: clubId,
-          reload: reload
+          reload: reload,
+          db: databaseLeaderboard
         });
       })
 
@@ -107,11 +126,17 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
-        res.render('home', {
-          data: segment,
-          segmentInfo: segmentInfo,
-          clubId: clubId,
-          reload: reload
+        segLeaderboard.find(function(err, person){
+          databaseLeaderboard = person
+          res.render('home', {
+            data: segment,
+            segmentInfo: segmentInfo,
+            clubId: clubId,
+            reload: reload,
+            db: databaseLeaderboard
+          });
+        }).sort({points : -1}).exec(function(err,docs){
+          console.log(err);
         });
       })
     }
@@ -277,7 +302,6 @@ function saveDataEvening(clubId, segmentId) {
   })
 }
 
-
 //DATA CONVERSION
 function convertingMetersToMiles(meters) {
   return (meters * 0.000621371).toFixed(2) + " miles"
@@ -292,8 +316,6 @@ function convertSecondsToMinutes(seconds) {
   var seconds = ((seconds % 60) / 100).toFixed(2);
   return minutes + ":" + seconds.slice(-2);
 }
-
-
 
 //DATA HANDLING
 function clubIdFinder(req) {
