@@ -8,7 +8,7 @@ const app = express();
 
 let segment = []
 let clubId = 0;
-let segmentId = 2849215;
+let segmentId = 2945909;
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
@@ -204,12 +204,6 @@ function assignEnvVariable(res) {
 function populateSchema(results) {
   console.log("Database called")
 
-  const segLeaderboardSchema = new mongoose.Schema({
-    points: Number,
-    name: String,
-  })
-
-    const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
     segLeaderboard.find(function(err, person){
       if(err){
         console.log(err)
@@ -243,9 +237,9 @@ function populateSchema(results) {
 
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 21
-  rule.minute = 56
-  rule.second = 15
+  rule.hour = 23
+  rule.minute = 11
+  rule.second = 7
 
   var j = schedule.scheduleJob(rule, function() {
 
@@ -255,7 +249,7 @@ function saveDataEvening(clubId, segmentId) {
     var params = {
       "date_range": timeFrame
     }
-    var noOfResults = 4
+    var noOfResults = 100
     var numberOfEntry = 0;
     var segment = []
     var segmentInfo = []
