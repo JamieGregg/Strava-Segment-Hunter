@@ -3,6 +3,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const mongoose = require('mongoose')
+const schedule = require('node-schedule')
 
 mongoose.connect('mongodb://localhost:27017/segLeaderboard', { useNewUrlParser: true})
 
@@ -174,3 +175,5 @@ function refreshTokens(){
 function assignEnvVariable(res){
   process.env.ACCESS_TOKEN = res.access_token
 }
+
+function
