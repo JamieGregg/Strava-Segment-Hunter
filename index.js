@@ -1,11 +1,8 @@
 //Setting up modules
 const express = require('express')
 const bodyParser = require('body-parser')
-var authorize = require('strava-v3-cli-authenticator')
-const queryString = require('query-string')
 const fetch = require('node-fetch');
 const app = express();
-
 let segment = []
 let clubId =0;
 require('dotenv').config();
@@ -26,7 +23,6 @@ app.post('/', function(req,res){
     case 'wdw': clubId = 12013; break;
     case 'everyone': clubId = 0; break;
   }
-  console.log(clubId);
   loadLeaderboard(902447, clubId, req, res)
 })
 
@@ -36,27 +32,7 @@ app.get('/', (req, res) => {
 
 app.listen(8000, () => {
   console.log("server is now running")
-
 });
-
-
-
-const options = {
-    clientId: process.env.CLIENT_ID,
-    clienSecret: process.env.CLIENT_SECRET,
-    scope: "read",
-    httpPort: 8888
-  };
-
-function SegmentData() {
-  this.segmentInfo = []
-}
-SegmentData.prototype.setSegmentInfo = function(segmentInfo){
-  this.segmentInfo = segmentInfo
-}
-SegmentData.prototype.printDetails = function(){
-  console.log(this.segmentInfo)
-}
 
 //Find information the person with the key (Me)
 function findAthlete() {
@@ -65,52 +41,8 @@ function findAthlete() {
   });
 }
 
-//CLUB INFORMATION
-
-//Finding information on a club
-function findClub(clubId) {
-  strava.clubs.get(clubId, function(err, res) {
-    console.log(res);
-  })
-}
-
-//Finding all the members in a club
-function findClubMembers(clubId, totalMembership) {
-  var params = {
-    "id": clubId,
-    "page": 1,
-    "per_page": totalMembership
-  }
-
-  strava.clubs.members.get(clubId, params, function(err, data) {
-    var objJSON = JSON.parse(JSON.stringify(data));
-    console.log(objJSON);
-  });
-}
-
-//Finds how many people are in a club
-function findClubTotalMembership(clubId) {
-  var objJSON = ""
-  strava.clubs.get(clubId, function(err, res) {
-    objJSON = JSON.parse(JSON.stringify(res.member_count))
-  })
-  return objJSON
-}
-
-
 //SEGMENT INFORMATION
-
 //Finding the information on any segment
-function findSegmentInfo(segId) {
-  strava.segments.get(segId, function(err, data) {
-    var objJSON = JSON.parse(JSON.stringify(data))
-    var segmentInformation = {
-      "name": objJSON.name,
-      "distance": convertingMetersToMiles(objJSON.distance),
-      "average_grade": objJSON.average_grade }
-    return segmentInformation
-  })
-}
 
 function convertingMetersToMiles(meters) {
   return (meters * 0.000621371).toFixed(2) + " miles"
@@ -213,8 +145,7 @@ function refreshTokens(){
     .then(res => assignEnvVariable(res))
   }
 
-
 function assignEnvVariable(res){
-  console.log("ACCESS_TOKEN_RES:" + res.access_token)
+  //console.log("ACCESS_TOKEN_RES:" + res.access_token)
   process.env.ACCESS_TOKEN = res.access_token
 }
