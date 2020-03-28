@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
 const app = express();
 let segment = []
-let clubId =0;
+let clubId = 0;
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
@@ -16,18 +16,11 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req,res){
-  var clubName = req.body.clubs
-  switch (clubName){
-    case 'dromore': clubId = 55274; break;
-    case 'dromara': clubId = 2885; break;
-    case 'wdw': clubId = 12013; break;
-    case 'everyone': clubId = 0; break;
-  }
-  loadLeaderboard(902447, clubId, req, res)
+  loadLeaderboard(902447, clubIdFinder(req), req, res)
 })
 
 app.get('/', (req, res) => {
-  loadLeaderboard(902447, clubId, req, res)
+  loadLeaderboard(902447, clubIdFinder(req), req, res)
 });
 
 app.listen(8000, () => {
@@ -60,13 +53,11 @@ function convertSecondsToMinutes(seconds){
 
 function loadLeaderboard(segmentId, clubId, req, res){
   var segmentId = segmentId;
-  var totalNumber = 0;
   var clubId = clubId;
-  console.log(clubId);
-  var timeFrame = "this_year"
-  var params = {
-    "date_range": timeFrame
-  }
+  var timeFrame = "today"
+  var params = { "date_range": timeFrame }
+  var noOfResults = 30
+  var numberOfEntry = 0;
   var segment = []
   var segmentInfo = []
 
@@ -79,7 +70,7 @@ function loadLeaderboard(segmentId, clubId, req, res){
     "redirect_url": "www.google.com"
   });
 
-  strava.segments.get(segmentId, function(err, data) {
+  strava.segments.get(segmentId,function(err, data) {
     var objJSON = JSON.parse(JSON.stringify(data))
     segmentInfo = {
       "name": objJSON.name,
@@ -96,11 +87,11 @@ function loadLeaderboard(segmentId, clubId, req, res){
     if (clubId != 0) {
       var paramsClub = {
         "date_range": timeFrame,
-        "per_page": 100,
+        "per_page": noOfResults,
         "club_id": clubId
       }
       strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-        var numberOfEntry = data.entries.length
+        numberOfEntry = data.entries.length
 
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
@@ -111,10 +102,10 @@ function loadLeaderboard(segmentId, clubId, req, res){
     } else {
       var paramsNoClub = {
         "date_range": timeFrame,
-        "per_page": 100
+        "per_page": noOfResults
       }
       strava.segments.leaderboard.get(segmentId, paramsNoClub, function(err, data) {
-        var numberOfEntry = data.entries.length
+        numberOfEntry = data.entries.length
 
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
@@ -124,6 +115,19 @@ function loadLeaderboard(segmentId, clubId, req, res){
       })
     }
   })
+}
+
+function clubIdFinder(req){
+  var clubName = req.body.clubs
+
+  switch (clubName){
+    case 'dromore': clubId = 55274; break;
+    case 'dromara': clubId = 2885; break;
+    case 'wdw': clubId = 12013; break;
+    case 'everyone': clubId = 0; break;
+  }
+
+  return clubId
 }
 
 function refreshTokens(){
