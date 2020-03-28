@@ -17,10 +17,9 @@
 
   <!-- Theme CSS -->
   <link href="css/freelancer.min.css" rel="stylesheet">
-
 </head>
 
-<body id="page-top">
+<body onload="openPage()" id="page-top">
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
@@ -37,7 +36,7 @@
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#today-segment">Todays Segment</a>
           </li>
           <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#today-leaderboard">Todays Leaderboard</a>
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" id="todays-seg" href="#today-leaderboard">Todays Leaderboard</a>
           </li>
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point-leaderboard">Points Leaderboard</a>
@@ -120,7 +119,7 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <form action="/" method="POST">
+      <form action="/" method="POST" id="filterTable">
         <div class="form-row">
           <div class="col">
             <select class="form-control" id="club" name="clubs">
@@ -264,6 +263,13 @@
     </a>
   </div>
 
+  <script>
+    function openPage(){
+      if(<%-reload%> == true) {
+        document.getElementById("todays-seg").click();
+      }
+    }
+  </script>
 
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>

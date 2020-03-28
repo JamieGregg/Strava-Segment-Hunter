@@ -5,6 +5,7 @@ const fetch = require('node-fetch');
 const app = express();
 let segment = []
 let clubId = 0;
+let reload = false;
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
@@ -16,11 +17,12 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req,res){
-  loadLeaderboard(902447, clubIdFinder(req), req, res)
+  reload = true;
+  loadLeaderboard(902447, clubIdFinder(req), reload, req, res)
 })
 
 app.get('/', (req, res) => {
-  loadLeaderboard(902447, clubIdFinder(req), req, res)
+  loadLeaderboard(902447, clubIdFinder(req), reload, req, res)
 });
 
 app.listen(8000, () => {
@@ -51,7 +53,7 @@ function convertSecondsToMinutes(seconds){
   return minutes + ":" + seconds.slice(-2);
 }
 
-function loadLeaderboard(segmentId, clubId, req, res){
+function loadLeaderboard(segmentId, clubId, reload, req, res){
   var segmentId = segmentId;
   var clubId = clubId;
   var timeFrame = "today"
@@ -96,7 +98,7 @@ function loadLeaderboard(segmentId, clubId, req, res){
         for(let i =0; i < numberOfEntry; i++){
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
-        res.render('home', {data: segment, segmentInfo: segmentInfo, clubId:clubId});
+        res.render('home', {data: segment, segmentInfo: segmentInfo, clubId:clubId, reload: reload});
       })
 
     } else {
@@ -111,7 +113,7 @@ function loadLeaderboard(segmentId, clubId, req, res){
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
-        res.render('home', {data: segment,  segmentInfo: segmentInfo, clubId:clubId});
+        res.render('home', {data: segment,  segmentInfo: segmentInfo, clubId:clubId, reload: reload});
       })
     }
   })
