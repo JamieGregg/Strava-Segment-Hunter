@@ -1,7 +1,24 @@
 //Setting up modules
 const express = require('express')
 const bodyParser = require('body-parser')
-const fetch = require('node-fetch');
+const fetch = require('node-fetch')
+const mongoose = require('mongoose')
+
+mongoose.connect('mongodb://localhost:27017/segLeaderboard', { useNewUrlParser: true})
+
+const segLeaderboardSchema = new mongoose.Schema ({
+  rank: Number,
+  name: String
+})
+
+const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+const everyone = new segLeaderboard({
+  rank: 1,
+  name: "Test Data"
+})
+
+//everyone.save();
+
 const app = express();
 let segment = []
 let clubId = 0;

@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "httpie": "^1.1.2",
     "jquery": "^3.4.1",
+    "mongoose": "^5.9.6",
     "node-fetch": "^2.6.0",
     "open": "^7.0.3",
     "request": "^2.88.2",
