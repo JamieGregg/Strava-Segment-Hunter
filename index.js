@@ -17,16 +17,19 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req,res){
+  refreshTokens();
   reload = true;
   loadLeaderboard(902447, clubIdFinder(req), reload, req, res)
 })
 
 app.get('/', (req, res) => {
+  refreshTokens();
   loadLeaderboard(902447, clubIdFinder(req), reload, req, res)
 });
 
 app.listen(8000, () => {
   console.log("server is now running")
+  refreshTokens();
 });
 
 //Find information the person with the key (Me)
@@ -152,6 +155,5 @@ function refreshTokens(){
   }
 
 function assignEnvVariable(res){
-  //console.log("ACCESS_TOKEN_RES:" + res.access_token)
   process.env.ACCESS_TOKEN = res.access_token
 }
