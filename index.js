@@ -1,36 +1,20 @@
 //Setting up modules
 const express = require('express')
 const bodyParser = require('body-parser')
+var authorize = require('strava-v3-cli-authenticator')
+const queryString = require('query-string')
+const fetch = require('node-fetch');
 const app = express();
+
 let segment = []
 let clubId =0;
 require('dotenv').config();
+
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({
   extended: false
 }))
-
-var strava = new require("strava")({
-  "access_token": process.env.ACCESS_TOKEN,
-  "client_id": process.env.CLIENT_ID,
-  "client_secret": process.env.CLIENT_SECRET,
-  "redirect_url": "www.google.com"
-});
-
-function SegmentData() {
-  this.segmentInfo = []
-}
-SegmentData.prototype.setSegmentInfo = function(segmentInfo){
-  this.segmentInfo = segmentInfo
-}
-SegmentData.prototype.printDetails = function(){
-  console.log(this.segmentInfo)
-}
-
-//902447 Scarva Drag
-//55274 DCC leaderboard
-
 
 app.use(express.static(__dirname + '/public-updated'));
 
@@ -52,7 +36,27 @@ app.get('/', (req, res) => {
 
 app.listen(8000, () => {
   console.log("server is now running")
+
 });
+
+
+
+const options = {
+    clientId: process.env.CLIENT_ID,
+    clienSecret: process.env.CLIENT_SECRET,
+    scope: "read",
+    httpPort: 8888
+  };
+
+function SegmentData() {
+  this.segmentInfo = []
+}
+SegmentData.prototype.setSegmentInfo = function(segmentInfo){
+  this.segmentInfo = segmentInfo
+}
+SegmentData.prototype.printDetails = function(){
+  console.log(this.segmentInfo)
+}
 
 //Find information the person with the key (Me)
 function findAthlete() {
@@ -134,6 +138,15 @@ function loadLeaderboard(segmentId, clubId, req, res){
   var segment = []
   var segmentInfo = []
 
+  refreshTokens();
+
+  var strava = new require("strava")({
+    "client_id": process.env.CLIENT_ID,
+    "access_token": process.env.ACCESS_TOKEN,
+    "client_secret": process.env.CLIENT_SECRET,
+    "redirect_url": "www.google.com"
+  });
+
   strava.segments.get(segmentId, function(err, data) {
     var objJSON = JSON.parse(JSON.stringify(data))
     segmentInfo = {
@@ -179,4 +192,29 @@ function loadLeaderboard(segmentId, clubId, req, res){
       })
     }
   })
+}
+
+function refreshTokens(){
+  var authLink = 'https://www.strava.com/oauth/token'
+  fetch(authLink,{
+    method: 'post',
+    headers:{
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+
+    body: JSON.stringify({
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      refresh_token: process.env.REFRESH_TOKEN,
+      grant_type: 'refresh_token'
+    })
+  }).then(res => res.json())
+    .then(res => assignEnvVariable(res))
+  }
+
+
+function assignEnvVariable(res){
+  console.log("ACCESS_TOKEN_RES:" + res.access_token)
+  process.env.ACCESS_TOKEN = res.access_token
 }
