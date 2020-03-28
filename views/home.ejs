@@ -108,7 +108,7 @@
     <div class="container">
 
       <!-- Results Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-white">Todays Leaderboarcd</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-white">Todays Leaderboard</h2>
 
       <!-- Results Divider -->
       <div class="divider-custom divider-light">
@@ -197,8 +197,8 @@
         <thead>
           <tr>
             <th scope="col">Rank</th>
-            <th scope="col">Points</th>
             <th scope="col">Name</th>
+            <th scope="col">Points</th>
           </tr>
         </thead>
         <tbody>
@@ -213,8 +213,8 @@
                 <%} else { %>
                       <%- rank %>
                 <%}%></td>
-            <td><%- db[i].points %></td>
             <td><%- db[i].name %></td>
+            <td><%- db[i].points %></td>
           </tr>
           <% } %>
         </tbody>
