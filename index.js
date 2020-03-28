@@ -7,7 +7,7 @@ const schedule = require('node-schedule')
 const app = express();
 let segment = []
 let clubId = 0;
-let segmentId = 902447;
+let segmentId = 2849215;
 require('dotenv').config();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -35,7 +35,7 @@ app.listen(8000, () => {
 });
 
 //Runs at 23:55 every-night
-saveDataEvening();
+saveDataEvening(0, segmentId);
 
 //Runs at 11 minutes past-the-hour
 refreshTokens();
@@ -178,27 +178,50 @@ function assignEnvVariable(res) {
 //DATABASE
 
 function populateSchema(results) {
+  console.log("Database called")
+
   const segLeaderboardSchema = new mongoose.Schema({
     points: Number,
     name: String,
   })
 
-  const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+    const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+    segLeaderboard.find(function(err, person){
+      if(err){
+        console.log(err)
+      } else {
+          for(let i = 0; i < results.length; i++){
+            var isfound = false;
 
-  for(let i = 0; i < results.length; i++){
-    const everyone = new segLeaderboard({
-      points: scoringSystem(i),
-      name: results[i][0]
+            person.forEach(function(person){
+              if(isfound == false){
+                if(person.name == results[i][0]){
+                  isfound = true;
+                  var score = person.points + scoringSystem(i)
+                  segLeaderboard.updateOne({_id: person._id}, {points: score}, function(err){
+                    console.log(err)
+                  })
+                }
+              }
+            });
+            if(isfound == false){
+              isfound = true;
+              const everyone = new segLeaderboard({
+                points: scoringSystem(i),
+                name: results[i][0]
+              })
+              everyone.save();
+            }
+          }
+      }
     })
-    console.log(scoringSystem(results[i][2]))
-    everyone.save();
   }
-}
 
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 23
-  rule.minute = 55
+  rule.hour = 21
+  rule.minute = 56
+  rule.second = 15
 
   var j = schedule.scheduleJob(rule, function() {
 
