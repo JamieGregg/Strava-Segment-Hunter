@@ -100,7 +100,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
-        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
         segLeaderboard.find(function(err, person){
           databaseLeaderboard = person
         })
@@ -340,9 +339,12 @@ function clubIdFinder(req) {
 
 function scoringSystem(placing){
   switch(placing){
-    case 0: return 10; break
-    case 1: return 5; break
-    case 2: return 3; break;
-    case 3: return 1; break;
+    case 0: return 15; break
+    case 1: return 10; break
+    case 2: return 8; break;
+    case 3: return 6; break;
+    case 4: return 4; break;
+    case 5: return 2; break
+    default: return 1;
   }
 }
