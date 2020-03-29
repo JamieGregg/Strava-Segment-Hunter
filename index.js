@@ -8,7 +8,7 @@ const app = express();
 
 let segment = []
 let clubId = 0;
-let segmentId = 2945909;
+let segmentId = 2849215;
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
@@ -27,10 +27,13 @@ const segLeaderboardSchema = new mongoose.Schema({
 })
 
 const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
-const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
-const segWDW = mongoose.model("WDW", segLeaderboardSchema)
 
+var implClubs = [
+  ['dromore', 55274],
+  ['dromara', 2885],
+  ['wdw', 12013],
+  ['everyone', 0]
+]
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req, res) {
@@ -103,6 +106,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
+        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
         segLeaderboard.find(function(err, person){
           databaseLeaderboard = person
         })
@@ -204,8 +208,15 @@ function assignEnvVariable(res) {
 
 //DATABASE
 
-function populateSchema(results) {
-  console.log("Database called")
+function populateSchema(results, club) {
+    console.log("Database called")
+
+    const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+    const segDromara = mongoose.model("Dromara", segLeaderboardSchema)
+    const segDromore = mongoose.model("Dromore", segLeaderboardSchema)
+    const segWDW = mongoose.model("WDW", segLeaderboardSchema)
+
+    console.log(club);
 
     segLeaderboard.find(function(err, person){
       if(err){
@@ -240,9 +251,9 @@ function populateSchema(results) {
 
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 23
-  rule.minute = 55
-  rule.second = 0
+  rule.hour = 14
+  rule.minute = 31
+  rule.second = 59
 
   var j = schedule.scheduleJob(rule, function() {
 
@@ -252,7 +263,7 @@ function saveDataEvening(clubId, segmentId) {
     var params = {
       "date_range": timeFrame
     }
-    var noOfResults = 100
+    var noOfResults = 4
     var numberOfEntry = 0;
     var segment = []
     var segmentInfo = []
@@ -278,25 +289,38 @@ function saveDataEvening(clubId, segmentId) {
 
     strava.segments.leaderboard.get(segmentId, params, function(err, data) {
       total = JSON.parse(JSON.stringify(data.effort_count))
-      //Everyone League Table
-      if (clubId == 0) {
-        var paramsClub = {
-          "date_range": timeFrame,
-          "per_page": noOfResults,
-        }
-        strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-          numberOfEntry = data.entries.length
 
-          for (let i = 0; i < numberOfEntry; i++) {
-            segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-          }
-          console.log(segment)
-          populateSchema(segment)
-        })
-      }
+        for(let i = 0; i < implClubs.length; i++){
+          if(implClubs[i][1] = 0){
+            var params = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+            }
+          } else {
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": implClubs[i][1]
+            }
+        }
+          strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+            try{
+              numberOfEntry = data.entries.length
+
+              for (let i = 0; i < numberOfEntry; i++) {
+                segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+              }
+              console.log(segment)
+              populateSchema(segment, clubId)
+            } catch {
+              console.log("No data to add.")
+            }
+          })
+        }
+      })
     })
-  })
-}
+  }
+
 
 //DATA CONVERSION
 function convertingMetersToMiles(meters) {
@@ -336,12 +360,9 @@ function clubIdFinder(req) {
 
 function scoringSystem(placing){
   switch(placing){
-    case 0: return 15; break
-    case 1: return 10; break
-    case 2: return 8; break;
-    case 3: return 6; break;
-    case 4: return 4; break;
-    case 5: return 2; break
-    default: return 1;
+    case 0: return 10; break
+    case 1: return 5; break
+    case 2: return 3; break;
+    case 3: return 1; break;
   }
 }
