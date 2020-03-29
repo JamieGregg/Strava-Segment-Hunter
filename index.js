@@ -4,11 +4,12 @@ const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const mongoose = require('mongoose')
 const schedule = require('node-schedule')
+var async = require("async");
 const app = express();
 
 let segment = []
 let clubId = 0;
-let segmentId = 2849215;
+let segmentId = 3353720;
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
@@ -18,7 +19,8 @@ app.use(bodyParser.urlencoded({
 }))
 
 mongoose.connect('mongodb://localhost:27017/segLeaderboard', {
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
 
 const segLeaderboardSchema = new mongoose.Schema({
@@ -42,7 +44,7 @@ app.post('/', function(req, res) {
 })
 
 app.get('/', (req, res) => {
-  saveDataEvening(0, segmentId);
+  //saveDataEvening(0, segmentId);
   loadLeaderboard(segmentId, clubIdFinder(req), false, req, res)
 });
 
@@ -62,11 +64,11 @@ refreshTokens();
 function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var segmentId = segmentId;
   var clubId = clubId;
-  var timeFrame = "this_year"
+  var timeFrame = "today"
   var params = {
     "date_range": timeFrame
   }
-  var noOfResults = 30
+  var noOfResults = 20
   var numberOfEntry = 0;
   var segment = []
   var segmentInfo = []
@@ -242,219 +244,78 @@ function assignEnvVariable(res) {
 
 //DATABASE
 
-function populateSchema(results, club) {
-  console.log("Database called")
-  console.log(results)
+async function populateSchema(results, club) {
 
+  //console.log("db club is:" + club)
+  if (club == implClubs[3][1]){
+      for(let i = 0; i < results.length; i ++){
+        var currentScore = 0;
+        var currentName = results[i][0]
+        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
 
-  /*if(club == implClubs[0][1]){
-    for(let i = 0; i< results.length; i++){
-      const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
-      var info = new segDromore({
-        name: results[i][0],
-        points: scoringSystem(i)
-      })
-      info.save();
-    }
-  } else if (club == implClubs[1][1]){
-    for(let i = 0; i< results.length; i++){
-      const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
-      var info = new segDromara({
-        name: results[i][0],
-        points: scoringSystem(i)
-      })
-      info.save();
-    }
-  } else if (club == implClubs[2][1]){
-    for(let i = 0; i< results.length; i++){
-      const segWDW = mongoose.model("WDW", segLeaderboardSchema)
-      var info = new segWDW({
-        name: results[i][0],
-        points: scoringSystem(i)
-      })
-      info.save();
-    }
-  } else if (club == implClubs[3][1]){
-    for(let i = 0; i< results.length; i++){
-      const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-      var info = new segLeaderboard({
-        name: results[i][0],
-        points: scoringSystem(i)
-      })
-      info.save();
-    }*/
+        var query = {name: currentName};
+        var update = {$inc: {points: scoringSystem(i)}}
+        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
+        segLeaderboard.update(query, update, options, function (err, doc) {
+          console.log(doc); // is undefined
+        });
 
-
-
-    if(club == implClubs[0][1]){
-      for(let i = 0; i < results.length; i++) {
-        var isfound = false;
+      }//for loop
+    } else if (club == implClubs[0][1]){
+      for(let i = 0; i < results.length; i ++){
+        var currentScore = 0;
+        var currentName = results[i][0]
         const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
-        segDromore.find(function(err, person){
-          person.forEach(function(person){
-            if(isfound == false){
-              if(person.name == results[i][0]){
-                isfound = true;
-                var score = person.points + scoringSystem(i)
-                segDromore.updateOne({_id: person._id}, {points: score}, function(err){
-                  console.log(err)
-                })
-              }
-            }
-          });
-        })
 
-      if(isfound == false){
-        isfound = true;
-        const everyone = new segDromore({
-          points: scoringSystem(i),
-          name: results[i][0]
-        })
-        everyone.save();
-      }
-    }
-      } else if (club == implClubs[1][1]){
-        for(let i = 0; i < results.length; i++) {
-          var isfound = false;
-            const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
-            segDromara.find(function(err, person){
-              person.forEach(function(person){
-                if(isfound == false){
-                  if(person.name == results[i][0]){
-                    isfound = true;
-                    var score = person.points + scoringSystem(i)
-                    segDromara.updateOne({_id: person._id}, {points: score}, function(err){
-                      console.log(err)
-                    })
-                  }
-                }
-              });
-            })
+        var query = {name: currentName};
+        var update = {$inc: {points: scoringSystem(i)}}
+        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
+        segDromore.update(query, update, options, function (err, doc) {
+          console.log(doc); // is undefined
+        });
+      }//for loop
+    } else if (club == implClubs[1][1]){
+      for(let i = 0; i < results.length; i ++){
+        var currentScore = 0;
+        var currentName = results[i][0]
+        const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
 
-        if(isfound == false){
-          isfound = true;
-          const everyone = new segDromara({
-            points: scoringSystem(i),
-            name: results[i][0]
-          })
-          everyone.save();
-        }
-      }
+        var query = {name: currentName};
+        var update = {$inc: {points: scoringSystem(i)}}
+        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
+        segDromara.update(query, update, options, function (err, doc) {
+          console.log(doc); // is undefined
+        });
+      }//for loop
     } else if (club == implClubs[2][1]){
-      for(let i = 0; i < results.length; i++) {
-      var isfound = false;
+      for(let i = 0; i < results.length; i ++){
+        var currentScore = 0;
+        var currentName = results[i][0]
         const segWDW = mongoose.model("WDW", segLeaderboardSchema)
-        segWDW.find(function(err, person){
-          person.forEach(function(person){
-            if(isfound == false){
-              if(person.name == results[i][0]){
-                isfound = true;
-                var score = person.points + scoringSystem(i)
-                segWDW.updateOne({_id: person._id}, {points: score}, function(err){
-                  console.log(err)
-                })
-              }
-            }
-          });
-        })
 
-      if(isfound == false){
-        isfound = true;
-        const everyone = new segWDW({
-          points: scoringSystem(i),
-          name: results[i][0]
-        })
-        everyone.save();
-      }
-    }
-    } else if (club == implClubs[3][1]){
-      for(let i = 0; i < results.length; i++) {
-      var isfound = false;
-          const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-          segLeaderboard.find(function(err, person){
-            person.forEach(function(person){
-              if(isfound == false){
-                if(person.name == results[i][0]){
-                  isfound = true;
-                  var score = person.points + scoringSystem(i)
-                  segLeaderboard.updateOne({_id: person._id}, {points: score}, function(err){
-                    console.log(err)
-                  })
-                }
-              }
-            });
-          })
-        if(isfound == false){
-          isfound = true;
-          const everyone = new segLeaderboard({
-            points: scoringSystem(i),
-            name: results[i][0]
-          })
-          everyone.save();
-        }
-      }
-    }
-    //for(let i = 0; i < results.length; i++){
-      //var isfound = false;
-
-
-
-
-
-
-    /*for(let i = 0; i< results.length; i++){
-      const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-      var info = new segLeaderboard({
-        name: results[i][0],
-        points: scoringSystem(i)
-      })
-      info.save(); */
-    }
-
-  /*segLeaderboard.find(function(err, person){
-    if(err){
-      console.log(err)
-    } else {
-        for(let i = 0; i < results.length; i++){
-          var isfound = false;
-
-          person.forEach(function(person){
-            if(isfound == false){
-              if(person.name == results[i][0]){
-                isfound = true;
-                var score = person.points + scoringSystem(i)
-                segLeaderboard.updateOne({_id: person._id}, {points: score}, function(err){
-                  console.log(err)
-                })
-              }
-            }
-          });
-          if(isfound == false){
-            isfound = true;
-            const everyone = new segLeaderboard({
-              points: scoringSystem(i),
-              name: results[i][0]
-            })
-            everyone.save();
-          }
-        }
-    }
-  })*/
-  //}
+        var query = {name: currentName};
+        var update = {$inc: {points: scoringSystem(i)}}
+        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
+        segWDW.update(query, update, options, function (err, doc) {
+          console.log(doc); // is undefined
+        });
+      }//for loop
+    }//if statment
+} //function
 
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 16
-  rule.minute = 8
-  rule.second = 45
+  rule.hour = 00
+  rule.minute = 1
+  rule.second = 5
 
   var j = schedule.scheduleJob(rule, function() {
 
     console.log("Starting the Database method.")
 
-      var timeFrame = "this_year"
+      var timeFrame = "today"
       var params = {"date_range": timeFrame}
-      var noOfResults = 100
+      var noOfResults = 20
       var numberOfEntry = 0;
       var segmentInfo = []
 
@@ -496,8 +357,8 @@ function saveDataEvening(clubId, segmentId) {
                     segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
                   }
 
-                  console.log(implClubs[i][0] + " " + implClubs[i][1])
-                  console.log(segment)
+                  //console.log(implClubs[i][0] + " " + implClubs[i][1])
+                  //console.log(segment)
                   populateSchema(segment, implClubs[i][1])
                   segment.length = 0;
                 }
@@ -517,8 +378,8 @@ function saveDataEvening(clubId, segmentId) {
                     for (let i = 0; i < numberOfEntry; i++) {
                       segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
                     }
-                    console.log(implClubs[i][0] + " " + implClubs[i][1])
-                    console.log(segment)
+                    //console.log(implClubs[i][0] + " " + implClubs[i][1])
+                    //console.log(segment)
                     populateSchema(segment, implClubs[i][1])
                     segment.length = 0;
                   }
@@ -568,9 +429,63 @@ function clubIdFinder(req) {
 
 function scoringSystem(placing){
   switch(placing){
-    case 0: return 10; break
-    case 1: return 5; break
-    case 2: return 3; break;
-    case 3: return 1; break;
+    case 0: return 15; break
+    case 1: return 10; break
+    case 2: return 8; break;
+    case 3: return 6; break;
+    case 4: return 4; break;
+    case 5: return 2; break;
+    default: return 1;
   }
 }
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/* async function populateSchema(results, club) {
+
+  //console.log("db club is:" + club)
+  if (club == 0){
+      for(let i = 0; i < results.length; i ++){
+        var currentScore = 0;
+        //await sleep(1000);
+
+        var currentName = results[i][0]
+        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+
+        //segLeaderboard.findOne({name : results[i][0]}, function(err, data){
+        //  if(data == null){
+              var info = new segLeaderboard({
+                name: currentName,
+                points: scoringSystem(i)
+              }) //object
+
+              //console.log("here: " + i)
+              var upsertData = info.toObject();
+
+              delete upsertData._id;
+
+              segLeaderboard.update({name : currentName}, upsertData, {upsert:true}, function(err){
+                console.log(err);
+              })//update object
+              //} else {
+              //var infos = new segLeaderboard({
+                //name: currentName,
+                //points: (data.points + scoringSystem(i))
+              //}) //object
+
+              //console.log("here: " + i)
+              //var upsertData = infos.toObject();
+
+              //delete upsertData._id;
+
+              //segLeaderboard.update({name : currentName}, upsertData, {upsert:true}, function(err){
+                //console.log(err);
+              //})//update object
+          //}//end if
+        //})//find FUNCTION
+      }//for loop
+    }//if statment
+} //function
+*/
