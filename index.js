@@ -284,23 +284,26 @@ function populateSchema(results, club) {
       info.save();
     }*/
 
-    var isfound = false;
+
 
     if(club == implClubs[0][1]){
-      const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
-      segDromore.find(function(err, person){
-        person.forEach(function(person){
-          if(isfound == false){
-            if(person.name == results[i][0]){
-              isfound = true;
-              var score = person.points + scoringSystem(i)
-              segDromore.updateOne({_id: person._id}, {points: score}, function(err){
-                console.log(err)
-              })
+      for(let i = 0; i < results.length; i++) {
+        var isfound = false;
+        const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
+        segDromore.find(function(err, person){
+          person.forEach(function(person){
+            if(isfound == false){
+              if(person.name == results[i][0]){
+                isfound = true;
+                var score = person.points + scoringSystem(i)
+                segDromore.updateOne({_id: person._id}, {points: score}, function(err){
+                  console.log(err)
+                })
+              }
             }
-          }
-        });
-      })
+          });
+        })
+
       if(isfound == false){
         isfound = true;
         const everyone = new segDromore({
@@ -309,21 +312,25 @@ function populateSchema(results, club) {
         })
         everyone.save();
       }
+    }
       } else if (club == implClubs[1][1]){
-        const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
-        segDromara.find(function(err, person){
-          person.forEach(function(person){
-            if(isfound == false){
-              if(person.name == results[i][0]){
-                isfound = true;
-                var score = person.points + scoringSystem(i)
-                segDromara.updateOne({_id: person._id}, {points: score}, function(err){
-                  console.log(err)
-                })
-              }
-            }
-          });
-        })
+        for(let i = 0; i < results.length; i++) {
+          var isfound = false;
+            const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
+            segDromara.find(function(err, person){
+              person.forEach(function(person){
+                if(isfound == false){
+                  if(person.name == results[i][0]){
+                    isfound = true;
+                    var score = person.points + scoringSystem(i)
+                    segDromara.updateOne({_id: person._id}, {points: score}, function(err){
+                      console.log(err)
+                    })
+                  }
+                }
+              });
+            })
+
         if(isfound == false){
           isfound = true;
           const everyone = new segDromara({
@@ -332,21 +339,25 @@ function populateSchema(results, club) {
           })
           everyone.save();
         }
+      }
     } else if (club == implClubs[2][1]){
-      const segWDW = mongoose.model("WDW", segLeaderboardSchema)
-      segWDW.find(function(err, person){
-        person.forEach(function(person){
-          if(isfound == false){
-            if(person.name == results[i][0]){
-              isfound = true;
-              var score = person.points + scoringSystem(i)
-              segWDW.updateOne({_id: person._id}, {points: score}, function(err){
-                console.log(err)
-              })
+      for(let i = 0; i < results.length; i++) {
+      var isfound = false;
+        const segWDW = mongoose.model("WDW", segLeaderboardSchema)
+        segWDW.find(function(err, person){
+          person.forEach(function(person){
+            if(isfound == false){
+              if(person.name == results[i][0]){
+                isfound = true;
+                var score = person.points + scoringSystem(i)
+                segWDW.updateOne({_id: person._id}, {points: score}, function(err){
+                  console.log(err)
+                })
+              }
             }
-          }
-        });
-      })
+          });
+        })
+
       if(isfound == false){
         isfound = true;
         const everyone = new segWDW({
@@ -355,21 +366,24 @@ function populateSchema(results, club) {
         })
         everyone.save();
       }
+    }
     } else if (club == implClubs[3][1]){
-        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-        segLeaderboard.find(function(err, person){
-          person.forEach(function(person){
-            if(isfound == false){
-              if(person.name == results[i][0]){
-                isfound = true;
-                var score = person.points + scoringSystem(i)
-                segLeaderboard.updateOne({_id: person._id}, {points: score}, function(err){
-                  console.log(err)
-                })
+      for(let i = 0; i < results.length; i++) {
+      var isfound = false;
+          const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+          segLeaderboard.find(function(err, person){
+            person.forEach(function(person){
+              if(isfound == false){
+                if(person.name == results[i][0]){
+                  isfound = true;
+                  var score = person.points + scoringSystem(i)
+                  segLeaderboard.updateOne({_id: person._id}, {points: score}, function(err){
+                    console.log(err)
+                  })
+                }
               }
-            }
-          });
-        })
+            });
+          })
         if(isfound == false){
           isfound = true;
           const everyone = new segLeaderboard({
@@ -379,6 +393,7 @@ function populateSchema(results, club) {
           everyone.save();
         }
       }
+    }
     //for(let i = 0; i < results.length; i++){
       //var isfound = false;
 
@@ -430,8 +445,8 @@ function populateSchema(results, club) {
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 16
-  rule.minute = 3
-  rule.second = 20
+  rule.minute = 8
+  rule.second = 45
 
   var j = schedule.scheduleJob(rule, function() {
 
