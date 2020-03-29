@@ -252,17 +252,15 @@ function populateSchema(results, club) {
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 14
-  rule.minute = 31
-  rule.second = 59
+  rule.minute = 36
+  rule.second = 24
 
   var j = schedule.scheduleJob(rule, function() {
 
     console.log("Starting the Database method.")
 
     var timeFrame = "today"
-    var params = {
-      "date_range": timeFrame
-    }
+    var params = {"date_range": timeFrame}
     var noOfResults = 4
     var numberOfEntry = 0;
     var segment = []
@@ -290,20 +288,21 @@ function saveDataEvening(clubId, segmentId) {
     strava.segments.leaderboard.get(segmentId, params, function(err, data) {
       total = JSON.parse(JSON.stringify(data.effort_count))
 
-        for(let i = 0; i < implClubs.length; i++){
+      for(let i = 0; i < implClubs.length; i++){
           if(implClubs[i][1] = 0){
             var params = {
               "date_range": timeFrame,
               "per_page": noOfResults,
-            }
+           }
           } else {
-            var paramsClub = {
+            var params = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "club_id": implClubs[i][1]
             }
-        }
-          strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+          }
+
+          strava.segments.leaderboard.get(segmentId, params, function(err, data) {
             try{
               numberOfEntry = data.entries.length
 
