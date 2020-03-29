@@ -27,6 +27,9 @@ const segLeaderboardSchema = new mongoose.Schema({
 })
 
 const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
+const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
+const segWDW = mongoose.model("WDW", segLeaderboardSchema)
 
 app.use(express.static(__dirname + '/public-updated'));
 
@@ -238,8 +241,8 @@ function populateSchema(results) {
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 23
-  rule.minute = 11
-  rule.second = 7
+  rule.minute = 55
+  rule.second = 0
 
   var j = schedule.scheduleJob(rule, function() {
 
