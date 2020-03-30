@@ -1,22 +1,13 @@
-//Setting up modules
+require('dotenv').config();
 const express = require('express')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const mongoose = require('mongoose')
 const schedule = require('node-schedule')
-var async = require("async");
 const app = express();
 
-let segment = []
-let clubId = 0;
-let segmentId = 14476714;
-require('dotenv').config();
-
 app.set('view engine', 'ejs');
-
-app.use(bodyParser.urlencoded({
-  extended: false
-}))
+app.use(bodyParser.urlencoded({extended: false}))
 
 mongoose.connect('mongodb://localhost:27017/segLeaderboard', {
   useNewUrlParser: true,
@@ -29,7 +20,9 @@ const segLeaderboardSchema = new mongoose.Schema({
 })
 
 const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-
+const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
+const segWDW = mongoose.model("WDW", segLeaderboardSchema)
+const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
 
 var implClubs = [
   ['dromore', 55274],
@@ -37,6 +30,11 @@ var implClubs = [
   ['wdw', 12013],
   ['everyone', 0]
 ]
+let segment = []
+let clubId = 0;
+let segmentId = 902447;
+let timeFrame = "this_week"
+
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req, res) {
@@ -44,7 +42,6 @@ app.post('/', function(req, res) {
 })
 
 app.get('/', (req, res) => {
-  //saveDataEvening(0, segmentId);
   loadLeaderboard(segmentId, clubIdFinder(req), false, req, res)
 });
 
@@ -53,18 +50,15 @@ app.listen(8000, () => {
   refreshTokensNow()
 });
 
-//Runs at 23:55 every-night
-saveDataEvening(0, segmentId);
 
-//Runs at 11 minutes past-the-hour
+saveDataEvening(segmentId);
 refreshTokens();
 
-//SEGMENT INFORMATION
+//SEGMENT FUNCTIONS
 //Finding the information on any segment
 function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var segmentId = segmentId;
   var clubId = clubId;
-  var timeFrame = "today"
   var params = {
     "date_range": timeFrame
   }
@@ -113,8 +107,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
         const segWDW = mongoose.model("WDW", segLeaderboardSchema)
         const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
 
-        if(implClubs[0][1] == clubId){
-          segDromore.find(function(err, person){
+        if (implClubs[0][1] == clubId) {
+          segDromore.find(function(err, person) {
             databaseLeaderboard = person
 
             res.render('home', {
@@ -127,8 +121,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           })
         }
 
-        if(implClubs[2][1] == clubId){
-          segWDW.find(function(err, person){
+        if (implClubs[2][1] == clubId) {
+          segWDW.find(function(err, person) {
             databaseLeaderboard = person
 
             res.render('home', {
@@ -141,8 +135,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           })
         }
 
-        if(implClubs[1][1] == clubId){
-          segDromara.find(function(err, person){
+        if (implClubs[1][1] == clubId) {
+          segDromara.find(function(err, person) {
             databaseLeaderboard = person
 
             res.render('home', {
@@ -168,7 +162,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
-        segLeaderboard.find(function(err, person){
+        segLeaderboard.find(function(err, person) {
           databaseLeaderboard = person
           res.render('home', {
             data: segment,
@@ -177,7 +171,9 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             reload: reload,
             db: databaseLeaderboard
           });
-        }).sort({points : -1}).exec(function(err,docs){
+        }).sort({
+          points: -1
+        }).exec(function(err, docs) {
           console.log(err);
         });
       })
@@ -185,15 +181,12 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   })
 }
 
-
-
 //TOKEN REFRESH FUNCTIONS
-//Automatic token refresh
 function refreshTokens() {
   var rule = new schedule.RecurrenceRule()
-  rule.minute = 11
+  rule.minute = 01
   var j = schedule.scheduleJob(rule, function() {
-    console.log("Automatic Token Refresh")
+    console.log("Automatic Token Refresh Complete")
 
     var authLink = 'https://www.strava.com/oauth/token'
     fetch(authLink, {
@@ -216,8 +209,6 @@ function refreshTokens() {
 
 //Refresh the tokens when the server first loads up
 function refreshTokensNow() {
-  console.log("Tokens beginning refresh on server load")
-
   var authLink = 'https://www.strava.com/oauth/token'
   fetch(authLink, {
       method: 'post',
@@ -238,157 +229,174 @@ function refreshTokensNow() {
 
 function assignEnvVariable(res) {
   process.env.ACCESS_TOKEN = res.access_token
-  console.log("Access Token is " + res.access_token)
 }
 
 
-//DATABASE
+//DATABASE FUNCTIONS
+function populateSchema(results, club) {
+  if (club == implClubs[3][1]) {
+    for (let i = 0; i < results.length; i++) {
+      var currentName = results[i][0]
+      var query = {
+        name: currentName
+      };
+      var update = {
+        $inc: {
+          points: scoringSystem(i)
+        }
+      }
+      var options = {
+        upsert: true,
+        'new': true,
+        'useFindAndModify': true
+      };
+      segLeaderboard.update(query, update, options, function(err, doc) {
+        console.log(doc);
+      });
 
-async function populateSchema(results, club) {
+    }
+  } else if (club == implClubs[0][1]) {
+    for (let i = 0; i < results.length; i++) {
+      var currentName = results[i][0]
+      var query = {
+        name: currentName
+      };
+      var update = {
+        $inc: {
+          points: scoringSystem(i)
+        }
+      }
+      var options = {
+        upsert: true,
+        'new': true,
+        'useFindAndModify': true
+      };
+      segDromore.update(query, update, options, function(err, doc) {
+        console.log(doc);
+      });
+    }
+  } else if (club == implClubs[1][1]) {
+    for (let i = 0; i < results.length; i++) {
+      var currentName = results[i][0]
+      var query = {
+        name: currentName
+      };
+      var update = {
+        $inc: {
+          points: scoringSystem(i)
+        }
+      }
+      var options = {
+        upsert: true,
+        'new': true,
+        'useFindAndModify': true
+      };
+      segDromara.update(query, update, options, function(err, doc) {
+        console.log(doc);
+      });
+    }
+  } else if (club == implClubs[2][1]) {
+    for (let i = 0; i < results.length; i++) {
+      var currentName = results[i][0]
+      var query = {
+        name: currentName
+      };
+      var update = {
+        $inc: {
+          points: scoringSystem(i)
+        }
+      }
+      var options = {
+        upsert: true,
+        'new': true,
+        'useFindAndModify': true
+      };
+      segWDW.update(query, update, options, function(err, doc) {
+        console.log(doc);
+      });
+    }
+  }
+}
 
-  //console.log("db club is:" + club)
-  if (club == implClubs[3][1]){
-      for(let i = 0; i < results.length; i ++){
-        var currentScore = 0;
-        var currentName = results[i][0]
-        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-
-        var query = {name: currentName};
-        var update = {$inc: {points: scoringSystem(i)}}
-        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
-        segLeaderboard.update(query, update, options, function (err, doc) {
-          console.log(doc); // is undefined
-        });
-
-      }//for loop
-    } else if (club == implClubs[0][1]){
-      for(let i = 0; i < results.length; i ++){
-        var currentScore = 0;
-        var currentName = results[i][0]
-        const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
-
-        var query = {name: currentName};
-        var update = {$inc: {points: scoringSystem(i)}}
-        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
-        segDromore.update(query, update, options, function (err, doc) {
-          console.log(doc); // is undefined
-        });
-      }//for loop
-    } else if (club == implClubs[1][1]){
-      for(let i = 0; i < results.length; i ++){
-        var currentScore = 0;
-        var currentName = results[i][0]
-        const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
-
-        var query = {name: currentName};
-        var update = {$inc: {points: scoringSystem(i)}}
-        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
-        segDromara.update(query, update, options, function (err, doc) {
-          console.log(doc); // is undefined
-        });
-      }//for loop
-    } else if (club == implClubs[2][1]){
-      for(let i = 0; i < results.length; i ++){
-        var currentScore = 0;
-        var currentName = results[i][0]
-        const segWDW = mongoose.model("WDW", segLeaderboardSchema)
-
-        var query = {name: currentName};
-        var update = {$inc: {points: scoringSystem(i)}}
-        var options = {upsert: true, 'new': true, 'useFindAndModify':true};
-        segWDW.update(query, update, options, function (err, doc) {
-          console.log(doc); // is undefined
-        });
-      }//for loop
-    }//if statment
-} //function
-
-function saveDataEvening(clubId, segmentId) {
+function saveDataEvening(segmentId) {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 10
-  rule.minute = 30
-  rule.second = 10
+  rule.hour = 12
+  rule.minute = 25
+  rule.second = 34
 
   var j = schedule.scheduleJob(rule, function() {
 
-    console.log("Starting the Database method.")
-
-      var timeFrame = "today"
-      var params = {"date_range": timeFrame}
-      var noOfResults = 20
-      var numberOfEntry = 0;
-      var segmentInfo = []
-
-      var strava = new require("strava")({
-        "client_id": process.env.CLIENT_ID,
-        "access_token": process.env.ACCESS_TOKEN,
-        "client_secret": process.env.CLIENT_SECRET,
-        "redirect_url": "localhost:8000/"
-      });
-
-      strava.segments.get(segmentId, function(err, data) {
-        var objJSON = JSON.parse(JSON.stringify(data))
-        segmentInfo = {
-          "name": objJSON.name,
-          "distance": convertingMetersToMiles(objJSON.distance),
-          "average_grade": objJSON.average_grade,
-          "link": "https://www.strava.com/segments/" + objJSON.id,
-          "efforts": objJSON.effort_count,
-          "location": objJSON.state
-        }
-      })
-      for(let i = 0; i < implClubs.length; i++)
-      {
-        var segment = [];
-
-        if(implClubs[i][1] != 0){
-          strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-            total = JSON.parse(JSON.stringify(data.effort_count))
-              var paramsClub = {
-                "date_range": timeFrame,
-                "per_page": noOfResults,
-                "club_id": implClubs[i][1]
-              }
-              strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-                if(data != ""){
-                  numberOfEntry = data.entries.length
-
-                  for (let i = 0; i < numberOfEntry; i++) {
-                    segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-                  }
-
-                  //console.log(implClubs[i][0] + " " + implClubs[i][1])
-                  //console.log(segment)
-                  populateSchema(segment, implClubs[i][1])
-                  segment.length = 0;
-                }
-              })
-            })
-          } else {
-            strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-              total = JSON.parse(JSON.stringify(data.effort_count))
-                var paramsClub = {
-                  "date_range": timeFrame,
-                  "per_page": noOfResults,
-                }
-                strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-                  if(data != ""){
-                    numberOfEntry = data.entries.length
-
-                    for (let i = 0; i < numberOfEntry; i++) {
-                      segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-                    }
-                    //console.log(implClubs[i][0] + " " + implClubs[i][1])
-                    //console.log(segment)
-                    populateSchema(segment, implClubs[i][1])
-                    segment.length = 0;
-                  }
-                })
-              })
-          }
-        } // For loop
-      })
+    var params = {
+      "date_range": timeFrame
     }
+    var noOfResults = 20
+    var numberOfEntry = 0;
+    var segmentInfo = []
+
+    var strava = new require("strava")({
+      "client_id": process.env.CLIENT_ID,
+      "access_token": process.env.ACCESS_TOKEN,
+      "client_secret": process.env.CLIENT_SECRET,
+      "redirect_url": "localhost:8000/"
+    });
+
+    strava.segments.get(segmentId, function(err, data) {
+      var objJSON = JSON.parse(JSON.stringify(data))
+      segmentInfo = {
+        "name": objJSON.name,
+        "distance": convertingMetersToMiles(objJSON.distance),
+        "average_grade": objJSON.average_grade,
+        "link": "https://www.strava.com/segments/" + objJSON.id,
+        "efforts": objJSON.effort_count,
+        "location": objJSON.state
+      }
+    })
+    for (let i = 0; i < implClubs.length; i++) {
+      var segment = [];
+
+      if (implClubs[i][1] != 0) {
+        strava.segments.leaderboard.get(segmentId, params, function(err, data) {
+          total = JSON.parse(JSON.stringify(data.effort_count))
+          var paramsClub = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": implClubs[i][1]
+          }
+          strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+            if (data != "") {
+              numberOfEntry = data.entries.length
+
+              for (let i = 0; i < numberOfEntry; i++) {
+                segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+              }
+              populateSchema(segment, implClubs[i][1])
+              segment.length = 0;
+            }
+          })
+        })
+      } else {
+        strava.segments.leaderboard.get(segmentId, params, function(err, data) {
+          total = JSON.parse(JSON.stringify(data.effort_count))
+          var paramsClub = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+          }
+          strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+            if (data != "") {
+              numberOfEntry = data.entries.length
+
+              for (let i = 0; i < numberOfEntry; i++) {
+                segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+              }
+              populateSchema(segment, implClubs[i][1])
+              segment.length = 0;
+            }
+          })
+        })
+      }
+    }
+  })
+}
 
 
 //DATA CONVERSION
@@ -427,65 +435,27 @@ function clubIdFinder(req) {
   return clubId
 }
 
-function scoringSystem(placing){
-  switch(placing){
-    case 0: return 15; break
-    case 1: return 10; break
-    case 2: return 8; break;
-    case 3: return 6; break;
-    case 4: return 4; break;
-    case 5: return 2; break;
-    default: return 1;
+function scoringSystem(placing) {
+  switch (placing) {
+    case 0:
+      return 15;
+      break
+    case 1:
+      return 10;
+      break
+    case 2:
+      return 8;
+      break;
+    case 3:
+      return 6;
+      break;
+    case 4:
+      return 4;
+      break;
+    case 5:
+      return 2;
+      break;
+    default:
+      return 1;
   }
 }
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/* async function populateSchema(results, club) {
-
-  //console.log("db club is:" + club)
-  if (club == 0){
-      for(let i = 0; i < results.length; i ++){
-        var currentScore = 0;
-        //await sleep(1000);
-
-        var currentName = results[i][0]
-        const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-
-        //segLeaderboard.findOne({name : results[i][0]}, function(err, data){
-        //  if(data == null){
-              var info = new segLeaderboard({
-                name: currentName,
-                points: scoringSystem(i)
-              }) //object
-
-              //console.log("here: " + i)
-              var upsertData = info.toObject();
-
-              delete upsertData._id;
-
-              segLeaderboard.update({name : currentName}, upsertData, {upsert:true}, function(err){
-                console.log(err);
-              })//update object
-              //} else {
-              //var infos = new segLeaderboard({
-                //name: currentName,
-                //points: (data.points + scoringSystem(i))
-              //}) //object
-
-              //console.log("here: " + i)
-              //var upsertData = infos.toObject();
-
-              //delete upsertData._id;
-
-              //segLeaderboard.update({name : currentName}, upsertData, {upsert:true}, function(err){
-                //console.log(err);
-              //})//update object
-          //}//end if
-        //})//find FUNCTION
-      }//for loop
-    }//if statment
-} //function
-*/
