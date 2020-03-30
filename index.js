@@ -9,7 +9,7 @@ const app = express();
 
 let segment = []
 let clubId = 0;
-let segmentId = 3353720;
+let segmentId = 14476714;
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
@@ -305,9 +305,9 @@ async function populateSchema(results, club) {
 
 function saveDataEvening(clubId, segmentId) {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 00
-  rule.minute = 1
-  rule.second = 5
+  rule.hour = 10
+  rule.minute = 30
+  rule.second = 10
 
   var j = schedule.scheduleJob(rule, function() {
 
