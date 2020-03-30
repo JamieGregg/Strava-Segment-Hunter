@@ -335,7 +335,7 @@ function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 23
   rule.minute = 58
-  rule.second = 30
+  rule.second = 45
 
   var j = schedule.scheduleJob(rule, function() {
     findSegmentCodes()
