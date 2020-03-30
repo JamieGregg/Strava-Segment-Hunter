@@ -42,6 +42,7 @@ let segment = []
 let clubId = 0
 let segmentId;
 let timeFrame = "today"
+let clubName = "Public"
 
 app.use(express.static(__dirname + '/public-updated'));
 
@@ -79,6 +80,14 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var segment = []
   var segmentInfo = []
   var databaseLeaderboard = []
+
+  if(req.body.clubs != undefined){
+    clubName = req.body.clubs
+    console.log(req.body.clubs)
+  } else {
+    clubName = "Public"
+  }
+
 
   var strava = new require("strava")({
     "client_id": process.env.CLIENT_ID,
@@ -125,7 +134,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               segmentInfo: segmentInfo,
               clubId: clubId,
               reload: reload,
-              db: databaseLeaderboard
+              db: databaseLeaderboard,
+              clubName: clubName
             });
           })
         }
@@ -139,7 +149,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               segmentInfo: segmentInfo,
               clubId: clubId,
               reload: reload,
-              db: databaseLeaderboard
+              db: databaseLeaderboard,
+              clubName: clubName
             });
           })
         }
@@ -153,7 +164,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               segmentInfo: segmentInfo,
               clubId: clubId,
               reload: reload,
-              db: databaseLeaderboard
+              db: databaseLeaderboard,
+              clubName: clubName
             });
           })
         }
@@ -178,7 +190,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             segmentInfo: segmentInfo,
             clubId: clubId,
             reload: reload,
-            db: databaseLeaderboard
+            db: databaseLeaderboard,
+            clubName: clubName
           });
         }).sort({
           points: -1
@@ -431,16 +444,16 @@ function clubIdFinder(req) {
   var clubName = req.body.clubs
 
   switch (clubName) {
-    case 'dromore':
+    case 'Dromore':
       clubId = 55274;
       break;
-    case 'dromara':
+    case 'Dromara':
       clubId = 2885;
       break;
-    case 'wdw':
+    case 'WDW':
       clubId = 12013;
       break;
-    case 'everyone':
+    case 'Public':
       clubId = 0;
       break;
   }
