@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
   loadLeaderboard(segmentId, clubIdFinder(req), false, req, res)
 });
 
-app.listen(8000, () => {
+app.listen(process.env.PORT || 8000, () => {
   console.log("server is now running on port 8000")
   refreshTokensNow()
   findSegmentCodes()
