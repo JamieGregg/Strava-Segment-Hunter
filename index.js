@@ -33,20 +33,22 @@ var implClubs = [
 let segment = []
 let clubId = 0;
 let segmentId = 902447;
-let timeFrame = "this_week"
+let timeFrame = "today"
 
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req, res) {
+  refreshTokensNow()
   loadLeaderboard(segmentId, clubIdFinder(req), true, req, res)
 })
 
 app.get('/', (req, res) => {
+  refreshTokensNow()
   loadLeaderboard(segmentId, clubIdFinder(req), false, req, res)
 });
 
 app.listen(8000, () => {
-  console.log("server is now running")
+  console.log("server is now running on port 8000")
   refreshTokensNow()
 });
 
@@ -184,7 +186,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
 //TOKEN REFRESH FUNCTIONS
 function refreshTokens() {
   var rule = new schedule.RecurrenceRule()
-  rule.minute = 01
+  rule.minute = 05
   var j = schedule.scheduleJob(rule, function() {
     console.log("Automatic Token Refresh Complete")
 
@@ -320,9 +322,9 @@ function populateSchema(results, club) {
 
 function saveDataEvening(segmentId) {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 12
-  rule.minute = 25
-  rule.second = 34
+  rule.hour = 23
+  rule.minute = 58
+  rule.second = 59
 
   var j = schedule.scheduleJob(rule, function() {
 
@@ -397,7 +399,6 @@ function saveDataEvening(segmentId) {
     }
   })
 }
-
 
 //DATA CONVERSION
 function convertingMetersToMiles(meters) {
