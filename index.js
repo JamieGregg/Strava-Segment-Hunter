@@ -12,17 +12,24 @@ app.use(bodyParser.urlencoded({extended: false}))
 mongoose.connect('mongodb://localhost:27017/segLeaderboard', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-})
+}).then (()=> console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Could not connect to mongoDB', err));
 
 const segLeaderboardSchema = new mongoose.Schema({
   points: Number,
   name: String,
 })
 
+const segCodeSchema = new mongoose.Schema({
+  counterId: Number,
+  segmentId: Number
+})
+
 const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
 const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
 const segWDW = mongoose.model("WDW", segLeaderboardSchema)
 const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
+const segmentCodes = mongoose.model("Segment", segCodeSchema)
 
 var implClubs = [
   ['dromore', 55274],
@@ -32,25 +39,29 @@ var implClubs = [
 ]
 
 let segment = []
-let clubId = 0;
-let segmentId = 902447;
+let clubId = 0
+let segmentId;
 let timeFrame = "today"
 
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req, res) {
   //refreshTokensNow()
+  findSegmentCodes()
   loadLeaderboard(segmentId, clubIdFinder(req), true, req, res)
 })
 
 app.get('/', (req, res) => {
   //refreshTokensNow()
+  findSegmentCodes()
   loadLeaderboard(segmentId, clubIdFinder(req), false, req, res)
 });
 
 app.listen(8000, () => {
   console.log("server is now running on port 8000")
   refreshTokensNow()
+  findSegmentCodes()
+  //deleteUsedSegment();
 });
 
 saveDataEvening(segmentId);
@@ -320,14 +331,14 @@ function populateSchema(results, club) {
   }
 }
 
-function saveDataEvening(segmentId) {
+function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 23
   rule.minute = 58
   rule.second = 30
 
   var j = schedule.scheduleJob(rule, function() {
-
+    findSegmentCodes()
     var params = {
       "date_range": timeFrame
     }
@@ -358,45 +369,49 @@ function saveDataEvening(segmentId) {
 
       if (implClubs[i][1] != 0) {
         strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-          total = JSON.parse(JSON.stringify(data.effort_count))
-          var paramsClub = {
-            "date_range": timeFrame,
-            "per_page": noOfResults,
-            "club_id": implClubs[i][1]
-          }
-          strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-            if (data != "") {
-              numberOfEntry = data.entries.length
-
-              for (let i = 0; i < numberOfEntry; i++) {
-                segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-              }
-              populateSchema(segment, implClubs[i][1])
-              segment.length = 0;
+            total = JSON.parse(JSON.stringify(data.effort_count))
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": implClubs[i][1]
             }
-          })
+            strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+              if (data != "") {
+                numberOfEntry = data.entries.length
+
+                for (let i = 0; i < numberOfEntry; i++) {
+                  segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                }
+                populateSchema(segment, implClubs[i][1])
+                segment.length = 0;
+              }
+            })
         })
       } else {
         strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-          total = JSON.parse(JSON.stringify(data.effort_count))
-          var paramsClub = {
-            "date_range": timeFrame,
-            "per_page": noOfResults,
-          }
-          strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-            if (data != "") {
-              numberOfEntry = data.entries.length
-
-              for (let i = 0; i < numberOfEntry; i++) {
-                segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-              }
-              populateSchema(segment, implClubs[i][1])
-              segment.length = 0;
+          if (data != "") {
+            total = JSON.parse(JSON.stringify(data.effort_count))
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
             }
-          })
+            strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+              if (data != "") {
+                numberOfEntry = data.entries.length
+
+                for (let i = 0; i < numberOfEntry; i++) {
+                  segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                }
+                populateSchema(segment, implClubs[i][1])
+                segment.length = 0;
+              }
+            })
+          }
         })
       }
     }
+    deleteUsedSegment();
+    findSegmentCodes()
   })
 }
 
@@ -459,4 +474,55 @@ function scoringSystem(placing) {
     default:
       return 1;
   }
+}
+
+function findSegmentCodes(){
+
+  segmentCodes.find(function(err, data){
+    if(err){
+      console.log(err)
+    } else {
+      //returning segment id of smallest reocord
+      console.log(data)
+      segmentId = data[0].segmentId
+    }
+  }).sort({
+    counterId: 1
+  }).exec(function(err, docs) {
+    console.log(err);
+  });
+}
+
+function deleteUsedSegment(){
+  var smallestSegmentId = 0;
+  segmentCodes.find(function(err, data){
+    if(err){
+      console.log(err)
+    } else {
+      console.log(data[0].segmentId)
+      smallestSegmentId = data[0].segmentId
+      console.log(smallestSegmentId)
+
+      segmentCodes.deleteMany(
+        {
+          segmentId:{
+            $in: [
+              smallestSegmentId
+            ]
+          }
+        },
+        function(err, results){
+         if(err){
+           console.log(err)
+         } else {
+           console.log(results)
+           console.log("Deleted")
+         }
+      })
+    }
+  }).sort({
+    counterId: 1
+  }).exec(function(err, docs) {
+    console.log(err);
+  });
 }
