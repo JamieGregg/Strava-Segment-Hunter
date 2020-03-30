@@ -9,7 +9,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: false}))
 
-mongoose.connect('mongodb://localhost:27017/segLeaderboard', {
+mongoose.connect('mongodb+srv://admin-jamie:' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then (()=> console.log('Connected to MongoDB...'))
@@ -41,19 +41,15 @@ var implClubs = [
 let segment = []
 let clubId = 0
 let segmentId;
-let timeFrame = "today"
+let timeFrame = "this_year"
 
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req, res) {
-  //refreshTokensNow()
-  findSegmentCodes()
   loadLeaderboard(segmentId, clubIdFinder(req), true, req, res)
 })
 
 app.get('/', (req, res) => {
-  //refreshTokensNow()
-  findSegmentCodes()
   loadLeaderboard(segmentId, clubIdFinder(req), false, req, res)
 });
 
@@ -61,7 +57,6 @@ app.listen(8000, () => {
   console.log("server is now running on port 8000")
   refreshTokensNow()
   findSegmentCodes()
-  //deleteUsedSegment();
 });
 
 saveDataEvening(segmentId);
@@ -116,9 +111,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
-        const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
-        const segWDW = mongoose.model("WDW", segLeaderboardSchema)
-        const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
 
         if (implClubs[0][1] == clubId) {
           segDromore.find(function(err, person) {
@@ -333,9 +325,9 @@ function populateSchema(results, club) {
 
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 23
-  rule.minute = 58
-  rule.second = 45
+  rule.hour = 18
+  rule.minute = 42
+  rule.second = 05
 
   var j = schedule.scheduleJob(rule, function() {
     findSegmentCodes()
