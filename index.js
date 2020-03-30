@@ -30,6 +30,7 @@ var implClubs = [
   ['wdw', 12013],
   ['everyone', 0]
 ]
+
 let segment = []
 let clubId = 0;
 let segmentId = 902447;
@@ -38,12 +39,12 @@ let timeFrame = "today"
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/', function(req, res) {
-  refreshTokensNow()
+  //refreshTokensNow()
   loadLeaderboard(segmentId, clubIdFinder(req), true, req, res)
 })
 
 app.get('/', (req, res) => {
-  refreshTokensNow()
+  //refreshTokensNow()
   loadLeaderboard(segmentId, clubIdFinder(req), false, req, res)
 });
 
@@ -51,7 +52,6 @@ app.listen(8000, () => {
   console.log("server is now running on port 8000")
   refreshTokensNow()
 });
-
 
 saveDataEvening(segmentId);
 refreshTokens();
@@ -324,7 +324,7 @@ function saveDataEvening(segmentId) {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 23
   rule.minute = 58
-  rule.second = 59
+  rule.second = 30
 
   var j = schedule.scheduleJob(rule, function() {
 
