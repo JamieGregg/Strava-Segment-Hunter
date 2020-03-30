@@ -83,7 +83,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
 
   if(req.body.clubs != undefined){
     clubName = req.body.clubs
-    console.log(req.body.clubs)
   } else {
     clubName = "Public"
   }
