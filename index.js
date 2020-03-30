@@ -325,9 +325,9 @@ function populateSchema(results, club) {
 
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 18
-  rule.minute = 42
-  rule.second = 05
+  rule.hour = 23
+  rule.minute = 58
+  rule.second = 30
 
   var j = schedule.scheduleJob(rule, function() {
     findSegmentCodes()
