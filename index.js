@@ -483,7 +483,6 @@ function findSegmentCodes(){
       console.log(err)
     } else {
       //returning segment id of smallest reocord
-      console.log(data)
       segmentId = data[0].segmentId
     }
   }).sort({
@@ -499,9 +498,7 @@ function deleteUsedSegment(){
     if(err){
       console.log(err)
     } else {
-      console.log(data[0].segmentId)
       smallestSegmentId = data[0].segmentId
-      console.log(smallestSegmentId)
 
       segmentCodes.deleteMany(
         {
@@ -516,7 +513,6 @@ function deleteUsedSegment(){
            console.log(err)
          } else {
            console.log(results)
-           console.log("Deleted")
          }
       })
     }
