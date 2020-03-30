@@ -41,7 +41,7 @@ var implClubs = [
 let segment = []
 let clubId = 0
 let segmentId;
-let timeFrame = "this_year"
+let timeFrame = "today"
 
 app.use(express.static(__dirname + '/public-updated'));
 
