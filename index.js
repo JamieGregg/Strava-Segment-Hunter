@@ -62,10 +62,9 @@ app.listen(port, () => {
   console.log("server is now running on port 8000")
   refreshTokensNow()
   findSegmentCodes()
-  //tomorrowsSegment()
 });
 
-saveDataEvening(segmentId);
+saveDataEvening();
 refreshTokens();
 
 //SEGMENT FUNCTIONS
@@ -368,7 +367,7 @@ function populateSchema(results, club) {
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 00
-  rule.minute = 20
+  rule.minute = 28
   rule.second = 00
 
   var j = schedule.scheduleJob(rule, function() {
