@@ -115,10 +115,12 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     if(err){
       console.log(err)
     } else {
-      for(let i = 0; i < 5; i ++) {
+      console.log(data)
+      for(let i = 1; i < data.length; i ++) {
+
         strava.segments.get(data[i].segmentId, function(err, data) {
           tomorrowsSegmentInfo.push([data.name, "https://www.strava.com/segments/" + data.id])
-
+          console.log(tomorrowsSegmentInfo[i-1])
         })
       }
     }
@@ -365,9 +367,9 @@ function populateSchema(results, club) {
 
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 23
-  rule.minute = 58
-  rule.second = 30
+  rule.hour = 00
+  rule.minute = 20
+  rule.second = 00
 
   var j = schedule.scheduleJob(rule, function() {
     findSegmentCodes()

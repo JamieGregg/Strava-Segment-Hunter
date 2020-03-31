@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'unsafe-inline'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
 
   <title>Strava Segment Hunter</title>
 
@@ -252,11 +252,11 @@
 
           <% var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];%>
 
-          <% for(var i = 1; i < 6; i++) { %>
+          <% for(var i = 0; i < tomorrowsSegmentInfo.length; i++) { %>
               <% var date = new Date();%>
-              <% date.setDate(date.getDate() + i)%>
+              <% date.setDate(date.getDate() + i + 1)%>
               <% var dayName = days[date.getDay()];%>
-              <p class="lead text-left"><span class="font-weight-bold"><%-dayName%></span><a class="text-white"href=<%-tomorrowsSegmentInfo[i-1][1]%>>: <%-tomorrowsSegmentInfo[i-1][0]%></a></p>
+              <p class="lead text-left"><span class="font-weight-bold"><%-dayName%></span><a class="text-white"href=<%-tomorrowsSegmentInfo[i][1]%>>: <%-tomorrowsSegmentInfo[i][0]%></a></p>
           <% } %>
         </div>
       </div>
@@ -390,7 +390,6 @@
 
   <script>
     function openPage(){
-      console.log("called")
       if(<%-reload%> == true) {
 
         document.getElementById("todays-seg").click();
