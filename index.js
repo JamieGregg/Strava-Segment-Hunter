@@ -95,6 +95,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     "redirect_url": "www.google.com"
   });
 
+  findSegmentCodes()
+
   strava.segments.get(segmentId, function(err, data) {
     var objJSON = JSON.parse(JSON.stringify(data))
     segmentInfo = {
