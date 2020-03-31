@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'unsafe-inline'">
 
   <title>Strava Segment Hunter</title>
 
@@ -71,8 +71,8 @@
 
       <!-- Masthead Subheading -->
       <p class="masthead-subheading font-weight-light mb-0">
-        Check in every day to see a <a class="text-white" href="#today-segment">new segment in your area.</a> Complete the segment that day to appear on the <a class="text-white" href="#today-leaderboard">daily leaderboards. Place highly</a>
-        to add points to your record boosting your way up the <a class="text-white" href="##point-leaderboard">points leaderboard </a><a class="text-white" href="#help-section">see more...</a></p>
+        Check in every day to see a <a class="text-white" href="#today-segment">new segment in your area.</a> Complete the segment that day to appear on the <a class="text-white" href="#today-leaderboard">daily leaderboards. Daily leaderboard rankings</a>
+        assigned points at the end of the day - a total of these points can be soon on the <a class="text-white" href="##point-leaderboard">points leaderboard </a><a class="text-white" href="#help-section">see more...</a></p>
 
     </div>
   </header>
@@ -289,9 +289,9 @@
           <div class="divider-custom">
             <div class="divider-custom-line"></div>
           </div>
-          <p class="lead">Complete the daily segment shown on the site to appear on the daily leaderboards. These leaderboards are broken down info different
+          <p class="lead">Complete the daily segment shown on the site to appear on the daily leaderboards. These leaderboards are broken down into different
           clubs (To appear in your club you should join the club on Strava) or all public Strava users. Points will be assigned based
-          on these daily leaderboard placings at 11.45pm that evening:</p>
+          on these daily leaderboard placings at 11.45pm that evening.</p>
           <table class="table table-hover">
             <thead>
               <tr>
@@ -390,7 +390,9 @@
 
   <script>
     function openPage(){
+      console.log("called")
       if(<%-reload%> == true) {
+
         document.getElementById("todays-seg").click();
       }
     }
