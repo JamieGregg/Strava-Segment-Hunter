@@ -112,14 +112,13 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   })
 
   segmentCodes.find(function(err, data){
-    console.log(data)
     if(err){
       console.log(err)
     } else {
       for(let i = 0; i < 5; i ++) {
         strava.segments.get(data[i].segmentId, function(err, data) {
           tomorrowsSegmentInfo.push([data.name, "https://www.strava.com/segments/" + data.id])
-          console.log(tomorrowsSegmentInfo[i])
+
         })
       }
     }
@@ -129,7 +128,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     console.log(err);
   });
 
-  console.log(tomorrowsSegmentInfo)
 
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
     total = JSON.parse(JSON.stringify(data.effort_count))
