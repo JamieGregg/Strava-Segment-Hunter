@@ -62,6 +62,7 @@ app.listen(port, () => {
   console.log("server is now running on port 8000")
   refreshTokensNow()
   findSegmentCodes()
+  //tomorrowsSegment()
 });
 
 saveDataEvening(segmentId);
@@ -79,6 +80,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var numberOfEntry = 0;
   var segment = []
   var segmentInfo = []
+  var tomorrowsSegmentInfo = []
   var databaseLeaderboard = []
 
   if(req.body.clubs != undefined){
@@ -109,6 +111,25 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     }
   })
 
+  segmentCodes.find(function(err, data){
+    console.log(data)
+    if(err){
+      console.log(err)
+    } else {
+      for(let i = 0; i < 5; i ++) {
+        strava.segments.get(data[i].segmentId, function(err, data) {
+          tomorrowsSegmentInfo.push([data.name, "https://www.strava.com/segments/" + data.id])
+          console.log(tomorrowsSegmentInfo[i])
+        })
+      }
+    }
+  }).sort({
+    counterId: 1
+  }).exec(function(err, docs) {
+    console.log(err);
+  });
+
+  console.log(tomorrowsSegmentInfo)
 
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
     total = JSON.parse(JSON.stringify(data.effort_count))
@@ -125,7 +146,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
         }
 
-
         if (implClubs[0][1] == clubId) {
           segDromore.find(function(err, person) {
             databaseLeaderboard = person
@@ -133,6 +153,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             res.render('home', {
               data: segment,
               segmentInfo: segmentInfo,
+              tomorrowsSegmentInfo: tomorrowsSegmentInfo,
               clubId: clubId,
               reload: reload,
               db: databaseLeaderboard,
@@ -148,6 +169,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             res.render('home', {
               data: segment,
               segmentInfo: segmentInfo,
+              tomorrowsSegmentInfo: tomorrowsSegmentInfo,
               clubId: clubId,
               reload: reload,
               db: databaseLeaderboard,
@@ -163,6 +185,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             res.render('home', {
               data: segment,
               segmentInfo: segmentInfo,
+              tomorrowsSegmentInfo: tomorrowsSegmentInfo,
               clubId: clubId,
               reload: reload,
               db: databaseLeaderboard,
@@ -189,6 +212,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           res.render('home', {
             data: segment,
             segmentInfo: segmentInfo,
+            tomorrowsSegmentInfo: tomorrowsSegmentInfo,
             clubId: clubId,
             reload: reload,
             db: databaseLeaderboard,
