@@ -42,6 +42,9 @@
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point-leaderboard">Points Leaderboard</a>
           </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#help-section">Help</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -67,12 +70,15 @@
       </div>
 
       <!-- Masthead Subheading -->
-      <p class="masthead-subheading font-weight-light mb-0">Daily Segment Challenge - Custom Strava Leaderboard</p>
+      <p class="masthead-subheading font-weight-light mb-0">
+        Check in every day to see a <a class="text-white" href="#today-segment">new segment in your area.</a> Complete the segment that day to appear on the <a class="text-white" href="#today-leaderboard">daily leaderboards. Place highly</a>
+        to add points to your record boosting your way up the <a class="text-white" href="##point-leaderboard">points leaderboard </a><a class="text-white" href="#help-section">see more...</a></p>
 
     </div>
   </header>
 
   <!-- Todays Segment Section -->
+
   <section class="page-section portfolio" id="today-segment">
     <div class="container">
 
@@ -91,7 +97,7 @@
       <!-- Todays Segment Section Content -->
       <div class="divider-custom">
         <div class="text-center">
-          <h1><%-segmentInfo.name-%></h1>
+          <h1 class="text-secondary text-uppercase"><%-segmentInfo.name-%></h1>
           <p class="lead"><strong>Distance:</strong> <%-segmentInfo.distance-%></p>
           <p class="lead"><b>Average Grade:</b> <%-segmentInfo.average_grade-%>%</p>
           <p class="lead"><b>Number of Attempts:</b> <%-segmentInfo.efforts-%></p>
@@ -182,7 +188,7 @@
     <div class="container">
 
       <!-- Points Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase"><%- clubName -%> Points Leaderboard</h2>
+      <h2 class="page-section-heading text-secondary text-center text-uppercase"><%- clubName -%> Points Leaderboard</h2>
 
       <!-- Points Divider -->
       <div class="divider-custom">
@@ -252,6 +258,85 @@
               <% var dayName = days[date.getDay()];%>
               <p class="lead text-left"><span class="font-weight-bold"><%-dayName%></span><a class="text-white"href=<%-tomorrowsSegmentInfo[i-1][1]%>>: <%-tomorrowsSegmentInfo[i-1][0]%></a></p>
           <% } %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--Help Section -->
+  <section class="page-section portfolio" id="help-section">
+    <div class="container">
+
+      <!-- Todays Segement Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Help Section</h2>
+
+      <!-- Icon Divider -->
+      <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="divider-custom-line"></div>
+      </div>
+
+      <p class="lead text-center">Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in daily to see the segment we
+      have selected for the day. For more information check out the guides below.</p>
+
+      <!-- Todays Segment Section Content -->
+      <div class="divider-custom">
+        <div class="text-center">
+          <h1 class="text-secondary">POINTS</h1>
+          <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+          </div>
+          <p class="lead">Complete the daily segment shown on the site to appear on the daily leaderboards. These leaderboards are broken down info different
+          clubs (To appear in your club you should join the club on Strava) or all public Strava users. Points will be assigned based
+          on these daily leaderboard placings at 11.45pm that evening:</p>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Daily Placing</th>
+                <th scope="col">Points Assigned</th>
+              </tr>
+            </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>8</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>6</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>7th and below</td>
+                  <td>1</td>
+                </tr>
+              </tbody>
+            </table>
+            <h1 class="text-secondary">CLUBS</h1>
+            <div class="divider-custom">
+              <div class="divider-custom-line"></div>
+            </div>
+            <p class="lead">To appear in one of our club leaderboards join the club on Strava. If your club does not have one now is the time to do it.
+            <a href="https://www.strava.com/clubs/search">Click here to access the clubs section of Strava.</a> Upon joining, get in contact with me at jamiegregg25@gmail.com
+            and I will add your club to the site!</p>
         </div>
       </div>
     </div>
