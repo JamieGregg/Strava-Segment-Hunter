@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const mongoose = require('mongoose')
 const schedule = require('node-schedule')
+const nodemailer = require('nodemailer')
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -300,6 +301,30 @@ function assignEnvVariable(res) {
 
 //DATABASE FUNCTIONS
 function populateSchema(results, club) {
+  let transport = nodemailer.createTransport({
+    host: 'smtp.mailtrap.io',
+    port: 2525,
+    auth: {
+       user: process.env.MAIL_USER,
+       pass: process.env.MAIL_PASS
+    }
+  });
+
+  var mailOptions = {
+    from: 'segment@stravasegmenthunter.com',
+    to: process.env.EMAIL_ADDRESS,
+    subject: 'Results for ' + club,
+    text: 'Results are as follows: ' + results
+  }
+
+  transport.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+
   if (club == implClubs[3][1]) {
     for (let i = 0; i < results.length; i++) {
       var currentName = results[i][0]
@@ -387,8 +412,9 @@ function populateSchema(results, club) {
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 18
-  rule.minute = 58
+  rule.minute = 55
   rule.second = 30
+
 
   var j = schedule.scheduleJob(rule, function() {
     findSegmentCodes()
@@ -465,6 +491,31 @@ function saveDataEvening() {
     }
     deleteUsedSegment();
     findSegmentCodes()
+
+    let transport = nodemailer.createTransport({
+      host: 'smtp.mailtrap.io',
+      port: 2525,
+      auth: {
+         user: process.env.MAIL_USER,
+         pass: process.env.MAIL_PASS
+      }
+    });
+
+    var mailOptions = {
+      from: 'segment@stravasegmenthunter.com',
+      to: process.env.EMAIL_ADDRESS,
+      subject: 'Segment Refresh',
+      text: 'Todays segment has been updated to https://www.strava.com/segments/' + segmentId
+    }
+
+    transport.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+    //}
   })
 }
 
