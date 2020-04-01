@@ -129,7 +129,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     console.log(err);
   });
 
-
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
     total = JSON.parse(JSON.stringify(data.effort_count))
     if (clubId != 0) {

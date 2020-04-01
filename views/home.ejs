@@ -248,7 +248,7 @@
       <!-- Todays Segment Section Content -->
       <div class="divider-custom">
         <div class="text-center">
-          <p class="lead font-weight-bold">Click on the segment to see more information!</p>
+          <h1 class="lead font-weight-bold text-uppercase">Click on the segment to see more information!</h1><br>
 
           <% var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];%>
 
@@ -256,7 +256,7 @@
               <% var date = new Date();%>
               <% date.setDate(date.getDate() + i + 1)%>
               <% var dayName = days[date.getDay()];%>
-              <p class="lead text-left"><span class="font-weight-bold"><%-dayName%></span><a class="text-white"href=<%-tomorrowsSegmentInfo[i][1]%>>: <%-tomorrowsSegmentInfo[i][0]%></a></p>
+              <p class="lead"><span class="font-weight-bold"><%-dayName%></span><a class="text-white"href=<%-tomorrowsSegmentInfo[i][1]%>>: <%-tomorrowsSegmentInfo[i][0]%></a></p>
           <% } %>
         </div>
       </div>
