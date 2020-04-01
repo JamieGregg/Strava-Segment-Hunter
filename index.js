@@ -93,7 +93,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     "client_id": process.env.CLIENT_ID,
     "access_token": process.env.ACCESS_TOKEN,
     "client_secret": process.env.CLIENT_SECRET,
-    "redirect_url": "https://www.stravasegmenthunter.com/
+    "redirect_url": "https://www.stravasegmenthunter.com/"
   });
 
   findSegmentCodes()
