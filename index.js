@@ -93,7 +93,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     "client_id": process.env.CLIENT_ID,
     "access_token": process.env.ACCESS_TOKEN,
     "client_secret": process.env.CLIENT_SECRET,
-    "redirect_url": "www.google.com"
+    "redirect_url": "https://www.stravasegmenthunter.com/
   });
 
   findSegmentCodes()
@@ -366,9 +366,9 @@ function populateSchema(results, club) {
 
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 00
-  rule.minute = 28
-  rule.second = 00
+  rule.hour = 06
+  rule.minute = 50
+  rule.second = 10
 
   var j = schedule.scheduleJob(rule, function() {
     findSegmentCodes()
@@ -383,7 +383,7 @@ function saveDataEvening() {
       "client_id": process.env.CLIENT_ID,
       "access_token": process.env.ACCESS_TOKEN,
       "client_secret": process.env.CLIENT_SECRET,
-      "redirect_url": "localhost:8000/"
+      "redirect_url": "https://www.stravasegmenthunter.com/"
     });
 
     strava.segments.get(segmentId, function(err, data) {
