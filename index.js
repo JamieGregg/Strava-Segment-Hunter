@@ -93,7 +93,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     clubName = "Public"
   }
 
-
   var strava = new require("strava")({
     "client_id": process.env.CLIENT_ID,
     "access_token": process.env.ACCESS_TOKEN,
@@ -170,7 +169,11 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               db: databaseLeaderboard,
               clubName: clubName
             });
-          })
+          }).sort({
+            points: -1
+          }).exec(function(err, docs) {
+            console.log(err);
+          });
         }
 
         if (implClubs[2][1] == clubId) {
@@ -189,7 +192,11 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               db: databaseLeaderboard,
               clubName: clubName
             });
-          })
+          }).sort({
+            points: -1
+          }).exec(function(err, docs) {
+            console.log(err);
+          });
         }
 
         if (implClubs[1][1] == clubId) {
@@ -208,7 +215,11 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               db: databaseLeaderboard,
               clubName: clubName
             });
-          })
+          }).sort({
+            points: -1
+          }).exec(function(err, docs) {
+            console.log(err);
+          });
         }
       })
 
