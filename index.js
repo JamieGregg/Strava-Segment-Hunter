@@ -30,6 +30,7 @@ const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
 const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
 const segWDW = mongoose.model("WDW", segLeaderboardSchema)
 const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
+const segInterClub = mongoose.model("DCCInterclub", segLeaderboardSchema)
 const segmentCodes = mongoose.model("Segment", segCodeSchema)
 
 var implClubs = [
@@ -526,7 +527,6 @@ function saveDataEvening() {
         console.log('Email sent: ' + info.response);
       }
     });
-    //}
   })
 }
 
