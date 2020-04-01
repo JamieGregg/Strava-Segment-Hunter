@@ -81,6 +81,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var segmentInfo = []
   var tomorrowsSegmentInfo = []
   var databaseLeaderboard = []
+  var dayOne =[];
+  var dayTwo =[];
+  var dayThree = [];
+  var dayFour = [];
 
   if(req.body.clubs != undefined){
     clubName = req.body.clubs
@@ -114,12 +118,17 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     if(err){
       console.log(err)
     } else {
-      console.log(data)
-      for(let i = 1; i < data.length; i ++) {
-
+      for(let i = 1; i < 5; i ++) {
         strava.segments.get(data[i].segmentId, function(err, data) {
-          tomorrowsSegmentInfo.push([data.name, "https://www.strava.com/segments/" + data.id])
-          console.log(tomorrowsSegmentInfo[i-1])
+          if(i == 1){
+            dayOne = [data.name, "https://www.strava.com/segments/" + data.id]
+          } else if (i == 2){
+            dayTwo = [data.name, "https://www.strava.com/segments/" + data.id]
+          } else if (i == 3){
+            dayThree = [data.name, "https://www.strava.com/segments/" + data.id]
+          } else if (i == 4){
+            dayFour = [data.name, "https://www.strava.com/segments/" + data.id]
+          }
         })
       }
     }
@@ -151,7 +160,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             res.render('home', {
               data: segment,
               segmentInfo: segmentInfo,
-              tomorrowsSegmentInfo: tomorrowsSegmentInfo,
+              dayOne: dayOne,
+              dayTwo: dayTwo,
+              dayThree: dayThree,
+              dayFour: dayFour,
               clubId: clubId,
               reload: reload,
               db: databaseLeaderboard,
@@ -167,7 +179,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             res.render('home', {
               data: segment,
               segmentInfo: segmentInfo,
-              tomorrowsSegmentInfo: tomorrowsSegmentInfo,
+              dayOne: dayOne,
+              dayTwo: dayTwo,
+              dayThree: dayThree,
+              dayFour: dayFour,
               clubId: clubId,
               reload: reload,
               db: databaseLeaderboard,
@@ -183,7 +198,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             res.render('home', {
               data: segment,
               segmentInfo: segmentInfo,
-              tomorrowsSegmentInfo: tomorrowsSegmentInfo,
+              dayOne: dayOne,
+              dayTwo: dayTwo,
+              dayThree: dayThree,
+              dayFour: dayFour,
               clubId: clubId,
               reload: reload,
               db: databaseLeaderboard,
@@ -210,7 +228,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           res.render('home', {
             data: segment,
             segmentInfo: segmentInfo,
-            tomorrowsSegmentInfo: tomorrowsSegmentInfo,
+            dayOne: dayOne,
+            dayTwo: dayTwo,
+            dayThree: dayThree,
+            dayFour: dayFour,
             clubId: clubId,
             reload: reload,
             db: databaseLeaderboard,
