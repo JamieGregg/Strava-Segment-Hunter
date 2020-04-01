@@ -34,10 +34,11 @@ const segInterClub = mongoose.model("DCCInterclub", segLeaderboardSchema)
 const segmentCodes = mongoose.model("Segment", segCodeSchema)
 
 var implClubs = [
-  ['dromore', 55274],
-  ['dromara', 2885],
-  ['wdw', 12013],
-  ['everyone', 0]
+  ['Dromore', 55274],
+  ['Dromara', 2885],
+  ['WDW', 12013],
+  ['everyone', 0],
+  ['interclub', -1]
 ]
 
 let segment = []
@@ -103,6 +104,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
 
   findSegmentCodes()
 
+  //Gathering segment data
   strava.segments.get(segmentId, function(err, data) {
     var objJSON = JSON.parse(JSON.stringify(data))
     segmentInfo = {
@@ -115,6 +117,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     }
   })
 
+  //Finding upcoming segments
   segmentCodes.find(function(err, data){
     if(err){
       console.log(err)
@@ -139,9 +142,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     console.log(err);
   });
 
+  //Findling leaderboards today then manipulating that to find club leaderboard
   strava.segments.leaderboard.get(segmentId, params, function(err, data) {
     total = JSON.parse(JSON.stringify(data.effort_count))
-    if (clubId != 0) {
+    if (clubId > 0) {
       var paramsClub = {
         "date_range": timeFrame,
         "per_page": noOfResults,
@@ -223,6 +227,80 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           });
         }
       })
+
+
+
+    //DCC interclub
+    } else if (clubId == -1){
+        var paramsInterClubDromore = {
+          "date_range": timeFrame,
+          "per_page": noOfResults,
+          "club_id": implClubs[0][1]
+        }
+        strava.segments.leaderboard.get(segmentId, paramsInterClubDromore, function(err, data) {
+          numberOfEntry = data.entries.length
+
+          //Adding in Dromore to the segment array
+          for (let i = 0; i < numberOfEntry; i++) {
+            segment.push([implClubs[0][0] + " | " + data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time),0, data.entries[i].elapsed_time])
+          }
+
+          var paramsInterClubDromara = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": implClubs[1][1]
+          }
+          strava.segments.leaderboard.get(segmentId, paramsInterClubDromara, function(err, data) {
+            numberOfEntry = data.entries.length
+
+            //Adding in Dromore to the segment array
+            for (let i = 0; i < numberOfEntry; i++) {
+              segment.push([implClubs[1][0] + " | " + data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), 0,data.entries[i].elapsed_time])
+            }
+
+            var paramsInterClubWDW = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": implClubs[2][1]
+            }
+            strava.segments.leaderboard.get(segmentId, paramsInterClubWDW, function(err, data) {
+              numberOfEntry = data.entries.length
+
+              //Adding in Dromore to the segment array
+              for (let i = 0; i < numberOfEntry; i++) {
+                segment.push([implClubs[2][0] + " | " + data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), 0, data.entries[i].elapsed_time])
+              }
+
+              segment.sort(sortFunction)
+
+              for(let i = 0; i < segment.length; i++){
+                segment[i][2] = i + 1;
+              }
+
+              segDromara.find(function(err, person) {
+                databaseLeaderboard = person
+
+                res.render('home', {
+                  data: segment,
+                  segmentInfo: segmentInfo,
+                  dayOne: dayOne,
+                  dayTwo: dayTwo,
+                  dayThree: dayThree,
+                  dayFour: dayFour,
+                  clubId: -1,
+                  reload: reload,
+                  db: databaseLeaderboard,
+                  clubName: clubName
+                });
+              }).sort({
+                points: -1
+              }).exec(function(err, docs) {
+                console.log(err);
+              });
+        })
+      })
+    })
+
 
     } else {
       var paramsNoClub = {
@@ -559,6 +637,9 @@ function clubIdFinder(req) {
     case 'WDW':
       clubId = 12013;
       break;
+    case 'Interclub':
+      clubId = -1;
+      break;
     case 'Public':
       clubId = 0;
       break;
@@ -636,4 +717,13 @@ function deleteUsedSegment(){
   }).exec(function(err, docs) {
     console.log(err);
   });
+}
+
+function sortFunction(a, b) {
+    if (a[3] === b[3]) {
+        return 0;
+    }
+    else {
+        return (a[3] < b[3]) ? -1 : 1;
+    }
 }
