@@ -422,8 +422,8 @@ function populateSchema(results, club) {
 
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 18
-  rule.minute = 55
+  rule.hour = 00
+  rule.minute = 07
   rule.second = 30
 
 
