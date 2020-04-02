@@ -279,7 +279,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               segment[i][2] = i + 1;
             }
 
-            segDromara.find(function(err, person) {
+            segInterClub.find(function(err, person) {
               databaseLeaderboard = person
 
               res.render('home', {
@@ -415,6 +415,8 @@ function populateSchema(results, club) {
     } else {
       console.log('Email sent: ' + info.response);
     }
+
+
   });
 
   if (club == implClubs[3][1]) {
@@ -514,7 +516,7 @@ function populateSchema(results, club) {
         'new': true,
         'useFindAndModify': true
       };
-      segLeaderboard.update(query, update, options, function(err, doc) {
+      segInterClub.update(query, update, options, function(err, doc) {
         console.log(doc);
       });
     }
@@ -523,8 +525,8 @@ function populateSchema(results, club) {
 
 function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 11
-  rule.minute = 57
+  rule.hour = 23
+  rule.minute = 55
   rule.second = 30
 
 
@@ -578,8 +580,10 @@ function saveDataEvening() {
             }
           })
         })
+
       //interclub
       } else if (implClubs[i][1] == -1) {
+        console.log("here")
         var paramsInterClubDromore = {
           "date_range": timeFrame,
           "per_page": noOfResults,
@@ -621,7 +625,7 @@ function saveDataEvening() {
 
               segment.sort(sortFunction)
 
-              populateSchema(segment, implClubs[i][4])
+              populateSchema(segment, implClubs[i][1])
               segment.length = 0;
             })
           })
