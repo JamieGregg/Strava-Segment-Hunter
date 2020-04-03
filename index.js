@@ -33,7 +33,7 @@ const segClubData = new mongoose.Schema({
   clubId: Number
 })
 
-const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
+const segLeaderboard = mongoose.model("Public", segLeaderboardSchema)
 const segDwdInterResults = mongoose.model("DWDInterclub", segLeaderboardSchema)
 const segmentCodes = mongoose.model("Segment", segCodeSchema)
 const clubData = mongoose.model("ClubData", segClubData)
