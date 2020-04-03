@@ -83,6 +83,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var implClubs = []
   var tomorrowsSegmentInfo = []
   var databaseLeaderboard = []
+  var clubsInLeague = [];
   var dayOne = [];
   var dayTwo = [];
   var dayThree = [];
@@ -173,8 +174,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               const collection = mongoose.model(implClubs[i][0], segLeaderboardSchema)
               collection.find(function(err, people) {
                 databaseLeaderboard = people
-                console.log(people)
-                console.log(implClubs[i][0])
+                //console.log(people)
+                //console.log(implClubs[i][0])
 
                 res.render('home', {
                   data: segment,
@@ -193,11 +194,12 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             } //if
           } //for
         }) //strava
-      //DWD Interclub
+        //DWD Interclub
       } else if (clubId == -1) {
-        var clubsInLeague = [];
+        segment.length = 0
 
-        segDwdInterResults.find(function(err, struct) {
+        dwdInterclubStruct.find(function(err, struct) {
+
           if (err) {
             console.log(err)
           } else {
@@ -215,39 +217,44 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
 
             //Adding in that club results to the segment array
             strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-              for (let i = 0; i < data.entries.length; i++) {
-                segment.push([clubsInLeague[i][0] + " | " + data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), 0, data.entries[i].elapsed_time])
+              for (let j = 0; j < data.entries.length; j++) {
+                segment.push([clubsInLeague[i][0] + " | " + data.entries[j].athlete_name, convertSecondsToMinutes(data.entries[j].elapsed_time), 0, data.entries[j].elapsed_time])
+              }
+
+
+              if (i == clubsInLeague.length - 1) {
+                console.log(segment)
+                segment.sort(sortFunction)
+
+                //Adding in ranks
+                for (let z = 0; z < segment.length; z++) {
+                  segment[z][2] = z + 1;
+                }
+
+                segDwdInterResults.find(function(err, person) {
+                  databaseLeaderboard = person
+
+                  res.render('home', {
+                    data: segment,
+                    segmentInfo: segmentInfo,
+                    dayOne: dayOne,
+                    dayTwo: dayTwo,
+                    dayThree: dayThree,
+                    dayFour: dayFour,
+                    clubId: -1,
+                    reload: reload,
+                    db: databaseLeaderboard,
+                    clubName: "DWD Interclub",
+                    clubInfo: implClubs
+                  });
+                }).sort({
+                  points: -1
+                }).exec(function(err, docs) {
+                  console.log(err);
+                });
               }
             });
           }
-
-          //Filtering the times
-          segment.sort(sortFunction)
-          //Adding in ranks
-          for (let i = 0; i < segment.length; i++) {
-            segment[i][2] = i + 1;
-          }
-          segDwdInterResults.find(function(err, person) {
-            databaseLeaderboard = person
-
-            res.render('home', {
-              data: segment,
-              segmentInfo: segmentInfo,
-              dayOne: dayOne,
-              dayTwo: dayTwo,
-              dayThree: dayThree,
-              dayFour: dayFour,
-              clubId: -1,
-              reload: reload,
-              db: databaseLeaderboard,
-              clubName: "DWD Interclub",
-              clubInfo: implClubs
-            });
-          }).sort({
-            points: -1
-          }).exec(function(err, docs) {
-            console.log(err);
-          });
         });
         //Public leaderboard
       } else if (clubId == 0) {
@@ -342,7 +349,7 @@ function assignEnvVariable(res) {
 //DATABASE FUNCTIONS
 function populateSchema(results, club) {
   var implClubs = []
-  emailResults(club,results)
+  emailResults(club, results)
 
   //Gathering Club Data
   clubData.find(function(err, clubInfo) {
@@ -354,7 +361,7 @@ function populateSchema(results, club) {
       }
     }
 
-    for(let i = 0; i < implClubs.length; i++) {
+    for (let i = 0; i < implClubs.length; i++) {
       if (club == implClubs[i][1]) {
         for (let i = 0; i < results.length; i++) {
           var currentName = results[i][0]
@@ -629,7 +636,7 @@ function sortFunction(a, b) {
   }
 }
 
-function emailResults(club,results){
+function emailResults(club, results) {
   let transport = nodemailer.createTransport({
     host: 'smtp.mailtrap.io',
     port: 2525,
@@ -655,7 +662,7 @@ function emailResults(club,results){
   });
 }
 
-function emailNewSegment(segmentId){
+function emailNewSegment(segmentId) {
   let transport = nodemailer.createTransport({
     host: 'smtp.mailtrap.io',
     port: 2525,
