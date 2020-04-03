@@ -148,7 +148,9 @@
           <div class="col">
             <select class="form-control" id="club" name="clubs">
               <%for(let i = 0; i < clubInfo.length; i++){ %>
-              <option value="<%- clubInfo[i][1] -%>"><%- clubInfo[i][0] -%></option>
+              <option value="<%- clubInfo[i][1] -%>"
+              <%if(clubInfo[i][0] == clubName) {%> selected <%}%>
+              ><%- clubInfo[i][0] -%></option>
               <%} %>
             </select>
           </div>

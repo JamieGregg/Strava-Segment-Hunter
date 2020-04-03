@@ -34,22 +34,10 @@ const segClubData = new mongoose.Schema({
 })
 
 const segLeaderboard = mongoose.model("Everyone", segLeaderboardSchema)
-const segDromore = mongoose.model("DromoreCC", segLeaderboardSchema)
-const segWDW = mongoose.model("WDW", segLeaderboardSchema)
-const segDromara = mongoose.model("DromaraCC", segLeaderboardSchema)
 const segDwdInterResults = mongoose.model("DWDInterclub", segLeaderboardSchema)
 const segmentCodes = mongoose.model("Segment", segCodeSchema)
 const clubData = mongoose.model("ClubData", segClubData)
 const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
-
-
-//[
-//['Dromore', 55274],
-//['Dromara', 2885],
-//['WDW', 12013],
-//['everyone', 0],
-//['interclub', -1]
-//]
 
 let segment = []
 let clubId = 0
@@ -64,7 +52,7 @@ app.post('/', function(req, res) {
 })
 
 app.get('/', (req, res) => {
-  loadLeaderboard(segmentId, req.body.clubs, false, req, res)
+  loadLeaderboard(segmentId, 55274, false, req, res)
 });
 
 let port = process.env.PORT;
@@ -101,8 +89,6 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var dayFour = [];
 
   if (req.body.clubs != undefined) {
-    clubName = req.body.clubs
-  } else {
     clubName = "Public"
   }
 
@@ -183,10 +169,12 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           for (let i = 0; i < implClubs.length; i++) {
             //In club for
             if (clubId == implClubs[i][1]) {
-              console.log(implClubs[i][1])
+              //console.log(implClubs[i][1])
               const collection = mongoose.model(implClubs[i][0], segLeaderboardSchema)
               collection.find(function(err, people) {
                 databaseLeaderboard = people
+                console.log(people)
+                console.log(implClubs[i][0])
 
                 res.render('home', {
                   data: segment,
@@ -198,7 +186,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
                   clubId: clubId,
                   reload: reload,
                   db: databaseLeaderboard,
-                  clubName: clubName,
+                  clubName: implClubs[i][0],
                   clubInfo: implClubs
                 })
               }) //collection
@@ -235,12 +223,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
 
           //Filtering the times
           segment.sort(sortFunction)
-
           //Adding in ranks
           for (let i = 0; i < segment.length; i++) {
             segment[i][2] = i + 1;
           }
-
           segDwdInterResults.find(function(err, person) {
             databaseLeaderboard = person
 
@@ -254,7 +240,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
               clubId: -1,
               reload: reload,
               db: databaseLeaderboard,
-              clubName: clubName,
+              clubName: "DWD Interclub",
               clubInfo: implClubs
             });
           }).sort({
