@@ -519,7 +519,7 @@ function saveDataEvening() {
     }
   });
 
-    //deleteUsedSegment();
+    deleteUsedSegment();
     findSegmentCodes();
     emailNewSegment(segmentId);
   })
