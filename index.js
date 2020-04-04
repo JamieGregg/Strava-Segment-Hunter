@@ -52,8 +52,9 @@ app.post('/', function(req, res) {
   loadLeaderboard(segmentId, req.body.clubs, true, req, res)
 })
 
+
 app.get('/', (req, res) => {
-  loadLeaderboard(segmentId, 55274, false, req, res)
+  loadLeaderboard(segmentId, 0, false, req, res)
 });
 
 let port = process.env.PORT;
