@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 
-mongoose.connect('mongodb+srv://'+process.env.DB_USERNAME+':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
@@ -30,7 +30,8 @@ const segCodeSchema = new mongoose.Schema({
 
 const segClubData = new mongoose.Schema({
   clubName: String,
-  clubId: Number
+  clubId: Number,
+  alais: String
 })
 
 const segLeaderboard = mongoose.model("Public", segLeaderboardSchema)
@@ -93,7 +94,7 @@ async function loadLeaderboard(segmentId, clubId, reload, req, res) {
     clubName = "Public"
   }
 
-  if(reload == false){
+  if (reload == false) {
     clubId = 0
   }
 
@@ -112,11 +113,11 @@ async function loadLeaderboard(segmentId, clubId, reload, req, res) {
       console.log(err)
     } else {
       for (let i = 0; i < clubInfo.length; i++) {
-        implClubs.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i]])
+        implClubs.push([clubInfo[i].clubName, clubInfo[i].clubId,  clubInfo[i].alais])
       }
     }
 
-    implClubs.sort(sortFunctionClub)
+    console.log(implClubs)
     //Gathering segment data
     strava.segments.get(segmentId, async function(err, data) {
       var objJSON = await JSON.parse(JSON.stringify(data))
@@ -193,14 +194,14 @@ async function loadLeaderboard(segmentId, clubId, reload, req, res) {
                   clubId: clubId,
                   reload: reload,
                   db: databaseLeaderboard,
-                  clubName: implClubs[i][0],
+                  clubName: implClubs[i][2],
                   clubInfo: implClubs
                 })
               }).sort({
                 points: -1
               }).exec(function(err, docs) {
                 console.log(err);
-              });//collection
+              }); //collection
             } //if
           } //for
         }) //strava
@@ -272,7 +273,7 @@ async function loadLeaderboard(segmentId, clubId, reload, req, res) {
           "date_range": timeFrame,
           "per_page": noOfResults
         }
-         await strava.segments.leaderboard.get(segmentId, paramsNoClub, async function(err, data) {
+        await strava.segments.leaderboard.get(segmentId, paramsNoClub, async function(err, data) {
           var objJSON = await JSON.parse(JSON.stringify(data))
           numberOfEntry = objJSON.entries.length
 
@@ -362,7 +363,7 @@ function populateSchema(results, club, clubName) {
   console.log(results)
   var implClubs = []
 
-  for (let z = 0; z < results.length; z++){
+  for (let z = 0; z < results.length; z++) {
     console.log("for loop started")
     var currentName = results[z][0]
     console.log(results)
@@ -476,7 +477,7 @@ function saveDataEvening() {
               }
             }
 
-            for(let i = 0; i < implClubsInter.length; i++){
+            for (let i = 0; i < implClubsInter.length; i++) {
               var params = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
@@ -489,7 +490,7 @@ function saveDataEvening() {
                   segment.push([implClubsInter[i][0] + " | " + data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), 0, data.entries[z].elapsed_time])
                 }
 
-                if(i == implClubsInter.length - 1){
+                if (i == implClubsInter.length - 1) {
                   segment.sort(sortFunction)
 
                   populateSchema(segment, -1, 'DWD Interclub')
@@ -501,28 +502,28 @@ function saveDataEvening() {
 
         } else {
           strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-          if (data != "") {
-            total = JSON.parse(JSON.stringify(data.effort_count))
-            var paramsClub = {
-              "date_range": timeFrame,
-              "per_page": noOfResults,
-            }
-            strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-              if (data != "") {
-                numberOfEntry = data.entries.length
-
-                for (let i = 0; i < numberOfEntry; i++) {
-                  segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-                }
-                populateSchema(segment, implClubs[i][1],  implClubs[i][0])
-                segment.length = 0;
+            if (data != "") {
+              total = JSON.parse(JSON.stringify(data.effort_count))
+              var paramsClub = {
+                "date_range": timeFrame,
+                "per_page": noOfResults,
               }
-            })
-          }
-        })
+              strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+                if (data != "") {
+                  numberOfEntry = data.entries.length
+
+                  for (let i = 0; i < numberOfEntry; i++) {
+                    segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                  }
+                  populateSchema(segment, implClubs[i][1], implClubs[i][0])
+                  segment.length = 0;
+                }
+              })
+            }
+          })
+        }
       }
-    }
-  });
+    });
 
     //deleteUsedSegment();
     findSegmentCodes();
