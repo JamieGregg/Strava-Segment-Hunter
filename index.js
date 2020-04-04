@@ -93,6 +93,10 @@ async function loadLeaderboard(segmentId, clubId, reload, req, res) {
     clubName = "Public"
   }
 
+  if(reload == false){
+    clubId = 0
+  }
+
   var strava = new require("strava")({
     "client_id": process.env.CLIENT_ID,
     "access_token": process.env.ACCESS_TOKEN,
@@ -112,6 +116,7 @@ async function loadLeaderboard(segmentId, clubId, reload, req, res) {
       }
     }
 
+    implClubs.sort(sortFunctionClub)
     //Gathering segment data
     strava.segments.get(segmentId, async function(err, data) {
       var objJSON = await JSON.parse(JSON.stringify(data))
@@ -387,7 +392,7 @@ function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 23
   rule.minute = 55
-  rule.second = 30
+  rule.second = 25
 
 
   var j = schedule.scheduleJob(rule, function() {
@@ -519,7 +524,7 @@ function saveDataEvening() {
     }
   });
 
-    deleteUsedSegment();
+    //deleteUsedSegment();
     findSegmentCodes();
     emailNewSegment(segmentId);
   })
@@ -617,6 +622,14 @@ function sortFunction(a, b) {
     return 0;
   } else {
     return (a[3] < b[3]) ? -1 : 1;
+  }
+}
+
+function sortFunctionClub(a, b) {
+  if (a[1] === b[1]) {
+    return 0;
+  } else {
+    return (a[1] < b[1]) ? -1 : 1;
   }
 }
 
