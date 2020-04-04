@@ -70,7 +70,7 @@ refreshTokens();
 
 //SEGMENT FUNCTIONS
 //Finding the information on any segment
-function loadLeaderboard(segmentId, clubId, reload, req, res) {
+async function loadLeaderboard(segmentId, clubId, reload, req, res) {
   var segmentId = segmentId;
   var clubId = clubId;
   var params = {
@@ -103,7 +103,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
   findSegmentCodes()
 
   //Gathering Club Data
-  clubData.find(function(err, clubInfo) {
+  clubData.find(async function(err, clubInfo) {
     if (err) {
       console.log(err)
     } else {
@@ -113,8 +113,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     }
 
     //Gathering segment data
-    strava.segments.get(segmentId, function(err, data) {
-      var objJSON = JSON.parse(JSON.stringify(data))
+    strava.segments.get(segmentId, async function(err, data) {
+      var objJSON = await JSON.parse(JSON.stringify(data))
       segmentInfo = {
         "name": objJSON.name,
         "distance": convertingMetersToMiles(objJSON.distance),
@@ -126,20 +126,22 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     })
 
     //Finding upcoming segments
-    segmentCodes.find(function(err, data) {
+    segmentCodes.find(async function(err, data) {
       if (err) {
         console.log(err)
       } else {
         for (let i = 1; i < 5; i++) {
-          strava.segments.get(data[i].segmentId, function(err, data) {
+          strava.segments.get(data[i].segmentId, async function(err, data) {
+            var objJSON = await JSON.parse(JSON.stringify(data))
+
             if (i == 1) {
-              dayOne = [data.name, "https://www.strava.com/segments/" + data.id]
+              dayOne = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
             } else if (i == 2) {
-              dayTwo = [data.name, "https://www.strava.com/segments/" + data.id]
+              dayTwo = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
             } else if (i == 3) {
-              dayThree = [data.name, "https://www.strava.com/segments/" + data.id]
+              dayThree = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
             } else if (i == 4) {
-              dayFour = [data.name, "https://www.strava.com/segments/" + data.id]
+              dayFour = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
             }
           })
         }
@@ -151,8 +153,9 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
     });
 
     //Findling leaderboards today then manipulating that to find club leaderboard
-    strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-      total = JSON.parse(JSON.stringify(data.effort_count))
+    await strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
+      total = await JSON.parse(JSON.stringify(data.effort_count))
+
       //Is this a strava club?
       if (clubId > 0) {
         var paramsClub = {
@@ -160,8 +163,8 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           "per_page": noOfResults,
           "club_id": clubId
         }
-        strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
-          numberOfEntry = data.entries.length
+        await strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
+          numberOfEntry = await data.entries.length
 
           for (let i = 0; i < numberOfEntry; i++) {
             segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
@@ -170,12 +173,10 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
           for (let i = 0; i < implClubs.length; i++) {
             //In club for
             if (clubId == implClubs[i][1]) {
-              //console.log(implClubs[i][1])
               const collection = mongoose.model(implClubs[i][0], segLeaderboardSchema)
               collection.find(function(err, people) {
                 databaseLeaderboard = people
-                //console.log(people)
-                //console.log(implClubs[i][0])
+
 
                 res.render('home', {
                   data: segment,
@@ -190,21 +191,24 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
                   clubName: implClubs[i][0],
                   clubInfo: implClubs
                 })
-              }) //collection
+              }).sort({
+                points: -1
+              }).exec(function(err, docs) {
+                console.log(err);
+              });//collection
             } //if
           } //for
         }) //strava
         //DWD Interclub
       } else if (clubId == -1) {
-        segment.length = 0
-
-        dwdInterclubStruct.find(function(err, struct) {
+        dwdInterclubStruct.find(async function(err, struct) {
 
           if (err) {
             console.log(err)
           } else {
-            for (let i = 0; i < struct.length; i++) {
-              clubsInLeague.push([struct[i].clubName, struct[i].clubId])
+            var objJSON = await JSON.parse(JSON.stringify(struct))
+            for (let i = 0; i < objJSON.length; i++) {
+              clubsInLeague.push([objJSON[i].clubName, objJSON[i].clubId])
             }
           }
 
@@ -216,14 +220,15 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
             }
 
             //Adding in that club results to the segment array
-            strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+            await strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
+              var objJSON = await JSON.parse(JSON.stringify(data))
+
               for (let j = 0; j < data.entries.length; j++) {
-                segment.push([clubsInLeague[i][0] + " | " + data.entries[j].athlete_name, convertSecondsToMinutes(data.entries[j].elapsed_time), 0, data.entries[j].elapsed_time])
+                segment.push([clubsInLeague[i][0] + " | " + objJSON.entries[j].athlete_name, convertSecondsToMinutes(objJSON.entries[j].elapsed_time), 0, objJSON.entries[j].elapsed_time])
               }
 
 
               if (i == clubsInLeague.length - 1) {
-                console.log(segment)
                 segment.sort(sortFunction)
 
                 //Adding in ranks
@@ -231,7 +236,7 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
                   segment[z][2] = z + 1;
                 }
 
-                segDwdInterResults.find(function(err, person) {
+                await segDwdInterResults.find(function(err, person) {
                   databaseLeaderboard = person
 
                   res.render('home', {
@@ -258,19 +263,19 @@ function loadLeaderboard(segmentId, clubId, reload, req, res) {
         });
         //Public leaderboard
       } else if (clubId == 0) {
-        console.log("called")
         var paramsNoClub = {
           "date_range": timeFrame,
           "per_page": noOfResults
         }
-        strava.segments.leaderboard.get(segmentId, paramsNoClub, function(err, data) {
-          numberOfEntry = data.entries.length
+         await strava.segments.leaderboard.get(segmentId, paramsNoClub, async function(err, data) {
+          var objJSON = await JSON.parse(JSON.stringify(data))
+          numberOfEntry = objJSON.entries.length
 
           for (let i = 0; i < numberOfEntry; i++) {
-            segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+            segment.push([objJSON.entries[i].athlete_name, convertSecondsToMinutes(objJSON.entries[i].elapsed_time), objJSON.entries[i].rank])
           }
 
-          segLeaderboard.find(function(err, person) {
+          await segLeaderboard.find(function(err, person) {
             databaseLeaderboard = person
             res.render('home', {
               data: segment,
