@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 
-mongoose.connect('mongodb+srv://admin-jamie:' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
+mongoose.connect('mongodb+srv://'+process.env.DB_USERNAME+':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
