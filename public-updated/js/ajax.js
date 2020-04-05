@@ -5,10 +5,12 @@ $(document).ready(function(){
     e.preventDefault();
     let clubId = $("#club option:selected").val();
     let masters = $("#masters option:selected").val();
+    let gender = $("#gender option:selected").val();
 
     let postData = {
       masters: masters,
-      clubs: clubId
+      clubs: clubId,
+      gender: gender
     }
 
     //alert(clubId)

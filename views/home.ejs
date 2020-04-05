@@ -167,6 +167,24 @@
           </div>
 
           <div class="col">
+            <select class="form-control" id="gender" name="gender">
+                  <%if(gender == 'female'){%>
+                    <option value="">All</option>
+                    <option value="male">Male</option>
+                    <option value="female" selected>Female</option>
+                  <%} else if (gender == 'male') {%>
+                    <option value="">All</option>
+                    <option value="male" selected>Male</option>
+                    <option value="female">Female</option>
+                <%} else { %>
+                    <option value="" selected>All</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                <% } %>
+            </select>
+          </div>
+
+          <div class="col">
             <button type="submit" class="btn btn-light ">Submit</button>
           </div>
         </div>

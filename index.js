@@ -50,17 +50,17 @@ const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
 let segment = []
 let clubId = 0
 let segmentId;
-let timeFrame = "today"
+let timeFrame = "this_year"
 let clubName = "Public"
 
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/test', function(req, res) {
-  reLoadLeaderboard(segmentId, req.body.clubs, true, req.body.masters, req, res)
+  reLoadLeaderboard(segmentId, req.body.clubs, true, req.body.masters, req.body.gender,req, res)
 })
 
 app.get('/', (req, res) => {
-  loadLeaderboard(segmentId, 0, false, 'false', req, res)
+  loadLeaderboard(segmentId, 0, false, 'false', '', req, res)
 });
 
 let port = process.env.PORT;
@@ -78,7 +78,7 @@ refreshTokens();
 
 //SEGMENT FUNCTIONS
 //Finding the information on any segment
-async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
+async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req, res) {
   var segmentId = segmentId;
   var clubId = clubId;
   var params = {
@@ -173,11 +173,34 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
       //Is this a strava club?
       if (clubId > 0) {
         if (ageFilter == 'false') {
-          var paramsClub = {
-            "date_range": timeFrame,
-            "per_page": noOfResults,
-            "club_id": clubId
+
+
+          if(gender == ''){
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId
+            }
+          } else if (gender == 'male'){
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'M'
+            }
+          } else if (gender == 'female'){
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'F'
+            }
           }
+
+
+
+
+
           await strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
             numberOfEntry = await data.entries.length
 
@@ -188,7 +211,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
             for (let i = 0; i < implClubs.length; i++) {
               //In club for
               if (clubId == implClubs[i][1]) {
-                const collection = mongoose.model(implClubs[i][0], segLeaderboardSchema)
+                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
                 collection.find(function(err, people) {
                   databaseLeaderboard = people
 
@@ -203,6 +226,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
                     clubId: clubId,
                     reload: reload,
                     masters: false,
+                    gender: gender,
                     db: databaseLeaderboard,
                     clubName: implClubs[i][2],
                     clubInfo: implClubs
@@ -216,15 +240,37 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
             } //for
           }) //strava
 
+
+
+
         } else {
           var results = [];
 
-          var params54 = {
-            "date_range": timeFrame,
-            "per_page": 100,
-            "club_id": clubId,
-            "age_group": "45_54"
+          if(gender == ''){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "age_group": "45_54"
+            }
+          } else if (gender == 'male'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'M',
+              "age_group": "45_54"
+            }
+          } else if (gender == 'female'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'F',
+              "age_group": "45_54"
+            }
           }
+
 
           strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
             if (data.entries.length != 0) {
@@ -233,11 +279,29 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
               }
             }
 
-            var params64 = {
-              "date_range": timeFrame,
-              "per_page": 100,
-              "club_id": clubId,
-              "age_group": "55_64"
+            if(gender == ''){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": noOfResults,
+                "club_id": clubId,
+                "age_group": "55_64"
+              }
+            } else if (gender == 'male'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": noOfResults,
+                "club_id": clubId,
+                "gender": 'M',
+                "age_group": "55_64"
+              }
+            } else if (gender == 'female'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": noOfResults,
+                "club_id": clubId,
+                "gender": 'F',
+                "age_group": "55_64"
+              }
             }
 
             strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
@@ -260,7 +324,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master", segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
@@ -274,6 +338,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
                       clubId: clubId,
                       reload: reload,
                       masters: true,
+                      gender: gender,
                       db: databaseLeaderboard,
                       clubName: implClubs[i][2],
                       clubInfo: implClubs
@@ -354,9 +419,23 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
       } else if (clubId == 0) {
         if (ageFilter == 'false') {
 
-          var paramsNoClub = {
-            "date_range": timeFrame,
-            "per_page": noOfResults
+          if(gender == ''){
+            var paramsNoClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults
+            }
+          } else if (gender == 'male'){
+            var paramsNoClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "gender": 'M',
+            }
+          } else if (gender == 'female'){
+            var paramsNoClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "gender": 'F'
+            }
           }
 
           strava.segments.leaderboard.get(segmentId, paramsNoClub, async function(err, data) {
@@ -367,35 +446,61 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
               segment.push([objJSON.entries[i].athlete_name, convertSecondsToMinutes(objJSON.entries[i].elapsed_time), objJSON.entries[i].rank])
             }
 
-            await segLeaderboard.find(function(err, person) {
-              databaseLeaderboard = person
-              res.render('home', {
-                data: segment,
-                segmentInfo: segmentInfo,
-                dayOne: dayOne,
-                dayTwo: dayTwo,
-                dayThree: dayThree,
-                dayFour: dayFour,
-                clubId: clubId,
-                reload: reload,
-                masters: false,
-                db: databaseLeaderboard,
-                clubName: clubName,
-                clubInfo: implClubs
+            for (let i = 0; i < implClubs.length; i++) {
+
+              if (clubId == implClubs[i][1]) {
+              const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+              collection.find(function(err, people) {
+                databaseLeaderboard = people
+
+
+                res.render('home', {
+                  data: segment,
+                  segmentInfo: segmentInfo,
+                  dayOne: dayOne,
+                  dayTwo: dayTwo,
+                  dayThree: dayThree,
+                  dayFour: dayFour,
+                  clubId: clubId,
+                  reload: reload,
+                  masters: false,
+                  gender: gender,
+                  db: databaseLeaderboard,
+                  clubName: clubName,
+                  clubInfo: implClubs
+                });
+              }).sort({
+                points: -1
+              }).exec(function(err, docs) {
+                console.log(err);
               });
-            }).sort({
-              points: -1
-            }).exec(function(err, docs) {
-              console.log(err);
-            });
-          })
+            }
+          }
+        })
+
+
         } else {
           var results = [];
-
-          var params54 = {
-            "date_range": timeFrame,
-            "per_page": 100,
-            "age_group": "45_54"
+          if(gender == ''){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": 100,
+              "age_group": "45_54"
+            }
+          } else if (gender == 'male'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": 100,
+              "gender": 'M',
+              "age_group": "45_54"
+            }
+          } else if (gender == 'female'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": 100,
+              "gender": 'F',
+              "age_group": "45_54"
+            }
           }
 
           strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
@@ -407,11 +512,28 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
               }
             }
 
-            var params64 = {
-              "date_range": timeFrame,
-              "per_page": 100,
-              "age_group": "55_64"
+            if(gender == ''){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "age_group": "55_64"
+              }
+            } else if (gender == 'male'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "gender": 'M',
+                "age_group": "55_64"
+              }
+            } else if (gender == 'female'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "gender": 'F',
+                "age_group": "55_64"
+              }
             }
+
 
             strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
               if (data.entries.length != 0) {
@@ -433,7 +555,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master", segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
@@ -447,6 +569,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
                       clubId: clubId,
                       reload: reload,
                       masters: true,
+                      gender: gender,
                       db: databaseLeaderboard,
                       clubName: implClubs[i][2],
                       clubInfo: implClubs
@@ -897,7 +1020,7 @@ function emailNewSegment(segmentId) {
   });
 }
 
-async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
+async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req, res) {
   var segmentId = segmentId;
   var clubId = clubId;
   var params = {
@@ -987,16 +1110,39 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
 
     //Findling leaderboards today then manipulating that to find club leaderboard
     await strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-      total = await JSON.parse(JSON.stringify(data.effort_count))
+      total =  JSON.parse(JSON.stringify(data.effort_count))
 
       //Is this a strava club?
       if (clubId > 0) {
         if (ageFilter == 'false') {
-          var paramsClub = {
-            "date_range": timeFrame,
-            "per_page": noOfResults,
-            "club_id": clubId
+
+
+          if(gender == ''){
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId
+            }
+          } else if (gender == 'male'){
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'M'
+            }
+          } else if (gender == 'female'){
+            var paramsClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'F'
+            }
           }
+
+
+
+
+
           await strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
             numberOfEntry = await data.entries.length
 
@@ -1007,7 +1153,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
             for (let i = 0; i < implClubs.length; i++) {
               //In club for
               if (clubId == implClubs[i][1]) {
-                const collection = mongoose.model(implClubs[i][0], segLeaderboardSchema)
+                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
                 collection.find(function(err, people) {
                   databaseLeaderboard = people
 
@@ -1022,6 +1168,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
                     clubId: clubId,
                     reload: reload,
                     masters: false,
+                    gender: gender,
                     db: databaseLeaderboard,
                     clubName: implClubs[i][2],
                     clubInfo: implClubs
@@ -1035,15 +1182,37 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
             } //for
           }) //strava
 
+
+
+
         } else {
           var results = [];
 
-          var params54 = {
-            "date_range": timeFrame,
-            "per_page": 100,
-            "club_id": clubId,
-            "age_group": "45_54"
+          if(gender == ''){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "age_group": "45_54"
+            }
+          } else if (gender == 'male'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'M',
+              "age_group": "45_54"
+            }
+          } else if (gender == 'female'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": clubId,
+              "gender": 'F',
+              "age_group": "45_54"
+            }
           }
+
 
           strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
             if (data.entries.length != 0) {
@@ -1052,11 +1221,29 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
               }
             }
 
-            var params64 = {
-              "date_range": timeFrame,
-              "per_page": 100,
-              "club_id": clubId,
-              "age_group": "55_64"
+            if(gender == ''){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": noOfResults,
+                "club_id": clubId,
+                "age_group": "55_64"
+              }
+            } else if (gender == 'male'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": noOfResults,
+                "club_id": clubId,
+                "gender": 'M',
+                "age_group": "55_64"
+              }
+            } else if (gender == 'female'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": noOfResults,
+                "club_id": clubId,
+                "gender": 'F',
+                "age_group": "55_64"
+              }
             }
 
             strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
@@ -1079,7 +1266,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master", segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
@@ -1093,6 +1280,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
                       clubId: clubId,
                       reload: reload,
                       masters: true,
+                      gender: gender,
                       db: databaseLeaderboard,
                       clubName: implClubs[i][2],
                       clubInfo: implClubs
@@ -1173,9 +1361,23 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
       } else if (clubId == 0) {
         if (ageFilter == 'false') {
 
-          var paramsNoClub = {
-            "date_range": timeFrame,
-            "per_page": noOfResults
+          if(gender == ''){
+            var paramsNoClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults
+            }
+          } else if (gender == 'male'){
+            var paramsNoClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "gender": 'M',
+            }
+          } else if (gender == 'female'){
+            var paramsNoClub = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "gender": 'F'
+            }
           }
 
           strava.segments.leaderboard.get(segmentId, paramsNoClub, async function(err, data) {
@@ -1186,35 +1388,61 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
               segment.push([objJSON.entries[i].athlete_name, convertSecondsToMinutes(objJSON.entries[i].elapsed_time), objJSON.entries[i].rank])
             }
 
-            await segLeaderboard.find(function(err, person) {
-              databaseLeaderboard = person
-              res.send({
-                data: segment,
-                segmentInfo: segmentInfo,
-                dayOne: dayOne,
-                dayTwo: dayTwo,
-                dayThree: dayThree,
-                dayFour: dayFour,
-                clubId: clubId,
-                reload: reload,
-                masters: false,
-                db: databaseLeaderboard,
-                clubName: clubName,
-                clubInfo: implClubs
+            for (let i = 0; i < implClubs.length; i++) {
+
+              if (clubId == implClubs[i][1]) {
+              const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+              collection.find(function(err, people) {
+                databaseLeaderboard = people
+
+
+                res.send( {
+                  data: segment,
+                  segmentInfo: segmentInfo,
+                  dayOne: dayOne,
+                  dayTwo: dayTwo,
+                  dayThree: dayThree,
+                  dayFour: dayFour,
+                  clubId: clubId,
+                  reload: reload,
+                  masters: false,
+                  gender: gender,
+                  db: databaseLeaderboard,
+                  clubName: clubName,
+                  clubInfo: implClubs
+                });
+              }).sort({
+                points: -1
+              }).exec(function(err, docs) {
+                console.log(err);
               });
-            }).sort({
-              points: -1
-            }).exec(function(err, docs) {
-              console.log(err);
-            });
-          })
+            }
+          }
+        })
+
+
         } else {
           var results = [];
-
-          var params54 = {
-            "date_range": timeFrame,
-            "per_page": 100,
-            "age_group": "45_54"
+          if(gender == ''){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": 100,
+              "age_group": "45_54"
+            }
+          } else if (gender == 'male'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": 100,
+              "gender": 'M',
+              "age_group": "45_54"
+            }
+          } else if (gender == 'female'){
+            var params54 = {
+              "date_range": timeFrame,
+              "per_page": 100,
+              "gender": 'F',
+              "age_group": "45_54"
+            }
           }
 
           strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
@@ -1226,11 +1454,28 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
               }
             }
 
-            var params64 = {
-              "date_range": timeFrame,
-              "per_page": 100,
-              "age_group": "55_64"
+            if(gender == ''){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "age_group": "55_64"
+              }
+            } else if (gender == 'male'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "gender": 'M',
+                "age_group": "55_64"
+              }
+            } else if (gender == 'female'){
+              var params64 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "gender": 'F',
+                "age_group": "55_64"
+              }
             }
+
 
             strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
               if (data.entries.length != 0) {
@@ -1252,7 +1497,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master", segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
@@ -1266,6 +1511,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, req, res)
                       clubId: clubId,
                       reload: reload,
                       masters: true,
+                      gender: gender,
                       db: databaseLeaderboard,
                       clubName: implClubs[i][2],
                       clubInfo: implClubs
