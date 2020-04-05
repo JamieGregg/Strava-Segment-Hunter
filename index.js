@@ -56,8 +56,6 @@ let clubName = "Public"
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/test', function(req, res) {
-  console.log('Endpoint')
-  console.log(req.body.masters)
   reLoadLeaderboard(segmentId, req.body.clubs, true, req.body.masters, req, res)
 })
 
@@ -170,7 +168,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, req, res) {
 
     //Findling leaderboards today then manipulating that to find club leaderboard
     await strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-      total = await JSON.parse(JSON.stringify(data.effort_count))
+      total =  JSON.parse(JSON.stringify(data.effort_count))
 
       //Is this a strava club?
       if (clubId > 0) {
