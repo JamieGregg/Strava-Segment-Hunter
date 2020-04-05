@@ -50,13 +50,13 @@ const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
 let segment = []
 let clubId = 0
 let segmentId;
-let timeFrame = "this_year"
+let timeFrame = "today"
 let clubName = "Public"
 
 app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/test', function(req, res) {
-  reLoadLeaderboard(segmentId, req.body.clubs, true, req.body.masters, req.body.gender,req, res)
+  reLoadLeaderboard(segmentId, req.body.clubs, true, req.body.masters, req.body.gender, req, res)
 })
 
 app.get('/', (req, res) => {
@@ -168,27 +168,27 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
 
     //Findling leaderboards today then manipulating that to find club leaderboard
     await strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-      total =  JSON.parse(JSON.stringify(data.effort_count))
+      total = JSON.parse(JSON.stringify(data.effort_count))
 
       //Is this a strava club?
       if (clubId > 0) {
         if (ageFilter == 'false') {
 
 
-          if(gender == ''){
+          if (gender == '') {
             var paramsClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "club_id": clubId
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var paramsClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "club_id": clubId,
               "gender": 'M'
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var paramsClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -246,14 +246,14 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
         } else {
           var results = [];
 
-          if(gender == ''){
+          if (gender == '') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "club_id": clubId,
               "age_group": "45_54"
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -261,7 +261,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
               "gender": 'M',
               "age_group": "45_54"
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -279,14 +279,14 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
               }
             }
 
-            if(gender == ''){
+            if (gender == '') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
                 "club_id": clubId,
                 "age_group": "55_64"
               }
-            } else if (gender == 'male'){
+            } else if (gender == 'male') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
@@ -294,7 +294,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
                 "gender": 'M',
                 "age_group": "55_64"
               }
-            } else if (gender == 'female'){
+            } else if (gender == 'female') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
@@ -419,18 +419,18 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
       } else if (clubId == 0) {
         if (ageFilter == 'false') {
 
-          if(gender == ''){
+          if (gender == '') {
             var paramsNoClub = {
               "date_range": timeFrame,
               "per_page": noOfResults
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var paramsNoClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "gender": 'M',
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var paramsNoClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -449,52 +449,52 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
             for (let i = 0; i < implClubs.length; i++) {
 
               if (clubId == implClubs[i][1]) {
-              const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
-              collection.find(function(err, people) {
-                databaseLeaderboard = people
+                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+                collection.find(function(err, people) {
+                  databaseLeaderboard = people
 
 
-                res.render('home', {
-                  data: segment,
-                  segmentInfo: segmentInfo,
-                  dayOne: dayOne,
-                  dayTwo: dayTwo,
-                  dayThree: dayThree,
-                  dayFour: dayFour,
-                  clubId: clubId,
-                  reload: reload,
-                  masters: false,
-                  gender: gender,
-                  db: databaseLeaderboard,
-                  clubName: clubName,
-                  clubInfo: implClubs
+                  res.render('home', {
+                    data: segment,
+                    segmentInfo: segmentInfo,
+                    dayOne: dayOne,
+                    dayTwo: dayTwo,
+                    dayThree: dayThree,
+                    dayFour: dayFour,
+                    clubId: clubId,
+                    reload: reload,
+                    masters: false,
+                    gender: gender,
+                    db: databaseLeaderboard,
+                    clubName: clubName,
+                    clubInfo: implClubs
+                  });
+                }).sort({
+                  points: -1
+                }).exec(function(err, docs) {
+                  console.log(err);
                 });
-              }).sort({
-                points: -1
-              }).exec(function(err, docs) {
-                console.log(err);
-              });
+              }
             }
-          }
-        })
+          })
 
 
         } else {
           var results = [];
-          if(gender == ''){
+          if (gender == '') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": 100,
               "age_group": "45_54"
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": 100,
               "gender": 'M',
               "age_group": "45_54"
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": 100,
@@ -512,20 +512,20 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
               }
             }
 
-            if(gender == ''){
+            if (gender == '') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": 100,
                 "age_group": "55_64"
               }
-            } else if (gender == 'male'){
+            } else if (gender == 'male') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": 100,
                 "gender": 'M',
                 "age_group": "55_64"
               }
-            } else if (gender == 'female'){
+            } else if (gender == 'female') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": 100,
@@ -671,8 +671,7 @@ function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
   rule.hour = 23
   rule.minute = 55
-  rule.second = 25
-
+  rule.second = 30
   var j = schedule.scheduleJob(rule, function() {
     findSegmentCodes()
 
@@ -698,172 +697,347 @@ function saveDataEvening() {
 
     //Gathering Club Data
     clubData.find(async function(err, clubInfo) {
-      if (err) {
-        console.log(err)
-      } else {
-        for (let i = 0; i < clubInfo.length; i++) {
-          implClubs.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i]])
-        }
-      }
-
-      for (let i = 0; i < implClubs.length; i++) {
-        var segment = [];
-
-        if (implClubs[i][1] > 0) {
-          strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-            total = JSON.parse(JSON.stringify(data.effort_count))
-            var paramsClub = {
-              "date_range": timeFrame,
-              "per_page": noOfResults,
-              "club_id": implClubs[i][1]
-            }
-            strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
-              if (data != "") {
-                numberOfEntry = await data.entries.length
-
-                for (let z = 0; z < numberOfEntry; z++) {
-                  segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
-                }
-
-                await populateSchema(segment, implClubs[i][1], implClubs[i][0])
-                console.log("Completed")
-                segment.length = 0;
-              }
-            })
-
-            //Master Section
-            var results = [];
-            var params54 = {
-              "date_range": timeFrame,
-              "per_page": 100,
-              "club_id": clubId,
-              "age_group": "45_54"
-            }
-
-            strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
-              if (data.entries.length != 0) {
-                for (let i = 0; i < data.entries.length; i++) {
-                  results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-                }
-              }
-
-              var params64 = {
-                "date_range": timeFrame,
-                "per_page": 100,
-                "club_id": clubId,
-                "age_group": "55_64"
-              }
-
-              strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
-                if (data.entries.length != 0) {
-                  for (let i = 0; i < data.entries.length; i++) {
-                    results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-                  }
-                }
-              })
-              populateSchema(results, implClubs[i][1], implClubs[i][0] + "Master")
-            })
-          })
-
-          //interclub
-        } else if (implClubs[i][1] == -1) {
-          var implClubsInter = []
-
-          dwdInterclubStruct.find(async function(err, clubInfo) {
-            if (err) {
-              console.log(err)
-            } else {
-              for (let i = 0; i < clubInfo.length; i++) {
-                implClubsInter.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i]])
-              }
-            }
-
-            for (let i = 0; i < implClubsInter.length; i++) {
-              var params = {
-                "date_range": timeFrame,
-                "per_page": noOfResults,
-                "club_id": implClubsInter[i][1]
-              }
-              strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-                numberOfEntry = data.entries.length
-
-                for (let z = 0; z < numberOfEntry; z++) {
-                  segment.push([implClubsInter[i][0] + " | " + data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), 0, data.entries[z].elapsed_time])
-                }
-
-                if (i == implClubsInter.length - 1) {
-                  segment.sort(sortFunction)
-
-                  populateSchema(segment, -1, 'DWD Interclub')
-                  segment.length = 0;
-                }
-              })
-            }
-          })
+        if (err) {
+          console.log(err)
         } else {
-          strava.segments.leaderboard.get(segmentId, params, function(err, data) {
-            if (data != "") {
+          for (let i = 0; i < clubInfo.length; i++) {
+            implClubs.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i]])
+          }
+        }
+
+        for (let i = 0; i < implClubs.length; i++) {
+          var segment = [];
+
+          if (implClubs[i][1] > 0) {
+            strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
               total = JSON.parse(JSON.stringify(data.effort_count))
               var paramsClub = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
+                "club_id": implClubs[i][1]
               }
-              strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+              strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
                 if (data != "") {
-                  numberOfEntry = data.entries.length
+                  numberOfEntry = await data.entries.length
 
-                  for (let i = 0; i < numberOfEntry; i++) {
-                    segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                  for (let z = 0; z < numberOfEntry; z++) {
+                    segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
                   }
-                  populateSchema(segment, implClubs[i][1], implClubs[i][0])
+
+                  await populateSchema(segment, implClubs[i][1], implClubs[i][0])
+                  console.log("Completed")
                   segment.length = 0;
                 }
               })
-            }
 
-            //masters
-            var results = [];
-            var params54 = {
-              "date_range": timeFrame,
-              "per_page": 100,
-              "club_id": clubId,
-              "age_group": "45_54"
-            }
-
-            strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
-              if (data.entries.length != 0) {
-                for (let i = 0; i < data.entries.length; i++) {
-                  results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+              //General Gender Section
+              strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
+                total = JSON.parse(JSON.stringify(data.effort_count))
+                var paramsClub = {
+                  "date_range": timeFrame,
+                  "per_page": noOfResults,
+                  "club_id": implClubs[i][1],
+                  "gender": "M"
                 }
-              }
+                strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
+                  if (data != "") {
+                    numberOfEntry = await data.entries.length
 
-              var params64 = {
+                    for (let z = 0; z < numberOfEntry; z++) {
+                      segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
+                    }
+
+                    await populateSchema(segment, implClubs[i][1], implClubs[i][0] + "male")
+                    console.log("Completed")
+                    segment.length = 0;
+                  }
+                })
+              })
+
+              strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
+                total = JSON.parse(JSON.stringify(data.effort_count))
+                var paramsClub = {
+                  "date_range": timeFrame,
+                  "per_page": noOfResults,
+                  "club_id": implClubs[i][1],
+                  "gender": "F"
+                }
+                strava.segments.leaderboard.get(segmentId, paramsClub, async function(err, data) {
+                  if (data != "") {
+                    numberOfEntry = await data.entries.length
+
+                    for (let z = 0; z < numberOfEntry; z++) {
+                      segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
+                    }
+
+                    await populateSchema(segment, implClubs[i][1], implClubs[i][0] + "female")
+                    console.log("Completed")
+                    segment.length = 0;
+                  }
+                })
+              })
+
+              //Master Section
+              var results = [];
+              var params54 = {
                 "date_range": timeFrame,
                 "per_page": 100,
                 "club_id": clubId,
-                "age_group": "55_64"
+                "age_group": "45_54"
               }
 
-              strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
+              strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
                 if (data.entries.length != 0) {
                   for (let i = 0; i < data.entries.length; i++) {
                     results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
                   }
                 }
+
+                var params64 = {
+                  "date_range": timeFrame,
+                  "per_page": 100,
+                  "club_id": clubId,
+                  "age_group": "55_64"
+                }
+
+                strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
+                  if (data.entries.length != 0) {
+                    for (let i = 0; i < data.entries.length; i++) {
+                      results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                    }
+                  }
+                })
+                populateSchema(results, implClubs[i][1], implClubs[i][0] + "Master")
               })
-              populateSchema(results, implClubs[i][1], implClubs[i][0] + "Master")
+
+              //Masters Gender Section
+              var results = [];
+              var params54 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "club_id": clubId,
+                "age_group": "45_54",
+                "gender": "M"
+              }
+
+              strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
+                if (data.entries.length != 0) {
+                  for (let i = 0; i < data.entries.length; i++) {
+                    results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                  }
+                }
+
+                var params64 = {
+                  "date_range": timeFrame,
+                  "per_page": 100,
+                  "club_id": clubId,
+                  "age_group": "55_64",
+                  "gender": "M"
+                }
+
+                strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
+                  if (data.entries.length != 0) {
+                    for (let i = 0; i < data.entries.length; i++) {
+                      results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                    }
+                  }
+                })
+                populateSchema(results, implClubs[i][1], implClubs[i][0] + "MasterMale")
+              })
+
+
+              var results = [];
+              var params54 = {
+                "date_range": timeFrame,
+                "per_page": 100,
+                "club_id": clubId,
+                "age_group": "45_54",
+                "gender": "F"
+              }
+
+              strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
+                if (data.entries.length != 0) {
+                  for (let i = 0; i < data.entries.length; i++) {
+                    results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                  }
+                }
+
+                var params64 = {
+                  "date_range": timeFrame,
+                  "per_page": 100,
+                  "club_id": clubId,
+                  "age_group": "55_64",
+                  "gender": "F"
+                }
+
+                strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
+                  if (data.entries.length != 0) {
+                    for (let i = 0; i < data.entries.length; i++) {
+                      results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                    }
+                  }
+                })
+                populateSchema(results, implClubs[i][1], implClubs[i][0] + "MasterFemale")
+              })
             })
-          })
-        }
-      }
-    });
 
-    deleteUsedSegment();
-    findSegmentCodes();
-    emailNewSegment(segmentId);
 
-  })
-}
+
+
+
+
+
+
+            //interclub
+          } else if (implClubs[i][1] == -1) {
+            var implClubsInter = []
+
+            dwdInterclubStruct.find(async function(err, clubInfo) {
+              if (err) {
+                console.log(err)
+              } else {
+                for (let i = 0; i < clubInfo.length; i++) {
+                  implClubsInter.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i]])
+                }
+              }
+
+              for (let i = 0; i < implClubsInter.length; i++) {
+                var params = {
+                  "date_range": timeFrame,
+                  "per_page": noOfResults,
+                  "club_id": implClubsInter[i][1]
+                }
+                strava.segments.leaderboard.get(segmentId, params, function(err, data) {
+                  numberOfEntry = data.entries.length
+
+                  for (let z = 0; z < numberOfEntry; z++) {
+                    segment.push([implClubsInter[i][0] + " | " + data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), 0, data.entries[z].elapsed_time])
+                  }
+
+                  if (i == implClubsInter.length - 1) {
+                    segment.sort(sortFunction)
+
+                    populateSchema(segment, -1, 'DWD Interclub')
+                    segment.length = 0;
+                  }
+                })
+              }
+            })
+          } else {
+            strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
+              if (data != "") {
+                total = await JSON.parse(JSON.stringify(data.effort_count))
+                var paramsClub = {
+                  "date_range": timeFrame,
+                  "per_page": noOfResults,
+                }
+                strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+                  if (data != "") {
+                    numberOfEntry = data.entries.length
+
+                    for (let i = 0; i < numberOfEntry; i++) {
+                      segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                    }
+                    populateSchema(segment, implClubs[i][1], implClubs[i][0])
+                    segment.length = 0;
+                  }
+                })
+              }
+
+              //general gender
+              strava.segments.leaderboard.get(segmentId, params, function(err, data) {
+                  if (data != "") {
+                    total = JSON.parse(JSON.stringify(data.effort_count))
+                    var paramsClub = {
+                      "date_range": timeFrame,
+                      "per_page": noOfResults,
+                      "gender": 'M'
+                    }
+                    strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+                      if (data != "") {
+                        numberOfEntry = data.entries.length
+
+                        for (let i = 0; i < numberOfEntry; i++) {
+                          segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                        }
+                        populateSchema(segment, implClubs[i][1], implClubs[i][0] + "male")
+                        segment.length = 0;
+                      }
+                    })
+                  }
+
+                  strava.segments.leaderboard.get(segmentId, params, function(err, data) {
+                    if (data != "") {
+                      total = JSON.parse(JSON.stringify(data.effort_count))
+                      var paramsClub = {
+                        "date_range": timeFrame,
+                        "per_page": noOfResults,
+                        "gender": 'F'
+                      }
+                      strava.segments.leaderboard.get(segmentId, paramsClub, function(err, data) {
+                        if (data != "") {
+                          numberOfEntry = data.entries.length
+
+                          for (let i = 0; i < numberOfEntry; i++) {
+                            segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                          }
+                          populateSchema(segment, implClubs[i][1], implClubs[i][0] + "female")
+                          segment.length = 0;
+                        }
+                      })
+                    }
+
+                    //masters
+                    var results = [];
+                    var params54 = {
+                      "date_range": timeFrame,
+                      "per_page": 100,
+                      "club_id": clubId,
+                      "age_group": "45_54"
+                    }
+
+                    strava.segments.leaderboard.get(segmentId, params54, function(err, data) {
+                      if (data.entries.length != 0) {
+                        for (let i = 0; i < data.entries.length; i++) {
+                          results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                        }
+                      }
+
+                      var params64 = {
+                        "date_range": timeFrame,
+                        "per_page": 100,
+                        "club_id": clubId,
+                        "age_group": "55_64"
+                      }
+
+                      strava.segments.leaderboard.get(segmentId, params64, function(err, data) {
+                        if (data.entries.length != 0) {
+                          for (let i = 0; i < data.entries.length; i++) {
+                            results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                          }
+                        }
+                      })
+                      populateSchema(results, implClubs[i][1], implClubs[i][0] + "Master")
+                    })
+                  })
+                })
+              })
+            }
+          }
+      })
+      deleteUsedSegment();
+      findSegmentCodes();
+      emailNewSegment(segmentId);
+    })
+
+  }
+
+
+
+
+
+
+
 
 //DATA CONVERSION
 function convertingMetersToMiles(meters) {
@@ -1110,27 +1284,27 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
 
     //Findling leaderboards today then manipulating that to find club leaderboard
     await strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-      total =  JSON.parse(JSON.stringify(data.effort_count))
+      total = JSON.parse(JSON.stringify(data.effort_count))
 
       //Is this a strava club?
       if (clubId > 0) {
         if (ageFilter == 'false') {
 
 
-          if(gender == ''){
+          if (gender == '') {
             var paramsClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "club_id": clubId
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var paramsClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "club_id": clubId,
               "gender": 'M'
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var paramsClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -1188,14 +1362,14 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
         } else {
           var results = [];
 
-          if(gender == ''){
+          if (gender == '') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "club_id": clubId,
               "age_group": "45_54"
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -1203,7 +1377,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
               "gender": 'M',
               "age_group": "45_54"
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -1221,14 +1395,14 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
               }
             }
 
-            if(gender == ''){
+            if (gender == '') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
                 "club_id": clubId,
                 "age_group": "55_64"
               }
-            } else if (gender == 'male'){
+            } else if (gender == 'male') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
@@ -1236,7 +1410,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
                 "gender": 'M',
                 "age_group": "55_64"
               }
-            } else if (gender == 'female'){
+            } else if (gender == 'female') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": noOfResults,
@@ -1361,18 +1535,18 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
       } else if (clubId == 0) {
         if (ageFilter == 'false') {
 
-          if(gender == ''){
+          if (gender == '') {
             var paramsNoClub = {
               "date_range": timeFrame,
               "per_page": noOfResults
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var paramsNoClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
               "gender": 'M',
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var paramsNoClub = {
               "date_range": timeFrame,
               "per_page": noOfResults,
@@ -1391,52 +1565,52 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
             for (let i = 0; i < implClubs.length; i++) {
 
               if (clubId == implClubs[i][1]) {
-              const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
-              collection.find(function(err, people) {
-                databaseLeaderboard = people
+                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+                collection.find(function(err, people) {
+                  databaseLeaderboard = people
 
 
-                res.send( {
-                  data: segment,
-                  segmentInfo: segmentInfo,
-                  dayOne: dayOne,
-                  dayTwo: dayTwo,
-                  dayThree: dayThree,
-                  dayFour: dayFour,
-                  clubId: clubId,
-                  reload: reload,
-                  masters: false,
-                  gender: gender,
-                  db: databaseLeaderboard,
-                  clubName: clubName,
-                  clubInfo: implClubs
+                  res.send({
+                    data: segment,
+                    segmentInfo: segmentInfo,
+                    dayOne: dayOne,
+                    dayTwo: dayTwo,
+                    dayThree: dayThree,
+                    dayFour: dayFour,
+                    clubId: clubId,
+                    reload: reload,
+                    masters: false,
+                    gender: gender,
+                    db: databaseLeaderboard,
+                    clubName: clubName,
+                    clubInfo: implClubs
+                  });
+                }).sort({
+                  points: -1
+                }).exec(function(err, docs) {
+                  console.log(err);
                 });
-              }).sort({
-                points: -1
-              }).exec(function(err, docs) {
-                console.log(err);
-              });
+              }
             }
-          }
-        })
+          })
 
 
         } else {
           var results = [];
-          if(gender == ''){
+          if (gender == '') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": 100,
               "age_group": "45_54"
             }
-          } else if (gender == 'male'){
+          } else if (gender == 'male') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": 100,
               "gender": 'M',
               "age_group": "45_54"
             }
-          } else if (gender == 'female'){
+          } else if (gender == 'female') {
             var params54 = {
               "date_range": timeFrame,
               "per_page": 100,
@@ -1454,20 +1628,20 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
               }
             }
 
-            if(gender == ''){
+            if (gender == '') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": 100,
                 "age_group": "55_64"
               }
-            } else if (gender == 'male'){
+            } else if (gender == 'male') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": 100,
                 "gender": 'M',
                 "age_group": "55_64"
               }
-            } else if (gender == 'female'){
+            } else if (gender == 'female') {
               var params64 = {
                 "date_range": timeFrame,
                 "per_page": 100,
