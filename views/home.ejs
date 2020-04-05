@@ -154,6 +154,19 @@
               <%} %>
             </select>
           </div>
+
+          <div class="col">
+            <select class="form-control" id="masters" name="masters">
+                  <%if(masters == true){%>
+                    <option value="false">Everyone</option>
+                    <option value="true" selected>Masters</option>
+                  <%} else {%>
+                    <option value="false" selected>Everyone</option>
+                    <option value="true">Masters</option>
+                <%} %>
+            </select>
+          </div>
+
           <div class="col">
             <button type="submit" class="btn btn-light ">Submit</button>
           </div>
