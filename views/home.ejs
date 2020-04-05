@@ -33,7 +33,6 @@
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-
   <!-- Theme CSS -->
   <link href="css/freelancer.min.css" rel="stylesheet">
 </head>
@@ -132,7 +131,7 @@
     <div class="container">
 
       <!-- Results Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-white"><%- clubName -%> Daily Leaderboard</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading"><%- clubName -%> Daily Leaderboard</h2>
 
       <!-- Results Divider -->
       <div class="divider-custom divider-light">
@@ -143,7 +142,7 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <form action="/" method="POST" id="filterTable">
+      <form method="POST" id="filterTable">
         <div class="form-row">
           <div class="col">
             <select class="form-control" id="club" name="clubs">
@@ -174,13 +173,11 @@
       </form>
 
       <br>
-      <%if (clubId > 0){ %>
-        <p><a class ="text-white" href="https://www.strava.com/clubs/<%- clubId -%>">Not appearing in your club leaderboard? Make sure to join the club by clicking here.</a></p>
-      <% } %>
+        <p id="#clubLinkTag"><a class ="text-white" id="clubLink" href="https://www.strava.com/clubs/<%- clubId -%>">Not appearing in your club leaderboard? Make sure to join the club by clicking here.</a></p>
       <br>
 
       <!-- Results Section Content -->
-      <table class="table table-hover">
+      <table class="table table-hover" id="daily-leaderboard-table">
         <thead>
           <tr class="text-white">
             <th scope="col">Rank</th>
@@ -206,7 +203,7 @@
     <div class="container">
 
       <!-- Points Section Heading -->
-      <h2 class="page-section-heading text-secondary text-center text-uppercase"><%- clubName -%> Points Leaderboard</h2>
+      <h2 class="page-section-heading text-secondary text-center text-uppercase" id="points-leaderboard-heading"><%- clubName -%> Points Leaderboard</h2>
 
       <!-- Points Divider -->
       <div class="divider-custom">
@@ -218,7 +215,7 @@
       </div>
 
       <!-- Points Section Content -->
-      <table class="table table-hover">
+      <table class="table table-hover" id="points-leaderboard-table">
         <thead>
           <tr>
             <th scope="col">Rank</th>
@@ -433,6 +430,8 @@
   <!-- Contact Form JavaScript -->
   <script src="js/jqBootstrapValidation.js"></script>
   <script src="js/contact_me.js"></script>
+  <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script src="js/ajax.js"></script>
 
   <!-- Custom scripts for this template -->
   <script src="js/freelancer.min.js"></script>
