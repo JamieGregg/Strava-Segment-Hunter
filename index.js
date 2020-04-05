@@ -50,7 +50,7 @@ const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
 let segment = []
 let clubId = 0
 let segmentId;
-let timeFrame = "this_year"
+let timeFrame = "today"
 let clubName = "Public"
 
 app.use(express.static(__dirname + '/public-updated'));

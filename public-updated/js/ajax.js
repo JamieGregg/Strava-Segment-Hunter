@@ -1,5 +1,6 @@
 
 $(document).ready(function(){
+  $("#loader").hide();
   $("form").submit(function(e){
     e.preventDefault();
     let clubId = $("#club option:selected").val();
@@ -17,15 +18,20 @@ $(document).ready(function(){
       url: '/test',
       dataType: 'json',
       data: postData,
+      beforeSend: function(){
+        // Show image container
+        $("#loader").show();
+      },
       success: function(info){
-
         loadHeadings(info.clubName)
         clubLink(info.clubId)
         loadDaily(info.data)
         loadPoints(info.db)
+      },
+      complete:function(data){
+        // Hide image container
+        $("#loader").hide();
       }
-    }).done(function(data){
-      alert("done")
     })
   })
 })
