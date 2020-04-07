@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in daily to see the segment we
+  have selected for the day.">
+  <meta name="author" content="Jamie Gregg">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
+  <link rel="apple-touch-icon" sizes="57x57" href="img/fav-icon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="img/fav-icon//apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="img/fav-icon//apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="img/fav-icon//apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="img/fav-icon//apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="img/fav-icon//apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="img/fav-icon//apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="img/fav-icon//apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/fav-icon//apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="img/fav-icon//android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/fav-icon//favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="img/fav-icon//favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/fav-icon//favicon-16x16.png">
+  <link rel="manifest" href="img/fav-icon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Strava Segment Hunter</title>
+
+  <!-- Custom fonts for this theme -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <!-- Theme CSS -->
+  <link href="css/freelancer.min.css" rel="stylesheet">
+</head>
+
+<body onload="openPage()" id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">Segment Hunter</a>
+      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+        aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#today-segment">Todays Segment</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" id="todays-seg" href="#today-leaderboard">Todays Leaderboard</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point-leaderboard">Points Leaderboard</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#help-section">Help</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+
+      <!-- Results Section -->
+      <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
+        <div class="container">
+
+          <!-- Results Section Heading -->
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Sign Up Here</h2>
+
+          <!-- Results Divider -->
+          <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="divider-custom-line"></div>
+          </div>
+
+          <!-- Masthead Subheading -->
+          <p class="masthead-subheading font-weight-light mb-0">Sign up to Strava Segment Hunters to add your club to the leaderboard, run your own competition and manage your own segments. With access to a new easy to use admin dashboard clubs can
+            have full control over their segments.</p>
+        </div>
+      </section>
+    </div>
+  </header>
+
+
+  <!-- Sign Up Section -->
+
+  <section class="page-section portfolio" id="today-segment">
+    <div class="container">
+
+      <!-- Sign Up Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Getting Started</h2>
+
+      <!-- Icon Divider -->
+      <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="divider-custom-line"></div>
+      </div>
+
+      <p class="lead text-center">If your club already has an account log into the dashboard here. Otherwise use the boxes below to get started registering your club for £4.99 (€5.99).</p>
+
+      <form>
+        <div class="form-group">
+          <label for="clubAlaias">Club Name</label>
+          <input type="text" class="form-control" id="clubAlaias" placeholder="Dublin CC">
+        </div>
+        <div class="form-group">
+          <label for="clubId">Strava Club ID</label>
+          <input type="text" class="form-control" id="clubId" placeholder="168283">
+          <small id="textHelp" class="form-text text-muted">We use Strava clubs to access leaderboard data,<a href="#club-id-section"> to find out how to get your Club ID click here.</a></small>
+        </div>
+        <div class="form-group">
+          <label for="emailAddress">Email Address</label>
+          <input type="email" class="form-control" id="emailAddress" aria-describedby="emailHelp" placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">This is the email you will use to log into the admin dashboard. We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Password">
+          <small id="emailHelp" class="form-text text-muted">This is the password you will use to log into the admin dashboard.</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </section>
+
+
+
+  <!--Help Section -->
+  <section class="page-section portfolio bg-primary text-white" id="club-id-section">
+    <div class="container">
+
+      <!-- Help Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase text-white mb-0">Finding your Club Id?</h2>
+
+      <!-- Icon Divider -->
+      <div class="divider-custom divider-light">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="divider-custom-line"></div>
+      </div>
+
+      <p class="lead text-center">Strava Segment Hunter will generate leaderboards for your club based on the Strava Club ID. There is a video below showing the steps to obtain this ID.</p>
+      <ol class="lead">
+        <li>Go to Stravas website.</li>
+        <li>Click the Explore Tab and select Clubs.</li>
+        <li>Search and select your club.</li>
+        <li>Navigate to the members section of your club.</li>
+        <li>In the website link you will see the club Id after www.strava.com/clubs/THIS_IS_YOUR_CLUB_ID/members.</li>
+      </ol>
+      <br>
+      <p><a class="text-white"href="https://www.youtube.com/watch?v=-qTjWocDQLg&feature=youtu.be">Video not loading? Click here.</a></p>
+      <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/-qTjWocDQLg" allowfullscreen</iframe>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <div class="row">
+
+        <!-- Footer Location -->
+        <div class="col-lg-4 mb-5 mb-lg-0">
+          <h4 class="text-uppercase mb-4">Contact Me</h4>
+          <p class="lead mb-0">To get your club added onto the leaderboard, report any bugs or to suggest new features contact me at: <p class="text-uppercase font-weight-bold">jamiegregg25@gmail.com </p>
+        </div>
+
+        <!-- Footer Social Icons -->
+        <div class="col-lg-4 mb-5 mb-lg-0">
+          <h4 class="text-uppercase mb-4">Developer Links</h4>
+          <a class="btn btn-outline-light btn-social mx-1" href="https://www.strava.com/athletes/8460844">
+            <i class="fab fa-fw fa-strava"></i>
+          </a>
+          <a class="btn btn-outline-light btn-social mx-1" href="https://github.com/JamieGregg">
+            <i class="fab fa-fw fa-github"></i>
+          </a>
+        </div>
+
+        <!-- Footer About Text -->
+        <div class="col-lg-4">
+          <h4 class="text-uppercase mb-4">About Segment Challenge</h4>
+          <p class="lead mb-0">Complete daily segments to top the leaderboards in your club and all rides on Strava that day! Check back in every day for that days segment.</p>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- Copyright Section -->
+  <section class="copyright py-4 text-center text-white">
+    <div class="container">
+      <small>Copyright &copy; Jamie Gregg 2020</small>
+    </div>
+  </section>
+
+  <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+  <div class="scroll-to-top d-lg-none position-fixed ">
+    <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Contact Form JavaScript -->
+  <script src="js/jqBootstrapValidation.js"></script>
+  <script src="js/contact_me.js"></script>
+  <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script src="js/ajax.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="js/freelancer.min.js"></script>
+
+</body>
+
+</html>
