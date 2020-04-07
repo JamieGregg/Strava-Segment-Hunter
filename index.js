@@ -15,13 +15,13 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(router)
 
-mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/' + process.env.DB_NAME, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.error('Could not connect to mongoDB', err));
 
-const segLeaderboardSchema = new mongoose.Schema({
+const resultsSchema = new mongoose.Schema({
   points: Number,
   name: String,
 })
@@ -44,8 +44,8 @@ var strava = new require("strava")({
   "redirect_url": "https://www.stravasegmenthunter.com/"
 });
 
-const segLeaderboard = mongoose.model("Public", segLeaderboardSchema)
-const segDwdInterResults = mongoose.model("DWDInterclub", segLeaderboardSchema)
+//const segLeaderboard = mongoose.model("Public", resultsSchema)
+const segDwdInterResults = mongoose.model("DWDInterclub", resultsSchema)
 const segmentCodes = mongoose.model("Segment", segCodeSchema)
 const clubData = mongoose.model("ClubData", segClubData)
 const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
@@ -214,7 +214,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
             for (let i = 0; i < implClubs.length; i++) {
               //In club for
               if (clubId == implClubs[i][1]) {
-                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+                const collection = mongoose.model(implClubs[i][0] + gender, resultsSchema)
                 collection.find(function(err, people) {
                   databaseLeaderboard = people
 
@@ -327,7 +327,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, resultsSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
@@ -452,7 +452,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
             for (let i = 0; i < implClubs.length; i++) {
 
               if (clubId == implClubs[i][1]) {
-                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+                const collection = mongoose.model(implClubs[i][0] + gender, resultsSchema)
                 collection.find(function(err, people) {
                   databaseLeaderboard = people
 
@@ -558,7 +558,7 @@ async function loadLeaderboard(segmentId, clubId, reload, ageFilter, gender, req
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, resultsSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
@@ -663,7 +663,7 @@ function populateSchema(results, club, clubName) {
       'useFindAndModify': true
     };
 
-    const collection = mongoose.model(clubName, segLeaderboardSchema)
+    const collection = mongoose.model(clubName, resultsSchema)
     collection.update(query, update, options, function(err, doc) {
       //console.log(doc);
     });
@@ -1378,7 +1378,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
             for (let i = 0; i < implClubs.length; i++) {
               //In club for
               if (clubId == implClubs[i][1]) {
-                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+                const collection = mongoose.model(implClubs[i][0] + gender, resultsSchema)
                 collection.find(function(err, people) {
                   databaseLeaderboard = people
 
@@ -1491,7 +1491,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, resultsSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
@@ -1616,7 +1616,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
             for (let i = 0; i < implClubs.length; i++) {
 
               if (clubId == implClubs[i][1]) {
-                const collection = mongoose.model(implClubs[i][0] + gender, segLeaderboardSchema)
+                const collection = mongoose.model(implClubs[i][0] + gender, resultsSchema)
                 collection.find(function(err, people) {
                   databaseLeaderboard = people
 
@@ -1722,7 +1722,7 @@ async function reLoadLeaderboard(segmentId, clubId, reload, ageFilter, gender, r
               for (let i = 0; i < implClubs.length; i++) {
                 //In club for
                 if (clubId == implClubs[i][1]) {
-                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, segLeaderboardSchema)
+                  const collection = mongoose.model(implClubs[i][0] + "Master" + gender, resultsSchema)
                   collection.find(function(err, people) {
                     databaseLeaderboard = people
 
