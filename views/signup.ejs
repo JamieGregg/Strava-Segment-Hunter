@@ -101,7 +101,7 @@
     <div class="container">
 
       <!-- Sign Up Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Getting Started</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Sign Up To Strava Segment Hunter</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
@@ -112,29 +112,32 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <p class="lead text-center">If your club already has an account log into the dashboard here. Otherwise use the boxes below to get started registering your club for £4.99 (€5.99).</p>
+      <p class="lead text-center">If your club already has an account log into the dashboard here. Otherwise use the boxes below to get started registering your club for £4.99 (€5.65).</p>
 
       <form>
+        <div class="form-row">
+          <div class="col">
+            <label class="lead "for="clubAlaias">Club Name</label>
+            <input type="text" class="form-control" id="clubAlaias" placeholder="Dublin CC">
+            <small id="textHelp" class="form-text text-muted">This is the name appearing on our leaderboard.</small>
+          </div>
+          <div class="col">
+            <label class="lead for="clubId">Strava Club ID</label>
+            <input type="text" class="form-control" id="clubId" placeholder="168283">
+            <small id="textHelp" class="form-text text-muted"><a href="#club-id-section">To find out how to get your Club ID click here.</a></small>
+          </div>
+        </div><br>
         <div class="form-group">
-          <label for="clubAlaias">Club Name</label>
-          <input type="text" class="form-control" id="clubAlaias" placeholder="Dublin CC">
-        </div>
-        <div class="form-group">
-          <label for="clubId">Strava Club ID</label>
-          <input type="text" class="form-control" id="clubId" placeholder="168283">
-          <small id="textHelp" class="form-text text-muted">We use Strava clubs to access leaderboard data,<a href="#club-id-section"> to find out how to get your Club ID click here.</a></small>
-        </div>
-        <div class="form-group">
-          <label for="emailAddress">Email Address</label>
+          <label class="lead" for="emailAddress">Email Address</label>
           <input type="email" class="form-control" id="emailAddress" aria-describedby="emailHelp" placeholder="Enter email">
           <small id="emailHelp" class="form-text text-muted">This is the email you will use to log into the admin dashboard. We'll never share your email with anyone else.</small>
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label class="lead" for="password">Password</label>
           <input type="password" class="form-control" id="password" placeholder="Password">
           <small id="emailHelp" class="form-text text-muted">This is the password you will use to log into the admin dashboard.</small>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Checkout Total £4.99 (€5.65)</button>
       </form>
     </div>
   </section>
@@ -157,20 +160,14 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <p class="lead text-center">Strava Segment Hunter will generate leaderboards for your club based on the Strava Club ID. There is a video below showing the steps to obtain this ID.</p>
+      <p class="lead text-center">Strava Segment Hunter will generate leaderboards for your club based on the Strava Club ID. There is a video below showing the steps to obtain this ID. <a class="text-white"href="https://www.youtube.com/watch?v=-qTjWocDQLg&feature=youtu.be">Video tutorial here.</a></p>
       <ol class="lead">
         <li>Go to Stravas website.</li>
         <li>Click the Explore Tab and select Clubs.</li>
         <li>Search and select your club.</li>
         <li>Navigate to the members section of your club.</li>
-        <li>In the website link you will see the club Id after www.strava.com/clubs/THIS_IS_YOUR_CLUB_ID/members.</li>
+        <li>In the website link you will see the club Id after www.strava.com/clubs/<strong>THIS_IS_YOUR_CLUB_ID</strong>/members.</li>
       </ol>
-      <br>
-      <p><a class="text-white"href="https://www.youtube.com/watch?v=-qTjWocDQLg&feature=youtu.be">Video not loading? Click here.</a></p>
-      <div class="embed-responsive embed-responsive-16by9">
-        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/-qTjWocDQLg" allowfullscreen</iframe>
-      </div>
-
     </div>
   </section>
 
