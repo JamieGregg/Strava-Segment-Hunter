@@ -112,30 +112,28 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <p class="lead text-center">If your club already has an account log into the dashboard here. Otherwise use the boxes below to get started registering your club for £4.99 (€5.65).</p>
-
-      <form>
+      <p class="lead text-center">To join the site there is a one time fee per club, once your club is set up its free to as many members as you like! The details registered below will allow the admin to log on to add segments. If your club already has an account, you can see the leaderboard here or you can log into the dashboard here. <br><br>Otherwise use the boxes below to get started registering your club for £4.99 (€5.65).</p>
+      <br>
+      <form method="POST" id="register">
         <div class="form-row">
           <div class="col">
             <label class="lead "for="clubAlaias">Club Name</label>
-            <input type="text" class="form-control" id="clubAlaias" placeholder="Dublin CC">
-            <small id="textHelp" class="form-text text-muted">This is the name appearing on our leaderboard.</small>
+            <input type="text" class="form-control" id="clubAlaias" name="clubName" placeholder="Dublin CC" required>
           </div>
           <div class="col">
-            <label class="lead for="clubId">Strava Club ID</label>
-            <input type="text" class="form-control" id="clubId" placeholder="168283">
-            <small id="textHelp" class="form-text text-muted"><a href="#club-id-section">To find out how to get your Club ID click here.</a></small>
+            <label class="lead" for="clubId">Strava Club ID</label>
+            <input type="text" class="form-control" id="clubId" name="clubId" placeholder="168283" required>
+            <small id="textHelp" class="form-text text-muted"><a href="#club-id-section">How do I find my Club ID?</a></small>
           </div>
-        </div><br>
+        </div>
         <div class="form-group">
           <label class="lead" for="emailAddress">Email Address</label>
-          <input type="email" class="form-control" id="emailAddress" aria-describedby="emailHelp" placeholder="Enter email">
-          <small id="emailHelp" class="form-text text-muted">This is the email you will use to log into the admin dashboard. We'll never share your email with anyone else.</small>
+          <input type="email" class="form-control" id="emailAddress" name="emailAddress" aria-describedby="emailHelp" placeholder="Enter email" required>
         </div>
         <div class="form-group">
           <label class="lead" for="password">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Password">
-          <small id="emailHelp" class="form-text text-muted">This is the password you will use to log into the admin dashboard.</small>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+          <small id="passwordInvalid" class="form-text text-muted"><a href="#club-id-section"><%-passwordVal%></a></small>
         </div>
         <button type="submit" class="btn btn-primary">Checkout Total £4.99 (€5.65)</button>
       </form>

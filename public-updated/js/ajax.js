@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
   $("#loader").hide();
-  $("form").submit(function(e){
+  $("form#filterTable").submit(function(e){
     e.preventDefault();
     let clubId = $("#club option:selected").val();
     let masters = $("#masters option:selected").val();
@@ -12,8 +12,6 @@ $(document).ready(function(){
       clubs: clubId,
       gender: gender
     }
-
-    //alert(clubId)
 
     $.ajax({
       type: 'POST',
@@ -36,6 +34,41 @@ $(document).ready(function(){
       }
     })
   })
+
+
+  $("form#register").submit(function(e){
+    e.preventDefault();
+    let clubName = $("#clubAlaias").val();
+    let password = $("#password").val();
+    let emailAddress = $("#emailAddress").val();
+    let clubId = $("#clubId").val();
+
+    let postInfo = {
+      clubName: clubName,
+      password: password,
+      emailAddress: emailAddress,
+      clubId: clubId
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: '/register',
+      dataType: 'json',
+      data: postInfo,
+      beforeSend: function(){
+        $("#loader").show();
+      },
+      success: function(info){
+        $("#passwordInvalid").html(info.passwordVal)
+      },
+      complete:function(data){
+        // Hide image container
+        $("#loader").hide();
+      }
+    })
+  })
+
+
 })
 
 function loadDaily(data){
