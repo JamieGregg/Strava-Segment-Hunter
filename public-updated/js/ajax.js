@@ -46,7 +46,7 @@ $(document).ready(function(){
     let postInfo = {
       clubName: clubName,
       password: password,
-      emailAddress: emailAddress,
+      username: emailAddress,
       clubId: clubId
     }
 

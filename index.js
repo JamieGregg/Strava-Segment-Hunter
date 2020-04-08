@@ -6,20 +6,33 @@ const mongoose = require('mongoose')
 const schedule = require('node-schedule')
 const nodemailer = require('nodemailer')
 const passwordValidator = require('password-validator')
-const bcrypt = require('bcrypt');
+const session = require('express-session')
+const passport = require('passport')
+const passportLocalMongoose = require('passport-local-mongoose')
+
 const app = express();
 
+app.use(express.static(__dirname + '/public-updated'));
 app.set('view engine', 'ejs');
-
 app.use(bodyParser.urlencoded({
   extended: false
 }))
+
+app.use(session({
+  secret: "thesecret",
+  resave: false,
+  saveUninitialized: false
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to mongoDB', err));
+  .catch(err => console.error('Could not connect to mongoDB', err))
+mongoose.set('useCreateIndex', true)
 
 const resultsSchema = new mongoose.Schema({
   points: Number,
@@ -38,11 +51,13 @@ const segClubData = new mongoose.Schema({
 })
 
 const userSchema = new mongoose.Schema({
-  email: String,
+  username: String,
   password: String,
-  clubName: String,
-  clubId: Number
+  //clubName: String,
+  //clubId: Number
 })
+
+userSchema.plugin(passportLocalMongoose)
 
 var schema = new passwordValidator();
 schema
@@ -64,8 +79,11 @@ const segDwdInterResults = mongoose.model("DWDInterclub", resultsSchema)
 const segmentCodes = mongoose.model("Segment", segCodeSchema)
 const clubData = mongoose.model("ClubData", segClubData)
 const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
-const user = mongoose.model("User", userSchema)
+const User = mongoose.model("User", userSchema)
 
+passport.use(User.createStrategy())
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 let segment = []
 let clubId = 0
@@ -73,8 +91,6 @@ let segmentId;
 let timeFrame = "today"
 let clubName = "Public"
 let saltRounds = 10
-
-app.use(express.static(__dirname + '/public-updated'));
 
 app.post('/test', function(req, res) {
   loadLeaderboard('POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
@@ -917,52 +933,44 @@ function emailNewSegment(segmentId) {
 
 
 app.get('/signup', function(req, res) {
-  res.render('signup', {
+  res.render('signup',{
     passwordVal: ""
   })
 })
 
-app.post('/register', function(req, res) {
-  bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-    if (schema.validate(req.body.password) == true) {
-      const newUser = new user({
-        email: req.body.emailAddress,
-        password: hash,
-        clubName: req.body.clubName,
-        clubId: req.body.clubId
-      })
-
-      newUser.save(function(err) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send("Registered")
-          console.log("Registered")
-        }
-      })
-    } else {
-      res.send({
-        passwordVal: "Your password must be at least 8 characters long with an uppercase and lowercase letter"
-      })
-    }
-  })
+app.get('/adminDashboard', function(req, res){
+  if ( req.isAuthenticated() ) {
+    console.log("Authentication Complete")
+    res.render("admindash")
+  } else {
+    res.redirect("/signup")
+  }
 })
 
-app.post('/login', function(req, res) {
-  const email = req.body.emailAddress
-  const password = req.body.password
-
-  user.findOne({email: email}, function(err, foundUser) {
-    if (err) {
-      console.log(err)
-    } else {
-      if (foundUser) {
-        bcrypt.compare(password, foundUser.password, function(err,result) {
-          if(result === true){
-            res.send(email + " has been logged in")
-          }
-        })
-      }
+app.post('/register', function(req, res) {
+  if ( schema.validate(req.body.password) === true ) {
+    User.register({username: req.body.username}, req.body.password, function(err, user){
+      console.log("Registered")
+      //console.log(user)
+      if ( err ) {
+        console.log(err)
+        res.redirect("/signup")
+      } else {
+        passport.authenticate('local')(req, res, function(){
+          console.log("Authenticated!!")
+          res.redirect('/adminDashboard');
+      })
     }
   })
+  } else {
+    console.log("Password Invalid")
+    res.send({
+      passwordVal: "Your password must be at least 8 characters long with an uppercase and lowercase letter"
+    })
+  }
+})
+
+
+app.post('/login', function(req, res) {
+
 })
