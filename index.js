@@ -933,9 +933,7 @@ function emailNewSegment(segmentId) {
 
 
 app.get('/signup', function(req, res) {
-  res.render('signup',{
-    passwordVal: ""
-  })
+  res.render('signup')
 })
 
 app.get('/adminDashboard', function(req, res){
@@ -948,7 +946,7 @@ app.get('/adminDashboard', function(req, res){
 })
 
 app.post('/register', function(req, res) {
-  if ( schema.validate(req.body.password) === true ) {
+
     User.register({username: req.body.username}, req.body.password, function(err, user){
       console.log("Registered")
       //console.log(user)
@@ -962,12 +960,6 @@ app.post('/register', function(req, res) {
       })
     }
   })
-  } else {
-    console.log("Password Invalid")
-    res.send({
-      passwordVal: "Your password must be at least 8 characters long with an uppercase and lowercase letter"
-    })
-  }
 })
 
 
