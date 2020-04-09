@@ -76,18 +76,21 @@
 
           <img class="masthead-avatar mb-5" src="img/portfolio/icon.png" alt="">
           <!-- Results Section Heading -->
-          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading"><%-clubName-%> Admin Dashboard</h2>
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Log into Strava Segment Hunter.</h2>
+
 
         </div>
       </section>
     </div>
   </header>
 
+
+  <!-- Sign Up Section -->
   <section class="page-section portfolio" id="today-segment">
     <div class="container">
 
-      <!-- Todays Segement Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Add Segments</h2>
+      <!-- Sign Up Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Sign In to your Admin Account</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
@@ -98,26 +101,23 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <!-- Todays Segment Section Content -->
-      <div class="divider-custom">
-        <div class="text-center">
-          <p class="lead">To add a new segment to your clubs list paste the segment code into the box below.</p>
-          <p class="lead"><a href="#">Click here to find out where to locate a segment ID</a></p>
-          <form class="" action="index.html" method="post">
-            <label class="sr-only" for="inlineFormInputGroupUsername2">SegmentId</label>
-            <div class="input-group mb-2 mr-sm-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text">www.strava.com/segments/</div>
-              </div>
-              <input type="text" class="form-control" id="stravaSeg" name="segment" placeholder="453235">
-            </div><br>
-            <button class="btn btn-primary"type="submit" name="button">Submit Segment</button>
-          </form>
+      <br>
+      <p class="lead"><a href="signup">Haven’t got an account yet? Sign up here.</a></p>
+      <form action="/login" method="POST" id="register">
+        <div class="form-group">
+          <label class="lead" for="emailAddress">Email Address</label>
+          <input type="email" class="form-control" id="emailAddress" name="username" aria-describedby="emailHelp" placeholder="Enter email" required>
         </div>
-      </div>
+        <div class="form-group">
+          <label class="lead" for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+          <small id="passwordInvalid" class="form-text text-muted"><a href="#club-id-section"></a></small>
+        </div>
+        <p class="lead"><%-invalidPassword%></p>
+        <button type="submit" class="btn btn-lg btn-primary">Log In</button>
+      </form>
     </div>
   </section>
-
 
   <!-- Footer -->
   <footer class="footer text-center">
@@ -176,7 +176,6 @@
   <script src="js/jqBootstrapValidation.js"></script>
   <script src="js/contact_me.js"></script>
   <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
-  <script src="js/ajax-admin.js"></script>
 
   <!-- Custom scripts for this template -->
   <script src="js/freelancer.min.js"></script>

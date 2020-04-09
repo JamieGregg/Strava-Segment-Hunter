@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.use(session({
-  secret: "thesecret",
+  secret: process.env.HASH_KEY,
   resave: false,
   saveUninitialized: false
 }))
@@ -33,6 +33,7 @@ mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.
   }).then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.error('Could not connect to mongoDB', err))
 mongoose.set('useCreateIndex', true)
+
 
 const resultsSchema = new mongoose.Schema({
   points: Number,
@@ -53,8 +54,8 @@ const segClubData = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
   username: String,
   password: String,
-  //clubName: String,
-  //clubId: Number
+  clubName: String,
+  clubId: Number
 })
 
 userSchema.plugin(passportLocalMongoose)
@@ -930,22 +931,34 @@ function emailNewSegment(segmentId) {
 
 
 
-
-
 app.get('/signup', function(req, res) {
   res.render('signup')
 })
 
+app.get("/login", function(req, res) {
+  res.render('login', {
+    invalidPassword: ""
+  })
+})
+
+app.get("/loginFailed", function(req, res) {
+  res.render('login', {
+    invalidPassword: "Incorrect username or password"
+  })
+})
+
 app.get('/adminDashboard', function(req, res){
-  if ( req.isAuthenticated() ) {
+  //if ( req.isAuthenticated(req, res) ) {
     console.log("Authentication Complete")
-    res.render("admindash")
-  } else {
-    res.redirect("/signup")
-  }
+    loadAdminBoard(req, res);
+  //} else {
+    //res.redirect("login")
+  //}
 })
 
 app.post('/register', function(req, res) {
+    var clubName = req.body.clubName
+    var clubId = req.body.clubId
 
     User.register({username: req.body.username}, req.body.password, function(err, user){
       console.log("Registered")
@@ -955,14 +968,51 @@ app.post('/register', function(req, res) {
         res.redirect("/signup")
       } else {
         passport.authenticate('local')(req, res, function(){
-          console.log("Authenticated!!")
+          var query = {
+            username: user.username
+          };
+          var update = {
+            clubName: clubName,
+            clubId: clubId
+          }
+          var options = {
+            upsert: true,
+            'new': true,
+            'useFindAndModify': true
+          };
+
+          User.update(query, update, options, function(err, doc) {
+            console.log(doc);
+          });
+
           res.redirect('/adminDashboard');
       })
     }
   })
 })
 
+app.post('/login',
+  passport.authenticate('local',
+  { successRedirect: '/adminDashboard',
+    failureRedirect: '/loginFailed'
+  }));
 
-app.post('/login', function(req, res) {
 
+function loadAdminBoard(req,res){
+  //User.findOne({username: req.user.username}, function(err, obj) {
+    //console.log(obj)
+    res.render('admindash', {
+      clubName: "Test",
+      clubId: 12345
+    })
+  //})
+}
+
+app.post('/addSegment', function(req, res){
+
+  const collection = mongoose.model(clubId + , resultsSchema)
+
+  collection.update(update, options, function(err, doc) {
+    console.log(doc);
+  });
 })
