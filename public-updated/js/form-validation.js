@@ -6,4 +6,9 @@ $(document)
       e.preventDefault();
       $('#passwordInvalid').html("Password must be at least 8 characters")
     }
+
+    if($("#password").val() != $("#passwordRetype").val()){
+      e.preventDefault();
+      $('#passwordNotSame').html("Passwords do not match")
+    }
 });

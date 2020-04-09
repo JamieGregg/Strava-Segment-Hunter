@@ -40,8 +40,6 @@ $(document).ready(function() {
           $("#loader").hide();
         }
       })
-
-
   })
 })
 
@@ -50,7 +48,23 @@ function loadSegments(data){
   dailyLeaderboardTable.find("tbody tr").remove();
   data.forEach(function(segment){
     dailyLeaderboardTable.append(
-      "<tr class=\'text-white\'><th>" + segment[0] + "</th><td>" + segment[1] + "</td></tr>"
+      "<tr class=\'text-white\'><th>" + segment[0] + "</th><td class=\'seg-name\'>" + segment[1] + "</td><td><button class=\'delete'\>Clear</button</td</tr>"
     )
   })
 }
+
+$(document).on("click", ".delete", function(){
+  $(this).parents("tr").remove();
+  $(".add-new").removeAttr("disabled");
+    var postData = {
+      segmentName: $(this).closest("tr").find(".seg-name").text()
+    }
+    $.ajax({
+      type: 'POST',
+      url: '/deleteSegment',
+      dataType: 'json',
+      data: postData,
+      success: function(info) {
+      },
+    })
+  })

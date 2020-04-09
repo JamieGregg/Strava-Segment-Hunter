@@ -744,24 +744,28 @@ function saveDataEvening() {
           }
 
           strava.segments.leaderboard.get(segmentId, paramsMasterM54, function(err, data) {
-            if (data.statusCode != 404 && data.entries != "") {
-              for (let i = 0; i < data.entries.length; i++) {
-                results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-              }
-            }
-
-            strava.segments.leaderboard.get(segmentId, paramsMasterM64, function(err, data) {
-              if (data.statusCode != 404) {
+            try {
+              if (data.statusCode != 404 && data.entries != "") {
                 for (let i = 0; i < data.entries.length; i++) {
                   results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
                 }
               }
 
-              if(results.length != 0){
-                populateSchema(results, implClubs[i][1], implClubs[i][0] + "MasterM")
-                results.length = 0;
-              }
-            })
+              strava.segments.leaderboard.get(segmentId, paramsMasterM64, function(err, data) {
+                if (data.statusCode != 404) {
+                  for (let i = 0; i < data.entries.length; i++) {
+                    results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                  }
+                }
+
+                if(results.length != 0){
+                  populateSchema(results, implClubs[i][1], implClubs[i][0] + "MasterM")
+                  results.length = 0;
+                }
+              })
+            } catch(err){
+              console.log(err)
+            }
           })
 
           results.length = 0;
@@ -782,24 +786,27 @@ function saveDataEvening() {
             }
 
             strava.segments.leaderboard.get(segmentId, paramsMaster54, function(err, data) {
-              if (data.statusCode != 404 && data.entries != "") {
-                for (let i = 0; i < data.entries.length; i++) {
-                  results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-                }
-              }
-
-              strava.segments.leaderboard.get(segmentId, paramsMaster64, function(err, data) {
-                if (data.statusCode != 404) {
+              try{
+                if (data.statusCode != 404 && data.entries != "") {
                   for (let i = 0; i < data.entries.length; i++) {
                     results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
                   }
                 }
+                strava.segments.leaderboard.get(segmentId, paramsMaster64, function(err, data) {
+                  if (data.statusCode != 404) {
+                    for (let i = 0; i < data.entries.length; i++) {
+                      results.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                    }
+                  }
 
-                if(results.length != 0){
-                  populateSchema(results, implClubs[i][1], implClubs[i][0] + "MasterF")
-                  results.length = 0;
-                }
-              })
+                  if(results.length != 0){
+                    populateSchema(results, implClubs[i][1], implClubs[i][0] + "MasterF")
+                    results.length = 0;
+                  }
+                })
+              } catch (err) {
+                console.log(err)
+              }
             })
 
       }//For loop
@@ -1012,7 +1019,6 @@ app.post('/register', function(req, res) {
 
     User.register({username: req.body.username}, req.body.password, function(err, user){
       console.log("Registered")
-      //console.log(user)
       if ( err ) {
         console.log(err)
         res.redirect("/signup")
@@ -1143,3 +1149,26 @@ function showSegments(res, segInfo){
     segment: segInfo
   })
 }
+
+app.post('/deleteSegment', function(req,res){
+  console.log("called")
+  User.findOne({username: req.user.username}, function(err, obj) {
+    var segmentName = req.body.segmentName;
+    console.log(segmentName)
+    var clubId = obj.clubId
+    console.log(clubId)
+
+    const collection = mongoose.model(clubId + "segments", segCodeSchema)
+
+    collection.remove({ name: segmentName}, function(err) {
+      if (!err) {
+          console.log("removed " + segmentName)
+          res.send({
+            result: "Pass"
+          })
+      } else {
+          message.type = 'error';
+      }
+    });
+  })
+})
