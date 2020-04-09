@@ -109,12 +109,47 @@
               <div class="input-group-prepend">
                 <div class="input-group-text">www.strava.com/segments/</div>
               </div>
-              <input type="text" class="form-control" id="stravaSeg" name="segment" placeholder="453235">
+              <input type="text" class="form-control" id="stravaSeg" name="segment" placeholder="453235" required>
             </div><br>
             <button class="btn btn-primary"type="submit" name="button">Submit Segment</button>
           </form>
+          <p class="lead" id="responseSegment"></p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
+    <div class="container">
+
+      <!-- Results Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Upcoming Segments</h2>
+
+      <!-- Results Divider -->
+      <div class="divider-custom divider-light">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="divider-custom-line"></div>
+      </div>
+
+
+      <!-- Results Section Content -->
+      <table class="table table-hover" id="segment-table">
+        <thead>
+          <tr class="text-white">
+            <th scope="col">Weeks from today</th>
+            <th scope="col">Segment Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="text-white">
+            <th></th>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 

@@ -42,7 +42,8 @@ const resultsSchema = new mongoose.Schema({
 
 const segCodeSchema = new mongoose.Schema({
   counterId: Number,
-  segmentId: Number
+  segmentId: Number,
+  name: String
 })
 
 const segClubData = new mongoose.Schema({
@@ -914,6 +915,14 @@ function sortFunctionClub(a, b) {
   }
 }
 
+function sortCounter(a, b) {
+  if (a[0] === b[0]) {
+    return 0;
+  } else {
+    return (a[0] < b[0]) ? -1 : 1;
+  }
+}
+
 function emailResults(club, results) {
   let transport = nodemailer.createTransport({
     host: 'smtp.mailtrap.io',
@@ -989,12 +998,12 @@ app.get("/loginFailed", function(req, res) {
 })
 
 app.get('/adminDashboard', function(req, res){
-  //if ( req.isAuthenticated(req, res) ) {
+  if ( req.isAuthenticated(req, res) ) {
     console.log("Authentication Complete")
     loadAdminBoard(req, res);
-  //} else {
-    //res.redirect("login")
-  //}
+  } else {
+    res.redirect("login")
+  }
 })
 
 app.post('/register', function(req, res) {
@@ -1032,59 +1041,105 @@ app.post('/register', function(req, res) {
   })
 })
 
-app.post('/login',
-  passport.authenticate('local',
+app.post('/login', passport.authenticate('local',
   { successRedirect: '/adminDashboard',
     failureRedirect: '/loginFailed'
   }));
 
 
 function loadAdminBoard(req,res){
-  //User.findOne({username: req.user.username}, function(err, obj) {
-    //console.log(obj)
-    res.render('admindash', {
-      clubName: "Test",
-      clubId: 12345
-    })
-  //})
+  User.findOne({username: req.user.username}, function(err, obj) {
+      res.render('admindash', {
+        clubName: obj.clubName,
+        clubId: obj.clubId,
+        segment: ""
+      })
+  })
 }
 
-app.post('/addSegment', function(req, res){
+app.post('/addSegment', async function(req, res){
+ await User.findOne({username: req.user.username}, function(err, obj) {
+    var strava = new require("strava")({
+      "client_id": process.env.CLIENT_ID,
+      "access_token": process.env.ACCESS_TOKEN,
+      "client_secret": process.env.CLIENT_SECRET,
+      "redirect_url": "https://www.stravasegmenthunter.com/"
+    });
 
-  const collection = mongoose.model(clubId + "segments", segCodeSchema)
+    const collection = mongoose.model(obj.clubId + "segments", segCodeSchema)
 
-  collection
-  .findOne({})
-  .sort('-counterId')  // give me the max
-  .exec(function (err, member) {
-    if ( err ) {
-      console.log(err)
-    } else {
-      console.log(member)
-
-      var lastCounter =  0;
-      if(  member == null ){
-        lastCounter = 1;
+    collection
+    .findOne({})
+    .sort('-counterId')  // give me the max
+    .exec(function (err, member) {
+      if ( err ) {
+        console.log(err)
       } else {
-        lastCounter = (member.counterId += 1)
+        console.log(member)
+
+        var lastCounter =  0;
+        if(  member == null ){
+          lastCounter = 1;
+        } else {
+          lastCounter = (member.counterId += 1)
+        }
+
+        strava.segments.get(req.body.segmentId, async function(err, info) {
+           console.log(info.name)
+
+           var newSegment = new collection({ counterId: lastCounter,  segmentId: req.body.segmentId, name: info.name});
+
+           // save model to database
+           newSegment.save(function (err, segment) {
+             if (err) return console.error(err);
+             console.log(info.name + " saved to database collection.");
+           });
+
+           res.send({
+             stravaSegment: req.body.segmentId
+           })
+        })
       }
-
-      var newSegment = new collection({ counterId: lastCounter,  segmentId: req.body.segmentId});
-
-      // save model to database
-      newSegment.save(function (err, segment) {
-        if (err) return console.error(err);
-        console.log(segment.segmentId + " saved to database collection.");
-      });
-
-      res.send({
-        stravaSegment: req.body.segmentId
-      })
-    }
-    // your callback code
-
-  });
-  //collection.update(update, options, function(err, doc) {
-    //console.log(doc);
-  //});
+    });
+  })
 })
+
+app.get('/upcomingSegments', async function(req,res){
+  User.findOne({username: req.user.username}, function(err, obj) {
+    var strava = new require("strava")({
+      "client_id": process.env.CLIENT_ID,
+      "access_token": process.env.ACCESS_TOKEN,
+      "client_secret": process.env.CLIENT_SECRET,
+      "redirect_url": "https://www.stravasegmenthunter.com/"
+    });
+
+    var segmentList = [];
+    var clubId = obj.clubId;
+
+    const collection = mongoose.model(clubId + "segments", segCodeSchema)
+    collection.find(async function(err, data) {
+      if ( err ) {
+        console.log(err)
+      } else {
+        for(let i = 0; i < data.length; i++){
+          segmentList.push([i, data[i].name])
+
+          if(i === data.length - 1){
+            showSegments(res, segmentList)
+          }
+        }
+      }
+    }).sort({
+      counterId: 1
+    }).exec(function(err, docs) {
+      console.log(err);
+    });
+  })
+})
+
+function showSegments(res, segInfo){
+  segInfo.sort(sortCounter)
+  res.send({
+    segment: segInfo
+  })
+}
