@@ -1051,9 +1051,40 @@ function loadAdminBoard(req,res){
 
 app.post('/addSegment', function(req, res){
 
-  const collection = mongoose.model(clubId + , resultsSchema)
+  const collection = mongoose.model(clubId + "segments", segCodeSchema)
 
-  collection.update(update, options, function(err, doc) {
-    console.log(doc);
+  collection
+  .findOne({})
+  .sort('-counterId')  // give me the max
+  .exec(function (err, member) {
+    if ( err ) {
+      console.log(err)
+    } else {
+      console.log(member)
+
+      var lastCounter =  0;
+      if(  member == null ){
+        lastCounter = 1;
+      } else {
+        lastCounter = (member.counterId += 1)
+      }
+
+      var newSegment = new collection({ counterId: lastCounter,  segmentId: req.body.segmentId});
+
+      // save model to database
+      newSegment.save(function (err, segment) {
+        if (err) return console.error(err);
+        console.log(segment.segmentId + " saved to database collection.");
+      });
+
+      res.send({
+        stravaSegment: req.body.segmentId
+      })
+    }
+    // your callback code
+
   });
+  //collection.update(update, options, function(err, doc) {
+    //console.log(doc);
+  //});
 })
