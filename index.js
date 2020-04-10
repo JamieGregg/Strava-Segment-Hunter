@@ -1160,12 +1160,6 @@ app.get('/upcomingSegments', async function(req, res) {
   User.findOne({
     username: req.user.username
   }, function(err, obj) {
-    var strava = new require("strava")({
-      "client_id": process.env.CLIENT_ID,
-      "access_token": process.env.ACCESS_TOKEN,
-      "client_secret": process.env.CLIENT_SECRET,
-      "redirect_url": "https://www.stravasegmenthunter.com/"
-    });
 
     var segmentList = [];
     var clubId = obj.clubId;
@@ -1222,5 +1216,23 @@ app.post('/deleteSegment', function(req, res) {
         message.type = 'error';
       }
     });
+  })
+})
+
+app.post('/validateClub', function(req,res){
+  var strava = new require("strava")({
+    "client_id": process.env.CLIENT_ID,
+    "access_token": process.env.ACCESS_TOKEN,
+    "client_secret": process.env.CLIENT_SECRET,
+    "redirect_url": "https://www.stravasegmenthunter.com/"
+  });
+
+  strava.clubs.get(req.body.clubId, function(err, data){
+    console.log(data)
+    res.send({
+      clubName: data.name,
+      clubIcon: data.profile,
+      statusCode: data.statusCode
+    })
   })
 })
