@@ -173,19 +173,19 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
         console.log(err)
       } else {
         for (let i = 1; i < 5; i++) {
-          strava.segments.get(data[i].segmentId, async function(err, data) {
-            var objJSON = await JSON.parse(JSON.stringify(data))
-
+          if (err) {
+            console.log(err)
+          } else {
             if (i == 1) {
-              dayOne = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
+              dayOne = [data[1].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 2) {
-              dayTwo = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
+              dayTwo = [data[2].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 3) {
-              dayThree = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
+              dayThree = [data[3].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 4) {
-              dayFour = [objJSON.name, "https://www.strava.com/segments/" + objJSON.id]
+              dayFour = [data[4].name, "https://www.strava.com/segments/" + data.segmentId]
             }
-          })
+          }
         }
       }
     }).sort({
