@@ -1090,19 +1090,6 @@ app.post('/login', passport.authenticate('local', {
   failureRedirect: '/loginFailed'
 }));
 
-
-function loadAdminBoard(req, res) {
-  User.findOne({
-    username: req.user.username
-  }, function(err, obj) {
-    res.render('admindash', {
-      clubName: obj.clubName,
-      clubId: obj.clubId,
-      segment: ""
-    })
-  })
-}
-
 app.post('/addSegment', async function(req, res) {
   await User.findOne({
     username: req.user.username
@@ -1185,26 +1172,17 @@ app.get('/upcomingSegments', async function(req, res) {
   })
 })
 
-function showSegments(res, segInfo) {
-  segInfo.sort(sortCounter)
-  res.send({
-    segment: segInfo
-  })
-}
-
 app.post('/deleteSegment', function(req, res) {
   console.log("called")
   User.findOne({
     username: req.user.username
   }, function(err, obj) {
     var segmentName = req.body.segmentName;
-    console.log(segmentName)
     var clubId = obj.clubId
-    console.log(clubId)
 
     const collection = mongoose.model(clubId + "segments", segCodeSchema)
 
-    collection.remove({
+    collection.deleteOne({
       name: segmentName
     }, function(err) {
       if (!err) {
@@ -1236,3 +1214,40 @@ app.post('/validateClub', function(req,res){
     })
   })
 })
+
+
+app.post('/validateSegment', function(req,res){
+  var strava = new require("strava")({
+    "client_id": process.env.CLIENT_ID,
+    "access_token": process.env.ACCESS_TOKEN,
+    "client_secret": process.env.CLIENT_SECRET,
+    "redirect_url": "https://www.stravasegmenthunter.com/"
+  });
+
+  strava.segments.get(req.body.segmentId, function(err, data){
+    console.log(data)
+    res.send({
+      segmentName: data.name,
+      statusCode: data.statusCode
+    })
+  })
+})
+
+function showSegments(res, segInfo) {
+  segInfo.sort(sortCounter)
+  res.send({
+    segment: segInfo
+  })
+}
+
+function loadAdminBoard(req, res) {
+  User.findOne({
+    username: req.user.username
+  }, function(err, obj) {
+    res.render('admindash', {
+      clubName: obj.clubName,
+      clubId: obj.clubId,
+      segment: ""
+    })
+  })
+}

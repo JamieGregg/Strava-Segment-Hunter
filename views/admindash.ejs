@@ -110,14 +110,30 @@
                 <div class="input-group-text">www.strava.com/segments/</div>
               </div>
               <input type="text" class="form-control" id="stravaSeg" name="segment" placeholder="453235" required>
+            </div>
+            <small id="segmentInvalid" class="form-text text-danger"></small>
+            <div id="confirmation-box"class="input-group mb-2 mr-sm-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Confirm this is the segment:</div>
+              </div>
+              <input type="text" class="form-control" id="confirmStravaSeg" name="segment" readonly>
             </div><br>
-            <button class="btn btn-primary"type="submit" name="button">Submit Segment</button>
+            <div id="continueButton">
+              <button id="continue" class="btn btn-primary"type="button" name="button">Submit Segment</button>
+            </div>
+            <div id="submitButton">
+              <button id="submit" class="btn btn-primary"type="submit" name="button">confirm</button>
+            </div>
           </form>
           <p class="lead" id="responseSegment"></p>
         </div>
       </div>
     </div>
   </section>
+
+  <div id='loader' style='display: none;'>
+    <img src='img/portfolio/ajax-loader.gif' width='32px' height='32px'>
+  </div>
 
   <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
     <div class="container">
@@ -214,6 +230,7 @@
   <script src="js/contact_me.js"></script>
   <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
   <script src="js/ajax-admin.js"></script>
+  <script src="js/ajax-segment-validation.js"></script>
 
   <!-- Custom scripts for this template -->
   <script src="js/freelancer.min.js"></script>
