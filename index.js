@@ -609,7 +609,7 @@ function populateSchema(results, club, clubName) {
 function saveDataEvening() {
 
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 11
+  rule.hour = 23
   rule.minute = 55
   rule.second = 30
 
