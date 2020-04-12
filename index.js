@@ -43,7 +43,10 @@ const resultsSchema = new mongoose.Schema({
 const segCodeSchema = new mongoose.Schema({
   counterId: Number,
   segmentId: Number,
-  name: String
+  name: String,
+  //distance: String,
+  //grade: String,
+  //attempts: Number
 })
 
 const segClubData = new mongoose.Schema({
@@ -60,15 +63,6 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.plugin(passportLocalMongoose)
-
-var schema = new passwordValidator();
-schema
-  .is().min(8) // Minimum length 8
-  .is().max(100) // Maximum length 100
-  .has().uppercase() // Must have uppercase letters
-  .has().not().spaces()
-  .is().not().oneOf(['Passw0rd', 'Password123']);
-
 
 var strava = new require("strava")({
   "client_id": process.env.CLIENT_ID,
@@ -92,7 +86,6 @@ let clubId = 0
 let segmentId;
 let timeFrame = "today"
 let clubName = "Public"
-let saltRounds = 10
 
 app.post('/test', function(req, res) {
   loadLeaderboard('POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
@@ -132,6 +125,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
   var dayTwo = [];
   var dayThree = [];
   var dayFour = [];
+  var dayZero = [];
 
   if (req.body.clubs != undefined) {
     clubName = "Public"
@@ -174,7 +168,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
       if (err) {
         console.log(err)
       } else {
-        for (let i = 1; i < 5; i++) {
+        for (let i = 0; i < 5; i++) {
           if (err) {
             console.log(err)
           } else {
@@ -186,6 +180,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
               dayThree = [data[3].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 4) {
               dayFour = [data[4].name, "https://www.strava.com/segments/" + data.segmentId]
+            } else if (i == 0){
+
             }
           }
         }
