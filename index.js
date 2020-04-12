@@ -187,7 +187,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     }); //Upcoming Segments
 
     //Gathering segment data
-    strava.segments.get(segmentId, async function(err, data) {
+    await strava.segments.get(segmentId, async function(err, data) {
       var objJSON = await JSON.parse(JSON.stringify(data))
       segmentInfo = {
         "name": objJSON.name,
