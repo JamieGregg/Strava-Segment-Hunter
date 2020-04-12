@@ -180,8 +180,6 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
               dayThree = [data[3].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 4) {
               dayFour = [data[4].name, "https://www.strava.com/segments/" + data.segmentId]
-            } else if (i == 0){
-
             }
           }
         }
