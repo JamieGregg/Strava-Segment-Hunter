@@ -145,7 +145,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     "redirect_url": "https://www.stravasegmenthunter.com/"
   });
 
-  findSegmentCodes()
+  await findSegmentCodes()
 
   //Gathering Club Data
   clubData.find(async function(err, clubInfo) {
@@ -175,7 +175,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
             } else if (i == 4) {
               dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
             } else if (i == 0) {
-              dayZero = [data[0].name, "https://www.strava.com/segments/" + data[0].segmentId]
+              dayZero = [data[0].name, "https://www.strava.com/segments/" + data[0].segmentId, data[0].segmentId]
             }
           }
         }
@@ -186,21 +186,38 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
       console.log(err);
     }); //Upcoming Segments
 
-    //Gathering segment data
-    await strava.segments.get(segmentId, async function(err, data) {
-      var objJSON = await JSON.parse(JSON.stringify(data))
-      segmentInfo = {
-        "name": objJSON.name,
-        "distance": convertingMetersToMiles(objJSON.distance),
-        "average_grade": objJSON.average_grade,
-        "link": "https://www.strava.com/segments/" + objJSON.id,
-        "efforts": objJSON.effort_count,
-        "location": objJSON.state
-      }
-    }) //todays segment
 
-    segmentInfo.name = dayZero[0]
-    segmentInfo.link = dayZero[1]
+    /*strava.segments.get(segmentId, async function(err, data) {
+        var objJSON = JSON.parse(JSON.stringify(data))
+        segmentInfo = {
+          "name": objJSON.name,
+          "distance": convertingMetersToMiles(objJSON.distance),
+          "average_grade": objJSON.average_grade,
+          "link": "https://www.strava.com/segments/" + objJSON.id,
+          "efforts": objJSON.effort_count,
+          "location": objJSON.state
+        }
+    }) //todays segment*/
+
+    segmentCodes.find(async function(err, data) {
+      if (err) {
+        console.log(err)
+      } else {
+        segmentInfo = {
+          "name": data[0].name,
+          "distance": "",//convertingMetersToMiles(objJSON.distance),
+          "average_grade": "", //objJSON.average_grade,
+          "link": "https://www.strava.com/segments/" + data[0].segmentId,
+          "efforts": "",//objJSON.effort_count,
+          "location": ""//objJSON.state
+        }
+      }
+    }).sort({
+      counterId: 1
+    }).exec(function(err, docs) {
+      console.log(err);
+    }); //Upcoming Segments
+
 
     if ((ageFilter === 'false') && (gender === '')) {
       //no age no gender
