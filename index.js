@@ -190,14 +190,17 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     strava.segments.get(segmentId, async function(err, data) {
       var objJSON = await JSON.parse(JSON.stringify(data))
       segmentInfo = {
-        "name": dayZero[0],
+        "name": objJSON.name,
         "distance": convertingMetersToMiles(objJSON.distance),
         "average_grade": objJSON.average_grade,
-        "link": dayZero[1],
+        "link": "https://www.strava.com/segments/" + objJSON.id,
         "efforts": objJSON.effort_count,
         "location": objJSON.state
       }
     }) //todays segment
+
+    segmentInfo.name = dayZero[0]
+    segmentInfo.link = dayZero[1]
 
     if ((ageFilter === 'false') && (gender === '')) {
       //no age no gender
