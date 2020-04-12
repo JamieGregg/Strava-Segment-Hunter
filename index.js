@@ -132,6 +132,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
   var dayTwo = [];
   var dayThree = [];
   var dayFour = [];
+  var dayZero = [];
 
   if (req.body.clubs != undefined) {
     clubName = "Public"
@@ -156,25 +157,12 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
       }
     }
 
-    //Gathering segment data
-    strava.segments.get(segmentId, async function(err, data) {
-      var objJSON = await JSON.parse(JSON.stringify(data))
-      segmentInfo = {
-        "name": objJSON.name,
-        "distance": convertingMetersToMiles(objJSON.distance),
-        "average_grade": objJSON.average_grade,
-        "link": "https://www.strava.com/segments/" + objJSON.id,
-        "efforts": objJSON.effort_count,
-        "location": objJSON.state
-      }
-    }) //todays segment
-
     //Finding upcoming segments
     segmentCodes.find(async function(err, data) {
       if (err) {
         console.log(err)
       } else {
-        for (let i = 1; i < 5; i++) {
+        for (let i = 0; i < 5; i++) {
           if (err) {
             console.log(err)
           } else {
@@ -186,6 +174,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
               dayThree = [data[3].name, "https://www.strava.com/segments/" + data[3].segmentId]
             } else if (i == 4) {
               dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
+            } else if (i == 0) {
+              dayZero = [data[0].name, "https://www.strava.com/segments/" + data[0].segmentId]
             }
           }
         }
@@ -195,6 +185,19 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     }).exec(function(err, docs) {
       console.log(err);
     }); //Upcoming Segments
+
+    //Gathering segment data
+    strava.segments.get(segmentId, async function(err, data) {
+      var objJSON = await JSON.parse(JSON.stringify(data))
+      segmentInfo = {
+        "name": dayZero[0],
+        "distance": convertingMetersToMiles(objJSON.distance),
+        "average_grade": objJSON.average_grade,
+        "link": dayZero[1],
+        "efforts": objJSON.effort_count,
+        "location": objJSON.state
+      }
+    }) //todays segment
 
     if ((ageFilter === 'false') && (gender === '')) {
       //no age no gender
