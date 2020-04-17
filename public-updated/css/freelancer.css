@@ -445,6 +445,30 @@ mark,
   background-color: #fcf8e3;
 }
 
+* {box-sizing: border-box;}
+
+/* Style the input container */
+.input-container {
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Style the form icons */
+.icon {
+  padding: 10px;
+  background: dodgerblue;
+  color: white;
+  min-width: 50px;
+  text-align: center;
+}
+
+.card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+}
+
 .light-table{
   colour: #ffffff
 }

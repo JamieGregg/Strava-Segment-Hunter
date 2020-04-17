@@ -64,15 +64,6 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(passportLocalMongoose)
 
-var schema = new passwordValidator();
-schema
-  .is().min(8) // Minimum length 8
-  .is().max(100) // Maximum length 100
-  .has().uppercase() // Must have uppercase letters
-  .has().not().spaces()
-  .is().not().oneOf(['Passw0rd', 'Password123']);
-
-
 var strava = new require("strava")({
   "client_id": process.env.CLIENT_ID,
   "access_token": process.env.ACCESS_TOKEN,
@@ -95,7 +86,6 @@ let clubId = 0
 let segmentId;
 let timeFrame = "today"
 let clubName = "Public"
-let saltRounds = 10
 
 app.post('/test', function(req, res) {
   loadLeaderboard('POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
@@ -170,11 +160,11 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
             console.log(err)
           } else {
             if (i == 1) {
-              dayOne = [data[1].name, "https://www.strava.com/segments/" + data[1].segmentId]
+              dayOne = [data[1].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 2) {
-              dayTwo = [data[2].name, "https://www.strava.com/segments/" + data[2].segmentId]
+              dayTwo = [data[2].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 3) {
-              dayThree = [data[3].name, "https://www.strava.com/segments/" + data[3].segmentId]
+              dayThree = [data[3].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 4) {
               dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
             } else if (i == 0) {
@@ -620,7 +610,7 @@ function populateSchema(results, club, clubName) {
 function saveDataEvening() {
 
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 23
+  rule.hour = 11
   rule.minute = 55
   rule.second = 30
 
@@ -1101,19 +1091,6 @@ app.post('/login', passport.authenticate('local', {
   failureRedirect: '/loginFailed'
 }));
 
-
-function loadAdminBoard(req, res) {
-  User.findOne({
-    username: req.user.username
-  }, function(err, obj) {
-    res.render('admindash', {
-      clubName: obj.clubName,
-      clubId: obj.clubId,
-      segment: ""
-    })
-  })
-}
-
 app.post('/addSegment', async function(req, res) {
   await User.findOne({
     username: req.user.username
@@ -1149,7 +1126,10 @@ app.post('/addSegment', async function(req, res) {
             var newSegment = new collection({
               counterId: lastCounter,
               segmentId: req.body.segmentId,
-              name: info.name
+              name: info.name,
+              distance: convertingMetersToMiles(info.distance),
+              grade: info.average_grade,
+              efforts: info.effort_count
             });
 
             // save model to database
@@ -1171,12 +1151,6 @@ app.get('/upcomingSegments', async function(req, res) {
   User.findOne({
     username: req.user.username
   }, function(err, obj) {
-    var strava = new require("strava")({
-      "client_id": process.env.CLIENT_ID,
-      "access_token": process.env.ACCESS_TOKEN,
-      "client_secret": process.env.CLIENT_SECRET,
-      "redirect_url": "https://www.stravasegmenthunter.com/"
-    });
 
     var segmentList = [];
     var clubId = obj.clubId;
@@ -1202,26 +1176,17 @@ app.get('/upcomingSegments', async function(req, res) {
   })
 })
 
-function showSegments(res, segInfo) {
-  segInfo.sort(sortCounter)
-  res.send({
-    segment: segInfo
-  })
-}
-
 app.post('/deleteSegment', function(req, res) {
   console.log("called")
   User.findOne({
     username: req.user.username
   }, function(err, obj) {
     var segmentName = req.body.segmentName;
-    console.log(segmentName)
     var clubId = obj.clubId
-    console.log(clubId)
 
     const collection = mongoose.model(clubId + "segments", segCodeSchema)
 
-    collection.remove({
+    collection.deleteOne({
       name: segmentName
     }, function(err) {
       if (!err) {
@@ -1235,3 +1200,58 @@ app.post('/deleteSegment', function(req, res) {
     });
   })
 })
+
+app.post('/validateClub', function(req,res){
+  var strava = new require("strava")({
+    "client_id": process.env.CLIENT_ID,
+    "access_token": process.env.ACCESS_TOKEN,
+    "client_secret": process.env.CLIENT_SECRET,
+    "redirect_url": "https://www.stravasegmenthunter.com/"
+  });
+
+  strava.clubs.get(req.body.clubId, function(err, data){
+    console.log(data)
+    res.send({
+      clubName: data.name,
+      clubIcon: data.profile,
+      statusCode: data.statusCode
+    })
+  })
+})
+
+
+app.post('/validateSegment', function(req,res){
+  var strava = new require("strava")({
+    "client_id": process.env.CLIENT_ID,
+    "access_token": process.env.ACCESS_TOKEN,
+    "client_secret": process.env.CLIENT_SECRET,
+    "redirect_url": "https://www.stravasegmenthunter.com/"
+  });
+
+  strava.segments.get(req.body.segmentId, function(err, data){
+    console.log(data)
+    res.send({
+      segmentName: data.name,
+      statusCode: data.statusCode
+    })
+  })
+})
+
+function showSegments(res, segInfo) {
+  segInfo.sort(sortCounter)
+  res.send({
+    segment: segInfo
+  })
+}
+
+function loadAdminBoard(req, res) {
+  User.findOne({
+    username: req.user.username
+  }, function(err, obj) {
+    res.render('admindash', {
+      clubName: obj.clubName,
+      clubId: obj.clubId,
+      segment: ""
+    })
+  })
+}
