@@ -44,9 +44,9 @@ const segCodeSchema = new mongoose.Schema({
   counterId: Number,
   segmentId: Number,
   name: String,
-  //distance: String,
-  //grade: String,
-  //attempts: Number
+  distance: String,
+  grade: Number,
+  efforts: Number
 })
 
 const segClubData = new mongoose.Schema({
@@ -1119,7 +1119,10 @@ app.post('/addSegment', async function(req, res) {
             var newSegment = new collection({
               counterId: lastCounter,
               segmentId: req.body.segmentId,
-              name: info.name
+              name: info.name,
+              distance: convertingMetersToMiles(info.distance),
+              grade: info.average_grade,
+              efforts: info.effort_count
             });
 
             // save model to database
