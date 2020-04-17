@@ -43,7 +43,10 @@ const resultsSchema = new mongoose.Schema({
 const segCodeSchema = new mongoose.Schema({
   counterId: Number,
   segmentId: Number,
-  name: String
+  name: String,
+  grade: Number,
+  distance: String,
+  efforts: Number
 })
 
 const segClubData = new mongoose.Schema({
@@ -175,7 +178,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
             } else if (i == 4) {
               dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
             } else if (i == 0) {
-              dayZero = [data[0].name, "https://www.strava.com/segments/" + data[0].segmentId, data[0].segmentId]
+              dayZero = [data[0].name, "https://www.strava.com/segments/" + data[0].segmentId, data[0].segmentId, data]
             }
           }
         }
@@ -184,20 +187,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
       counterId: 1
     }).exec(function(err, docs) {
       console.log(err);
-    }); //Upcoming Segments
-
-
-    /*strava.segments.get(segmentId, async function(err, data) {
-        var objJSON = JSON.parse(JSON.stringify(data))
-        segmentInfo = {
-          "name": objJSON.name,
-          "distance": convertingMetersToMiles(objJSON.distance),
-          "average_grade": objJSON.average_grade,
-          "link": "https://www.strava.com/segments/" + objJSON.id,
-          "efforts": objJSON.effort_count,
-          "location": objJSON.state
-        }
-    }) //todays segment*/
+    });
 
     segmentCodes.find(async function(err, data) {
       if (err) {
@@ -205,11 +195,10 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
       } else {
         segmentInfo = {
           "name": data[0].name,
-          "distance": "",//convertingMetersToMiles(objJSON.distance),
-          "average_grade": "", //objJSON.average_grade,
+          "distance": data[0].distance,
+          "average_grade": data[0].grade,
           "link": "https://www.strava.com/segments/" + data[0].segmentId,
-          "efforts": "",//objJSON.effort_count,
-          "location": ""//objJSON.state
+          "efforts": data[0].efforts,
         }
       }
     }).sort({
@@ -217,7 +206,6 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     }).exec(function(err, docs) {
       console.log(err);
     }); //Upcoming Segments
-
 
     if ((ageFilter === 'false') && (gender === '')) {
       //no age no gender
