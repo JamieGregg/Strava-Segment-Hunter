@@ -27,7 +27,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/Test', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
@@ -84,7 +84,7 @@ passport.deserializeUser(User.deserializeUser())
 let segment = []
 let clubId = 0
 let segmentId;
-let timeFrame = "today"
+let timeFrame = "this_week"
 let clubName = "Public"
 
 app.post('/test', function(req, res) {
@@ -106,8 +106,6 @@ app.listen(port, () => {
 
 refreshTokens();
 saveDataEvening();
-//SEGMENT FUNCTIONS
-//Finding the information on any segment
 
 async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gender, res, req) {
   var params = {
@@ -167,8 +165,6 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
               dayThree = [data[3].name, "https://www.strava.com/segments/" + data.segmentId]
             } else if (i == 4) {
               dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
-            } else if (i == 0) {
-              dayZero = [data[0].name, "https://www.strava.com/segments/" + data[0].segmentId, data[0].segmentId, data]
             }
           }
         }
@@ -608,11 +604,11 @@ function populateSchema(results, club, clubName) {
 }
 
 function saveDataEvening() {
-
   var rule = new schedule.RecurrenceRule()
-  rule.hour = 11
+  rule.dayOfWeek = 6
+  rule.hour = 23
   rule.minute = 55
-  rule.second = 30
+  rule.second = 59
 
   var j = schedule.scheduleJob(rule, function() {
     var strava = new require("strava")({
@@ -685,8 +681,6 @@ function saveDataEvening() {
           console.log(err)
         }
 
-
-
         //"EVERYONE" With Gender Filter Applied
         for (let y = 0; y < 2; y++) {
           var params = {
@@ -714,7 +708,7 @@ function saveDataEvening() {
           } catch {
             console.log(err)
           }
-        } //Gender for loop
+        }
 
 
         //Masters EVERYONE
@@ -845,9 +839,8 @@ function saveDataEvening() {
             console.log(err)
           }
         })
-
-      } //For loop
-    }) //Club Data
+      }
+    })
     deleteUsedSegment();
     findSegmentCodes();
     emailNewSegment(segmentId);
