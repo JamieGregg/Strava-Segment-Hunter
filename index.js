@@ -27,7 +27,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/Test', {
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
@@ -72,7 +72,7 @@ var strava = new require("strava")({
 });
 
 const segDwdInterResults = mongoose.model("DWDInterclub", resultsSchema)
-const segmentCodes = mongoose.model("Segment", segCodeSchema)
+const segmentCodes = mongoose.model("55274Segment", segCodeSchema)
 const clubData = mongoose.model("ClubData", segClubData)
 const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
 const User = mongoose.model("User", userSchema)
