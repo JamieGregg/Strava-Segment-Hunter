@@ -5,7 +5,7 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in daily to see the segment we
+  <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we
   have selected for the day.">
   <meta name="author" content="Jamie Gregg">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
@@ -88,9 +88,7 @@
 
       <!-- Masthead Subheading -->
       <p class="masthead-subheading font-weight-light mb-0">
-        Check in every day to see a <a class="text-white" href="#today-segment">new segment in your area.</a> Complete the segment that day to appear on the <a class="text-white" href="#today-leaderboard">daily leaderboards. Daily leaderboard rankings</a>
-        assigned points at the end of the day - a total of these points can be seen on the <a class="text-white" href="##point-leaderboard">points leaderboard </a><a class="text-white" href="#help-section">see more...</a></p>
-
+        Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we have selected for the week. For more information check out the guides below.</p>
     </div>
   </header>
 
@@ -192,6 +190,8 @@
 
       <br>
         <p id="#clubLinkTag"><a class ="text-white" id="clubLink" href="https://www.strava.com/clubs/<%- clubId -%>">Not appearing in your club leaderboard? Make sure to join the club by clicking here.</a></p>
+        <p ><a class ="text-white" href="#privacy">Still not appearing in your clubs leaderboard... Look here.</a></p>
+
         <!-- Image loader -->
         <div id='loader' style='display: none;'>
           <img src='img/portfolio/ajax-loader.gif' width='32px' height='32px'>
@@ -314,8 +314,8 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <p class="lead text-center">Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in daily to see the segment we
-      have selected for the day. For more information check out the guides below.</p>
+      <p class="lead text-center">Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we
+      have selected for the week. For more information check out the guides below.</p>
 
       <!-- Todays Segment Section Content -->
       <div class="divider-custom">
@@ -324,13 +324,13 @@
           <div class="divider-custom">
             <div class="divider-custom-line"></div>
           </div>
-          <p class="lead">Complete the daily segment shown on the site to appear on the daily leaderboards. These leaderboards are broken down into different
+          <p class="lead">Complete the Weekly segment shown on the site to appear on the Weekly leaderboards. These leaderboards are broken down into different
           clubs (To appear in your club you should join the club on Strava) or all public Strava users. Points will be assigned based
-          on these daily leaderboard placings at 11.45pm that evening.</p>
+          on these Weekly leaderboard placings at 11.45pm that evening.</p>
           <table class="table table-hover">
             <thead>
               <tr>
-                <th scope="col">Daily Placing</th>
+                <th scope="col">Weekly Placing</th>
                 <th scope="col">Points Assigned</th>
               </tr>
             </thead>
@@ -372,6 +372,19 @@
             <p class="lead">To appear in one of our club leaderboards join the club on Strava. If your club does not have one now is the time to do it.
             <a href="https://www.strava.com/clubs/search">Click here to access the clubs section of Strava.</a> Upon joining, get in contact with me at jamiegregg25@gmail.com
             and I will add your club to the site!</p>
+
+
+            <h1 id="privacy"class="text-secondary">PRIVACY CONTROLS</h1>
+            <div class="divider-custom">
+              <div class="divider-custom-line"></div>
+            </div>
+            <p class="lead">If you are not appearing on your club leaderboard even after joining the club it will be down to a privacy setting. To update this go
+            to
+            <br>
+            Settings in Strava > Privacy Controls > Activities > Select Everyone
+            <br>
+            This means you will appear on a public Strava leaderboard which we can read, otherwise your PBs wont even update!
+            </p>
         </div>
       </div>
     </div>
@@ -402,7 +415,7 @@
         <!-- Footer About Text -->
         <div class="col-lg-4">
           <h4 class="text-uppercase mb-4">About Segment Challenge</h4>
-          <p class="lead mb-0">Complete daily segments to top the leaderboards in your club and all rides on Strava that day! Check back in every day for that days segment.</p>
+          <p class="lead mb-0">Complete Weekly segments to top the leaderboards in your club and all rides on Strava that week! Check back in every day for that days segment.</p>
         </div>
 
       </div>
