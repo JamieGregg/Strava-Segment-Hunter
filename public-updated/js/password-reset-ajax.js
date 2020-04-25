@@ -1,4 +1,3 @@
-alert("Here")
 
 $('body').on('submit','#reset-password', function(e){
   e.preventDefault();
