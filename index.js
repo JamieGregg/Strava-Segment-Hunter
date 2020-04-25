@@ -113,7 +113,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     "date_range": timeFrame
   }
   var params64 = {}
-  var noOfResults = 20
+  var noOfResults = 30
   var segment = []
   var segmentInfo = []
   var implClubs = []
