@@ -72,6 +72,7 @@ var strava = new require("strava")({
 });
 
 const segDwdInterResults = mongoose.model("DWDInterclub", resultsSchema)
+//!!!!!!!!!
 const segmentCodes = mongoose.model("55274Segment", segCodeSchema)
 const clubData = mongoose.model("ClubData", segClubData)
 const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
@@ -578,16 +579,23 @@ function assignEnvVariable(res) {
 //DATABASE FUNCTIONS
 function populateSchema(results, club, clubName) {
   var implClubs = []
+  var rank = 0;
+  var lastTime = -1;
 
   for (let z = 0; z < results.length; z++) {
     var currentName = results[z][0]
+
+    if(results[z][1] != lastTime) {
+      rank++
+      lastTime = results[z][1]
+    }
 
     var query = {
       name: currentName
     };
     var update = {
       $inc: {
-        points: scoringSystem(z)
+        points: scoringSystem(rank)
       }
     }
     var options = {
@@ -608,7 +616,7 @@ function saveDataEvening() {
   rule.dayOfWeek = 6
   rule.hour = 23
   rule.minute = 55
-  rule.second = 59
+  rule.second = 35
 
   var j = schedule.scheduleJob(rule, function() {
     var strava = new require("strava")({
@@ -841,7 +849,7 @@ function saveDataEvening() {
         })
       }
     })
-    deleteUsedSegment();
+    //deleteUsedSegment();
     findSegmentCodes();
     emailNewSegment(segmentId);
   }) //Timing Method
@@ -868,22 +876,31 @@ function convertSecondsToMinutes(seconds) {
 
 function scoringSystem(placing) {
   switch (placing) {
-    case 0:
-      return 15;
-      break
     case 1:
-      return 10;
+      return 20;
       break
     case 2:
-      return 8;
-      break;
+      return 16;
+      break
     case 3:
-      return 6;
+      return 14;
       break;
     case 4:
-      return 4;
+      return 12;
       break;
     case 5:
+      return 10;
+      break;
+    case 6:
+      return 8;
+      break;
+    case 7:
+      return 6;
+      break;
+    case 8:
+      return 4;
+      break;
+    case 9:
       return 2;
       break;
     default:
