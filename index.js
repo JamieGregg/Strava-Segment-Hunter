@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
+const async = require('async')
+const crypto = require ('crypto')
 const mongoose = require('mongoose')
 const schedule = require('node-schedule')
 const nodemailer = require('nodemailer')
@@ -9,7 +11,6 @@ const passwordValidator = require('password-validator')
 const session = require('express-session')
 const passport = require('passport')
 const passportLocalMongoose = require('passport-local-mongoose')
-
 const app = express();
 
 app.use(express.static(__dirname + '/public-updated'));
@@ -59,7 +60,9 @@ const userSchema = new mongoose.Schema({
   username: String,
   password: String,
   clubName: String,
-  clubId: Number
+  clubId: Number,
+  resetPasswordToken: String,
+  resetPasswordTokenExpires: Date
 })
 
 userSchema.plugin(passportLocalMongoose)
@@ -1090,6 +1093,26 @@ app.post('/register', function(req, res) {
           console.log(doc);
         });
 
+        var strava = new require("strava")({
+          "client_id": process.env.CLIENT_ID,
+          "access_token": process.env.ACCESS_TOKEN,
+          "client_secret": process.env.CLIENT_SECRET,
+          "redirect_url": "https://www.stravasegmenthunter.com/"
+        });
+
+        strava.clubs.get(req.body.clubId, function(err, data){
+          // a document instance
+          var newClub = new clubData({
+            alais: clubName,
+            clubId: clubId,
+            clubName: data.name
+          });
+
+          // save model to database
+          newClub.save(function (err, club) {
+            if (err) return console.error(err);
+          });
+        })
         res.redirect('/adminDashboard');
       })
     }
@@ -1211,21 +1234,72 @@ app.post('/deleteSegment', function(req, res) {
   })
 })
 
-app.post('/validateClub', function(req,res){
-  var strava = new require("strava")({
-    "client_id": process.env.CLIENT_ID,
-    "access_token": process.env.ACCESS_TOKEN,
-    "client_secret": process.env.CLIENT_SECRET,
-    "redirect_url": "https://www.stravasegmenthunter.com/"
-  });
+app.post('/validateClub', async function(req,res){
+  User.findOne({
+    username: req.body.email
+  }, function(err, person){
+    if (!person) {
+      clubData.findOne({
+        clubId: req.body.clubId
+      }, function(err, obj){
+        console.log(obj)
+        if ( err ){
+          res.send({
+            clubName: "",
+            clubIcon: "",
+            statusCode: 404
+          })
+        } else {
+          try {
+            if (obj.length === 0 || obj === 'NULL') {
+                var strava = new require("strava")({
+                  "client_id": process.env.CLIENT_ID,
+                  "access_token": process.env.ACCESS_TOKEN,
+                  "client_secret": process.env.CLIENT_SECRET,
+                  "redirect_url": "https://www.stravasegmenthunter.com/"
+                });
 
-  strava.clubs.get(req.body.clubId, function(err, data){
-    console.log(data)
-    res.send({
-      clubName: data.name,
-      clubIcon: data.profile,
-      statusCode: data.statusCode
-    })
+                strava.clubs.get(req.body.clubId, function(err, data){
+                  console.log(data)
+                  res.send({
+                    clubName: data.name,
+                    clubIcon: data.profile,
+                    statusCode: data.statusCode
+                  })
+                })
+              } else {
+                res.send({
+                  clubName: "",
+                  clubIcon: "",
+                  statusCode: 1500
+                })
+             }
+            } catch {
+              var strava = new require("strava")({
+                "client_id": process.env.CLIENT_ID,
+                "access_token": process.env.ACCESS_TOKEN,
+                "client_secret": process.env.CLIENT_SECRET,
+                "redirect_url": "https://www.stravasegmenthunter.com/"
+              });
+
+              strava.clubs.get(req.body.clubId, function(err, data){
+                console.log(data)
+                res.send({
+                  clubName: data.name,
+                  clubIcon: data.profile,
+                  statusCode: data.statusCode
+                })
+              })
+            }
+        }
+      })
+    } else {
+      res.send({
+        clubName: "",
+        clubIcon: "",
+        statusCode: 1501
+      })
+    }
   })
 })
 
@@ -1246,6 +1320,75 @@ app.post('/validateSegment', function(req,res){
     })
   })
 })
+
+app.get('/forgot-password', function(req, res){
+  res.render('forgot',{
+    invalidEmail:""
+  })
+})
+
+app.post('/forgot-password', function(req, res, next){
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      User.findOne({ username: req.body.emailForgotten }, function(err, user) {
+        if (!user) {
+          res.send({
+            response:'No account with that email address exists.'
+          })
+        }
+
+        user.resetPasswordToken = token;
+        user.resetPasswordTokenExpires = Date.now() + 3600000; // 1 hour
+
+        user.save(function(err) {
+          done(err, token, user);
+        });
+      });
+    },
+    function(token, user, done) {
+      var smtpTransport = nodemailer.createTransport({
+        host: "smtpout.secureserver.net",
+        secure: true,
+        secureConnection: false, // TLS requires secureConnection to be false
+        tls: {
+          ciphers:'SSLv3'
+        },
+        requireTLS:true,
+        port: 465,
+        debug: true,
+        auth: {
+          user: 'contact@stravasegmenthunter.com',
+          pass: process.env.EMAIL_PASSWORD
+        }
+      });
+      var mailOptions = {
+        to: user.username,
+        from: 'contact@stravasegmenthunter.com',
+        subject: 'Strava Segment Hunter Password Reset',
+        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(err) {
+        console.log('mail sent');
+        res.send({
+          response: "Success, An e-mail has been sent to " + user.username + " with further instructions."
+        })
+      });
+    }
+  ], function(err) {
+    if (err) return next(err);
+    res.redirect('/forgot-password');
+  });
+});
+
 
 function showSegments(res, segInfo) {
   segInfo.sort(sortCounter)

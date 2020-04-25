@@ -76,7 +76,7 @@
 
           <img class="masthead-avatar mb-5" src="img/portfolio/icon.png" alt="">
           <!-- Results Section Heading -->
-          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Log into Strava Segment Hunter.</h2>
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Forgotten Password</h2>
 
 
         </div>
@@ -90,7 +90,7 @@
     <div class="container">
 
       <!-- Sign Up Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Sign In to your Admin Account</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Reset your password</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
@@ -102,20 +102,15 @@
       </div>
 
       <br>
-      <p class="lead"><a href="signup">Haven’t got an account yet? Sign up here.</a></p>
-      <form action="/login" method="POST" id="register">
+      <p class="lead"><a href="login">Remembered your password? Sign in here.</a></p>
+      <form method="POST" id="reset-password">
         <div class="form-group">
           <label class="lead" for="emailAddress">Email Address</label>
-          <input type="email" class="form-control" id="emailAddress" name="username" aria-describedby="emailHelp" placeholder="Enter email" required>
+          <input type="email" class="form-control" id ="emailForgotten" name="emailForgotten" aria-describedby="emailHelp" placeholder="Enter email" required>
+          <small id="emailHelp" class="form-text text-muted"><a href="#club-id-section">How do I find my Club ID?</a></small>
         </div>
-        <div class="form-group">
-          <label class="lead" for="password">Password</label>
-          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-          <small id="passwordInvalid" class="form-text text-muted"><a href="#club-id-section"></a></small>
-          <p class="lead"><a href="forgot-password">Forgotten Password?</a></p>
-        </div>
-        <p class="lead"><%-invalidPassword%></p>
-        <button type="submit" class="btn btn-lg btn-primary">Log In</button>
+        <p class="lead"></p>
+        <button type="submit" class="btn btn-lg btn-primary">Reset</button>
       </form>
     </div>
   </section>
@@ -169,6 +164,7 @@
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="js/password-reset-ajax.js"></script>
 
   <!-- Plugin JavaScript -->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
