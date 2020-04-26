@@ -11,8 +11,8 @@ const session = require('express-session')
 const passport = require('passport')
 const User = require("./models/user")
 const ClubData = require("./models/clubdata")
-const SegmentData = require("./models/segment")
 const resultsSchema = require("./models/results")
+const segSchema = require("./models/segmentSchema")
 const app = express();
 
 app.use(express.static(__dirname + '/public-updated'));
@@ -103,7 +103,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     "redirect_url": "https://www.stravasegmenthunter.com/"
   });
 
-  await findSegmentCodes()
+  findSegmentCodes(clubId)
 
   //Gathering Club Data
   ClubData.find(async function (err, clubInfo) {
@@ -114,6 +114,9 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
         implClubs.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i].alais])
       }
     }
+
+    SegmentData = mongoose.model(clubId + "segment", segSchema)
+
 
     //Finding upcoming segments
     SegmentData.find(async function(err, data) {
@@ -168,7 +171,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
         "club_id": clubId
       }
 
-      strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
+     strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
         numberOfEntry = data.entries.length
 
         for (let i = 0; i < numberOfEntry; i++) {
@@ -811,9 +814,10 @@ function saveDataEvening() {
         })
       }
     })
-    deleteUsedSegment();
-    findSegmentCodes();
-    emailNewSegment(segmentId);
+
+    
+   
+    //findSegmentCodes();
   }) //Timing Method
 }
 
@@ -863,8 +867,10 @@ function scoringSystem(placing) {
   }
 }
 
-function findSegmentCodes() {
-  SegmentData.find(function(err, data) {
+function findSegmentCodes(clubId) {
+  const SegmentInfo = mongoose.model(clubId + "segment", segSchema)
+
+  SegmentInfo.find(function(err, data) {
     if (err) {
       console.log(err)
     } else {
@@ -878,9 +884,12 @@ function findSegmentCodes() {
   });
 }
 
-function deleteUsedSegment() {
+function deleteUsedSegment(clubId) {
+
+  SegmentInfor = mongoose.model(clubId + "segment", segSchema)
+
   var smallestSegmentId = 0;
-  SegmentData.find(function(err, data) {
+  SegmentInfor.find(function (err, data) {
     if (err) {
       console.log(err)
     } else {

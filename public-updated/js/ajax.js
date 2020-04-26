@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
   $("#loader").hide();
-  $("form#filterTable").submit(function(e){
+  $("form.filterTable").submit(function(e){
     e.preventDefault();
     let clubId = $("#club option:selected").val();
     let masters = $("#masters option:selected").val();
@@ -27,6 +27,7 @@ $(document).ready(function(){
         clubLink(info.clubId)
         loadDaily(info.data)
         loadPoints(info.db)
+        loadSegments(info)
       },
       complete:function(data){
         // Hide image container
@@ -110,4 +111,22 @@ function clubLink(clubId){
     $("#clubLinkTag").show();
     $("#clubLink").attr('href','https://www.strava.com/clubs/' + clubId)
   }
+}
+
+function loadSegments(data){
+  $('.seg-name').text(data.segmentInfo.name)
+  $('.seg-grade').text("Average Grade: " + data.segmentInfo.average_grade)
+  $('.seg-distance').text("Distance: " + data.segmentInfo.distance)
+  $('.seg-efforts').text("Number of Attempts: " + data.segmentInfo.efforts)
+  $('.seg-link').attr('href', data.segmentInfo.link)
+
+  $('.day-one').text(data.dayOne[0])
+  $('.day-two').text(data.dayTwo[0])
+  $('.day-three').text(data.dayThree[0])
+  $('.day-four').text(data.dayFour[0])
+
+  $('.day-one').attr('href', data.dayOne[1])
+  $('.day-two').attr('href', data.dayTwo[1])
+  $('.day-three').attr('href', data.dayThree[1])
+  $('.day-four').attr('href', data.dayFour[1])
 }

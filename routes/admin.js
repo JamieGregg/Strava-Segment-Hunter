@@ -173,4 +173,8 @@ function sortCounter(a, b) {
     }
 }
 
+function convertingMetersToMiles(meters) {
+    return (meters * 0.000621371).toFixed(2) + " miles"
+}
+
 module.exports = router

@@ -96,6 +96,25 @@
 
   <section class="page-section portfolio" id="today-segment">
     <div class="container">
+      <div class="divider-custom">
+        <form method="POST" class="filterTable">
+          <div class="form-row">
+            <div class="col">
+              <select class="form-control" id="club" name="clubs">
+                <%for(let i = 0; i < clubInfo.length; i++){ %>
+                <option value="<%- clubInfo[i][1] -%>" <%if(clubInfo[i][2] == clubName) {%> selected
+                  <%}%> ><%- clubInfo[i][2] -%></option>
+                  <%} %>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-light ">Select Club </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="divider-custom">
+        <p class="lead">Select your club from the drop down to see this weeks segment and leaderboards below.</p>
+      </div>
 
       <!-- Todays Segement Section Heading -->
       <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">This Weeks Segment</h2>
@@ -106,17 +125,17 @@
         <div class="divider-custom-icon">
           <i class="fas fa-star"></i>
         </div>
-        <div class="divider-custom-line"></div>
+        <div class="divider-custom-line"></div><br>
       </div>
 
       <!-- Todays Segment Section Content -->
-      <div class="divider-custom">
+      <div class="centre">
         <div class="text-center">
-          <h1 class="text-secondary text-uppercase"><%-segmentInfo.name-%></h1>
-          <p class="lead"><strong>Distance:</strong> <%-segmentInfo.distance-%></p>
-          <p class="lead"><b>Average Grade:</b> <%-segmentInfo.average_grade-%>%</p>
-          <p class="lead"><b>Number of Attempts:</b> <%-segmentInfo.efforts-%></p>
-          <a href=<%-segmentInfo.link-%>>
+          <h1 class="seg-name text-secondary text-uppercase"><%-segmentInfo.name-%></h1>
+          <p class="seg-distance lead" ><strong>Distance:</strong> <%-segmentInfo.distance-%></p>
+          <p class="seg-grade lead" ><b>Average Grade:</b> <%-segmentInfo.average_grade-%>%</p>
+          <p class="seg-efforts lead" ><b>Number of Attempts:</b> <%-segmentInfo.efforts-%></p>
+          <a class="seg-link" href=<%-segmentInfo.link-%>>
             <p class="lead">Click here to view on Strava</p>
           </a>
         </div>
@@ -140,18 +159,9 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <form method="POST" id="filterTable">
+      <form method="POST" class="filterTable">
         <div class="form-row">
-          <div class="col">
-            <select class="form-control" id="club" name="clubs">
-              <%for(let i = 0; i < clubInfo.length; i++){ %>
-                  <option value="<%- clubInfo[i][1] -%>"
-                  <%if(clubInfo[i][2] == clubName) {%> selected <%}%>
-                  ><%- clubInfo[i][2] -%></option>
-              <%} %>
-            </select>
-          </div>
-
+        
           <div class="col">
             <select class="form-control" id="masters" name="masters">
                   <%if(masters == true){%>
@@ -289,10 +299,10 @@
       <div class="divider-custom">
         <div class="text-center">
           <h1 class="lead font-weight-bold text-uppercase">Click on the segment to see more information!</h1><br>
-            <p class="lead"><span class="font-weight-bold">Next Week</span><a class="text-white"href=<%-dayOne[1]%>>: <%-dayOne[0]%></a></p>
-            <p class="lead"><span class="font-weight-bold">Following Week</span><a class="text-white"href=<%-dayTwo[1]%>>: <%-dayTwo[0]%></a></p>
-            <p class="lead"><span class="font-weight-bold">Following Week</span><a class="text-white"href=<%-dayThree[1]%>>: <%-dayThree[0]%></a></p>
-            <p class="lead"><span class="font-weight-bold">Following Week</span><a class="text-white"href=<%-dayFour[1]%>>: <%-dayFour[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Next Week: </span><a class=" day-one text-white"href=<%-dayOne[1]%>> <%-dayOne[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Following Week: </span><a class="day-two text-white"href=<%-dayTwo[1]%>> <%-dayTwo[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Following Week: </span><a class="day-three text-white"href=<%-dayThree[1]%>> <%-dayThree[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Following Week: </span><a class="day-four text-white"href=<%-dayFour[1]%>> <%-dayFour[0]%></a></p>
         </div>
       </div>
     </div>
