@@ -104,6 +104,7 @@ function loadPoints(data){
 function loadHeadings(data){
   $('#daily-leaderboard-heading').html(data + " Daily Leaderboard")
   $('#points-leaderboard-heading').html(data + " Points Leaderboard")
+  $('.segment-heading').html(data + " Weekly Segment")
 }
 
 function clubLink(clubId){

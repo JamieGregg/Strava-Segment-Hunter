@@ -3,6 +3,7 @@ var express = require("express");
 var router = express.Router();
 const passport = require('passport')
 var User = require("../models/user");
+const nodemailer =  require('nodemailer')
 const ClubData = require("../models/clubdata")
 
 router.use(passport.initialize());
@@ -62,6 +63,7 @@ router.post('/register', function (req, res) {
                         if (err) return console.error(err);
                     });
                 })
+                regEmail(clubName, user.username)
                 res.redirect('/adminDashboard');
             })
         }
@@ -136,5 +138,38 @@ router.post('/validateClub', async function (req, res) {
         }
     })
 })
+
+function regEmail(clubName, email){
+    var smtpTransport = nodemailer.createTransport({
+        host: "smtpout.secureserver.net",
+        secure: true,
+        secureConnection: false, // TLS requires secureConnection to be false
+        tls: {
+            ciphers: 'SSLv3'
+        },
+        requireTLS: true,
+        port: 465,
+        debug: true,
+        auth: {
+            user: 'contact@stravasegmenthunter.com',
+            pass: process.env.EMAIL_PASSWORD
+        }
+    });
+    var mailOptions = {
+        to: email,
+        from: 'contact@stravasegmenthunter.com',
+        subject: 'Welcome to Strava Segment Hunter',
+        text: 'Welcome to Strava Segment Hunters!\n\n'
+        +'You now have access to the admin dashboard to ' + clubName + ', you have the ability to add and remove segments on the leaderboard!\n'
+        +'So what next? We suggest adding in 4 segments to get started, this gives you enough time to get up to speed with the site and allow competitors to plan ahead.\n'
+        +'If you have any queries do not hesitate to contact us.'
+        +'\n\nThanks again for your support,\n'
+        +'Strava Segment Hunters'
+    };
+    smtpTransport.sendMail(mailOptions, function (err) {
+        console.log('mail sent');
+    });
+    
+}
 
 module.exports = router

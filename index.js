@@ -595,8 +595,6 @@ function saveDataEvening() {
       "redirect_url": "https://www.stravasegmenthunter.com/"
     });
 
-    findSegmentCodes()
-
     var params = {
       "date_range": timeFrame
     }
@@ -605,18 +603,6 @@ function saveDataEvening() {
     var implClubs = []
     var segment = []
     var results = [];
-
-    strava.segments.get(segmentId, function(err, data) {
-      var objJSON = JSON.parse(JSON.stringify(data))
-      segmentInfo = {
-        "name": objJSON.name,
-        "distance": convertingMetersToMiles(objJSON.distance),
-        "average_grade": objJSON.average_grade,
-        "link": "https://www.strava.com/segments/" + objJSON.id,
-        "efforts": objJSON.effort_count,
-        "location": objJSON.state
-      }
-    })
 
     //Gathering Club Data
     ClubData.find(async function (err, clubInfo) {
@@ -631,6 +617,20 @@ function saveDataEvening() {
       //Loop each club
       for (let i = 0; i < implClubs.length; i++) {
         segment.length = 0;
+
+        findSegmentCodes(implClubs[i])
+
+        strava.segments.get(segmentId, function (err, data) {
+          var objJSON = JSON.parse(JSON.stringify(data))
+          segmentInfo = {
+            "name": objJSON.name,
+            "distance": convertingMetersToMiles(objJSON.distance),
+            "average_grade": objJSON.average_grade,
+            "link": "https://www.strava.com/segments/" + objJSON.id,
+            "efforts": objJSON.effort_count,
+            "location": objJSON.state
+          }
+        })
 
         //"EVERYONE" no filter on anything
         var params = {
@@ -812,12 +812,9 @@ function saveDataEvening() {
             console.log(err)
           }
         })
+        deleteUsedSegment(implClubs[i])
       }
     })
-
-    
-   
-    //findSegmentCodes();
   }) //Timing Method
 }
 
@@ -885,8 +882,7 @@ function findSegmentCodes(clubId) {
 }
 
 function deleteUsedSegment(clubId) {
-
-  SegmentInfor = mongoose.model(clubId + "segment", segSchema)
+  const SegmentInfor = mongoose.model(clubId + "segment", segSchema)
 
   var smallestSegmentId = 0;
   SegmentInfor.find(function (err, data) {

@@ -56,9 +56,9 @@
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point-leaderboard">Leaderboards</a>
           </li>
-          <!--<li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="adminDashboard">Admin</a>
-          </li>-->
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="adminDashboard">Sign In/ Register</a>
+          </li>
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#help-section">Help</a>
           </li>
@@ -90,34 +90,35 @@
       <p class="masthead-subheading font-weight-light mb-0">
         Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we have selected for the week. For more information check out the guides below.</p>
     </div>
+
+    <div class="divider-custom">
+      <p class="lead text-white">Select your club from the drop down to see this weeks segment and leaderboards below. <a class='text-white' href="signup">Register your club here!</a> 
+      </p>
+    </div>
+
+    <div class="container">
+      <form method="POST" class="filterTable">
+        <div class="form-row">
+          <div class="col">
+            <select class="form-control" id="club" name="clubs">
+              <%for(let i = 0; i < clubInfo.length; i++){ %>
+              <option value="<%- clubInfo[i][1] -%>" <%if(clubInfo[i][2] == clubName) {%> selected
+                <%}%> ><%- clubInfo[i][2] -%></option> <%} %> </select> </div> <button type="submit"
+                class="btn btn-light ">Select Club </button>
+          </div>
+      </form>
+    </div>
+
+  
   </header>
 
   <!-- Todays Segment Section -->
 
   <section class="page-section portfolio" id="today-segment">
     <div class="container">
-      <div class="divider-custom">
-        <form method="POST" class="filterTable">
-          <div class="form-row">
-            <div class="col">
-              <select class="form-control" id="club" name="clubs">
-                <%for(let i = 0; i < clubInfo.length; i++){ %>
-                <option value="<%- clubInfo[i][1] -%>" <%if(clubInfo[i][2] == clubName) {%> selected
-                  <%}%> ><%- clubInfo[i][2] -%></option>
-                  <%} %>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-light ">Select Club </button>
-          </div>
-        </form>
-      </div>
-
-      <div class="divider-custom">
-        <p class="lead">Select your club from the drop down to see this weeks segment and leaderboards below.</p>
-      </div>
 
       <!-- Todays Segement Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">This Weeks Segment</h2>
+      <h2 class="page-section-heading segment-heading text-center text-uppercase text-secondary mb-0"><%- clubName -%> Weekly Segment</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
