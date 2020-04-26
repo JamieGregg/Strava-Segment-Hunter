@@ -7,10 +7,12 @@ const crypto = require ('crypto')
 const mongoose = require('mongoose')
 const schedule = require('node-schedule')
 const nodemailer = require('nodemailer')
-const passwordValidator = require('password-validator')
 const session = require('express-session')
 const passport = require('passport')
-const passportLocalMongoose = require('passport-local-mongoose')
+const User = require("./models/user")
+const ClubData = require("./models/clubData")
+const SegmentData = require("./models/segment")
+
 const app = express();
 
 app.use(express.static(__dirname + '/public-updated'));
@@ -41,31 +43,10 @@ const resultsSchema = new mongoose.Schema({
   name: String,
 })
 
-const segCodeSchema = new mongoose.Schema({
-  counterId: Number,
-  segmentId: Number,
-  name: String,
-  grade: Number,
-  distance: String,
-  efforts: Number
-})
 
-const segClubData = new mongoose.Schema({
-  clubName: String,
-  clubId: Number,
-  alais: String
-})
 
-const userSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-  clubName: String,
-  clubId: Number,
-  resetPasswordToken: String,
-  resetPasswordTokenExpires: Date
-})
 
-userSchema.plugin(passportLocalMongoose)
+
 
 var strava = new require("strava")({
   "client_id": process.env.CLIENT_ID,
@@ -73,13 +54,6 @@ var strava = new require("strava")({
   "client_secret": process.env.CLIENT_SECRET,
   "redirect_url": "https://www.stravasegmenthunter.com/"
 });
-
-const segDwdInterResults = mongoose.model("DWDInterclub", resultsSchema)
-//!!!!!!!!!
-const segmentCodes = mongoose.model("55274Segment", segCodeSchema)
-const clubData = mongoose.model("ClubData", segClubData)
-const dwdInterclubStruct = mongoose.model("dwdinterclubstructure", segClubData)
-const User = mongoose.model("User", userSchema)
 
 passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
@@ -143,7 +117,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
   await findSegmentCodes()
 
   //Gathering Club Data
-  clubData.find(async function(err, clubInfo) {
+  ClubData.find(async function (err, clubInfo) {
     if (err) {
       console.log(err)
     } else {
@@ -153,7 +127,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     }
 
     //Finding upcoming segments
-    segmentCodes.find(async function(err, data) {
+    SegmentData.find(async function(err, data) {
       if (err) {
         console.log(err)
       } else {
@@ -179,7 +153,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
       console.log(err);
     });
 
-    segmentCodes.find(async function(err, data) {
+    SegmentData.find(async function(err, data) {
       if (err) {
         console.log(err)
       } else {
@@ -656,7 +630,7 @@ function saveDataEvening() {
     })
 
     //Gathering Club Data
-    clubData.find(async function(err, clubInfo) {
+    ClubData.find(async function (err, clubInfo) {
       if (err) {
         console.log(err)
       } else {
@@ -912,7 +886,7 @@ function scoringSystem(placing) {
 }
 
 function findSegmentCodes() {
-  segmentCodes.find(function(err, data) {
+  SegmentData.find(function(err, data) {
     if (err) {
       console.log(err)
     } else {
@@ -928,13 +902,13 @@ function findSegmentCodes() {
 
 function deleteUsedSegment() {
   var smallestSegmentId = 0;
-  segmentCodes.find(function(err, data) {
+  SegmentData.find(function(err, data) {
     if (err) {
       console.log(err)
     } else {
       smallestSegmentId = data[0].segmentId
 
-      segmentCodes.deleteMany({
+      SegmentData.deleteMany({
           segmentId: {
             $in: [
               smallestSegmentId
@@ -1102,7 +1076,7 @@ app.post('/register', function(req, res) {
 
         strava.clubs.get(req.body.clubId, function(err, data){
           // a document instance
-          var newClub = new clubData({
+          var newClub = new ClubData({
             alais: clubName,
             clubId: clubId,
             clubName: data.name
@@ -1239,7 +1213,7 @@ app.post('/validateClub', async function(req,res){
     username: req.body.email
   }, function(err, person){
     if (!person) {
-      clubData.findOne({
+      ClubData.findOne({
         clubId: req.body.clubId
       }, function(err, obj){
         console.log(obj)
