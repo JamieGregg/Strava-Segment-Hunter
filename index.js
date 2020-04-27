@@ -375,7 +375,7 @@ function saveDataEvening() {
 
                 if (resultMasterF.length != 0) {
                   resultMasterF.sort(sortFunctionClub)
-                  populateSchema(resultMasterF, implClubs[i][1], implClubs[i][0] + "MasterF")
+                  populateSchema(resultMasterF, implClubs[i][1], implClubs[i][0] + "MasterFs")
                 }
               })
             } catch (err) {

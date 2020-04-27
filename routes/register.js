@@ -159,12 +159,13 @@ function regEmail(clubName, email){
         to: email,
         from: 'contact@stravasegmenthunter.com',
         subject: 'Welcome to Strava Segment Hunter',
-        text: 'Welcome to Strava Segment Hunters!\n\n'
-        +'You now have access to the admin dashboard to ' + clubName + ', you have the ability to add and remove segments on the leaderboard!\n'
-        +'So what next? We suggest adding in 4 segments to get started, this gives you enough time to get up to speed with the site and allow competitors to plan ahead.\n'
-        +'If you have any queries do not hesitate to contact us.'
-        +'\n\nThanks again for your support,\n'
-        +'Strava Segment Hunters'
+        html: '<h3>Welcome to Strava Segment Hunter!</h3><br>'
+        +'You now have access to the Strava Segment Hunter admin dashboard for ' + clubName + '. This gives you have the ability to add and remove segments on the leaderboard.<br>'
+        +'<h3>So what next?</h3> We suggest adding in 4 segments to get started, this gives you enough time to get up to speed with the site and allow competitors to plan ahead.<br><br>'
+        +'If you have any queries, suggestions or issues please do not hesitate to get in contact with us.'
+        +'<br><br>Thanks again for your support,<br>' 
+        +'Jamie<br>'
+        +'Strava Segment Hunter'
     };
     smtpTransport.sendMail(mailOptions, function (err) {
         console.log('mail sent');
