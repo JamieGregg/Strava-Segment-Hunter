@@ -398,7 +398,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
 
                     for (let i = 0; i < implClubs.length; i++) {
                         if (clubId == implClubs[i][1]) {
-                            const collection = mongoose.model(implClubs[i][0] + "master" + gender, resultsSchema)
+                            const collection = mongoose.model(implClubs[i][0] + "master" + gender + "s", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
                                     databaseLeaderboard = people
