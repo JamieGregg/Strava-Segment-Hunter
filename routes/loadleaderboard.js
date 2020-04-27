@@ -17,6 +17,8 @@ router.get('/', (req, res) => {
 });
 
 async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gender, res, req) {
+    findSegmentCodes(clubId)
+
     var params = {
         "date_range": timeFrame
     }
@@ -42,9 +44,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
         "redirect_url": "https://www.stravasegmenthunter.com/"
     });
 
-    findSegmentCodes(clubId)
-    console.log(segmentId)
-
+    
+   
     //Gathering Club Data
     ClubData.find(async function (err, clubInfo) {
         if (err) {
@@ -473,6 +474,20 @@ function findSegmentCodes(clubId) {
     }).exec(function (err, docs) {
         console.log(err);
     });
+}
+
+function convertSecondsToMinutes(seconds) {
+    var minutes = Math.floor(seconds / 60);
+    var seconds = ((seconds % 60) / 100).toFixed(2);
+    return minutes + ":" + seconds.slice(-2);
+}
+
+function sortFunctionClub(a, b) {
+    if (a[1] === b[1]) {
+        return 0;
+    } else {
+        return (a[1] < b[1]) ? -1 : 1;
+    }
 }
 
 module.exports = router

@@ -156,7 +156,7 @@ function saveDataEvening() {
   rule.dayOfWeek = 0
   rule.hour = 23
   rule.minute = 55
-  rule.second = 35
+  rule.second = 59
 
   var j = schedule.scheduleJob(rule, function() {
     var strava = new require("strava")({
@@ -191,54 +191,27 @@ function saveDataEvening() {
 
         findSegmentCodes(implClubs[i])
 
-        strava.segments.get(segmentId, function (err, data) {
-          var objJSON = JSON.parse(JSON.stringify(data))
-          segmentInfo = {
-            "name": objJSON.name,
-            "distance": convertingMetersToMiles(objJSON.distance),
-            "average_grade": objJSON.average_grade,
-            "link": "https://www.strava.com/segments/" + objJSON.id,
-            "efforts": objJSON.effort_count,
-            "location": objJSON.state
-          }
-        })
-
-        //"EVERYONE" no filter on anything
-        var params = {
-          "date_range": timeFrame,
-          "per_page": noOfResults,
-          "club_id": implClubs[i][1]
-        }
         try {
-          strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-            if (data != "") {
-              numberOfEntry = await data.entries.length
+          strava.segments.get(segmentId, function (err, data) {
+            var objJSON = JSON.parse(JSON.stringify(data))
+            segmentInfo = {
+              "name": objJSON.name,
+              "distance": convertingMetersToMiles(objJSON.distance),
+              "average_grade": objJSON.average_grade,
+              "link": "https://www.strava.com/segments/" + objJSON.id,
+              "efforts": objJSON.effort_count,
+              "location": objJSON.state
+            }
+          })
 
-              for (let z = 0; z < numberOfEntry; z++) {
-                segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
-              }
-
-              populateSchema(segment, implClubs[i][1], implClubs[i][0])
-              segment.length = 0;
-            } //If statment
-          }) //API Call
-        } catch (err) {
-          console.log(err)
-        }
-
-        //"EVERYONE" With Gender Filter Applied
-        for (let y = 0; y < 2; y++) {
+          //"EVERYONE" no filter on anything
           var params = {
             "date_range": timeFrame,
             "per_page": noOfResults,
-            "club_id": implClubs[i][1],
-            "gender": gender[y]
+            "club_id": implClubs[i][1]
           }
-
           try {
             strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-              console.log(gender[y])
-              console.log(data)
               if (data != "") {
                 numberOfEntry = await data.entries.length
 
@@ -246,144 +219,175 @@ function saveDataEvening() {
                   segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
                 }
 
-                populateSchema(segment, implClubs[i][1], implClubs[i][0] + gender[y])
+                populateSchema(segment, implClubs[i][1], implClubs[i][0])
                 segment.length = 0;
-              }
-            })
-          } catch {
+              } //If statment
+            }) //API Call
+          } catch (err) {
             console.log(err)
           }
-        }
 
-        //Masters EVERYONE
-        var resultMaster = []
-        var paramsMaster54 = {
-          "date_range": timeFrame,
-          "per_page": 100,
-          "club_id": implClubs[i][1],
-          "age_group": "45_54",
-        }
-
-        var paramsMaster64 = {
-          "date_range": timeFrame,
-          "per_page": 100,
-          "club_id": implClubs[i][1],
-          "age_group": "55_64",
-        }
-        strava.segments.leaderboard.get(segmentId, paramsMaster54, function(err, data) {
-          try {
-            if (data.statusCode != 404 && data.entries != "") {
-              for (let i = 0; i < data.entries.length; i++) {
-                resultMaster.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
-              }
+          //"EVERYONE" With Gender Filter Applied
+          for (let y = 0; y < 2; y++) {
+            var params = {
+              "date_range": timeFrame,
+              "per_page": noOfResults,
+              "club_id": implClubs[i][1],
+              "gender": gender[y]
             }
 
-            strava.segments.leaderboard.get(segmentId, paramsMaster64, function(err, data) {
+            try {
+              strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
+                console.log(gender[y])
+                console.log(data)
+                if (data != "") {
+                  numberOfEntry = await data.entries.length
+
+                  for (let z = 0; z < numberOfEntry; z++) {
+                    segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
+                  }
+
+                  populateSchema(segment, implClubs[i][1], implClubs[i][0] + gender[y])
+                  segment.length = 0;
+                }
+              })
+            } catch {
+              console.log(err)
+            }
+          }
+
+          //Masters EVERYONE
+          var resultMaster = []
+          var paramsMaster54 = {
+            "date_range": timeFrame,
+            "per_page": 100,
+            "club_id": implClubs[i][1],
+            "age_group": "45_54",
+          }
+
+          var paramsMaster64 = {
+            "date_range": timeFrame,
+            "per_page": 100,
+            "club_id": implClubs[i][1],
+            "age_group": "55_64",
+          }
+          strava.segments.leaderboard.get(segmentId, paramsMaster54, function(err, data) {
+            try {
               if (data.statusCode != 404 && data.entries != "") {
                 for (let i = 0; i < data.entries.length; i++) {
                   resultMaster.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
                 }
               }
 
-              if (resultMaster.length != 0) {
-                resultMaster.sort(sortFunctionClub)
-                populateSchema(resultMaster, implClubs[i][1], implClubs[i][0] + "Master")
-                results.length = 0;
-              }
-            })
-          } catch (err) {
-            console.log(err)
-          }
-        })
+              strava.segments.leaderboard.get(segmentId, paramsMaster64, function(err, data) {
+                if (data.statusCode != 404 && data.entries != "") {
+                  for (let i = 0; i < data.entries.length; i++) {
+                    resultMaster.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                  }
+                }
 
-        //Masters and Gender filter Applied
-        results.length = 0;
-        var resultMasterM = []
-        var paramsMasterM542 = {
-          "date_range": timeFrame,
-          "per_page": 100,
-          "club_id": implClubs[i][1],
-          "age_group": "45_54",
-          "gender": "M"
-        }
-
-        var paramsMasterM642 = {
-          "date_range": timeFrame,
-          "per_page": 100,
-          "club_id": implClubs[i][1],
-          "age_group": "55_64",
-          "gender": "M"
-        }
-
-        strava.segments.leaderboard.get(segmentId, paramsMasterM542, function(err, data) {
-          try {
-            if (data.statusCode != 404 && data.entries != "") {
-              for (let i = 0; i < data.entries.length; i++) {
-                resultMasterM.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
-              }
+                if (resultMaster.length != 0) {
+                  resultMaster.sort(sortFunctionClub)
+                  populateSchema(resultMaster, implClubs[i][1], implClubs[i][0] + "Master")
+                  results.length = 0;
+                }
+              })
+            } catch (err) {
+              console.log(err)
             }
+          })
 
-            strava.segments.leaderboard.get(segmentId, paramsMasterM642, function(err, data) {
-              if (data.statusCode != 404) {
+          //Masters and Gender filter Applied
+          var resultMasterM = []
+          var paramsMasterM542 = {
+            "date_range": timeFrame,
+            "per_page": 100,
+            "club_id": implClubs[i][1],
+            "age_group": "45_54",
+            "gender": "M"
+          }
+
+          var paramsMasterM642 = {
+            "date_range": timeFrame,
+            "per_page": 100,
+            "club_id": implClubs[i][1],
+            "age_group": "55_64",
+            "gender": "M"
+          }
+
+          strava.segments.leaderboard.get(segmentId, paramsMasterM542, function(err, data) {
+            try {
+              if (data.statusCode != 404 && data.entries != "") {
                 for (let i = 0; i < data.entries.length; i++) {
                   resultMasterM.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
                 }
               }
 
-              if (resultMasterM.length != 0) {
-                resultMasterM.sort(sortFunctionClub)
-                populateSchema(resultMasterM, implClubs[i][1], implClubs[i][0] + "MasterM")
-              }
-            })
-          } catch (err) {
-            console.log(err)
-          }
-        })
+              strava.segments.leaderboard.get(segmentId, paramsMasterM642, function(err, data) {
+                if (data.statusCode != 404) {
+                  for (let i = 0; i < data.entries.length; i++) {
+                    resultMasterM.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                  }
+                }
 
-        results.length = 0;
-
-        var resultMasterF = []
-        var paramsMaster54F = {
-          "date_range": timeFrame,
-          "per_page": 100,
-          "club_id": implClubs[i][1],
-          "age_group": "45_54",
-          "gender": "F"
-        }
-
-        var paramsMaster64F = {
-          "date_range": timeFrame,
-          "per_page": 100,
-          "club_id": implClubs[i][1],
-          "age_group": "55_64",
-          "gender": "F"
-        }
-
-        strava.segments.leaderboard.get(segmentId, paramsMaster54F, function(err, data) {
-          try {
-            if (data.statusCode != 404 && data.entries != "") {
-              for (let i = 0; i < data.entries.length; i++) {
-                resultMasterF.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
-              }
+                if (resultMasterM.length != 0) {
+                  resultMasterM.sort(sortFunctionClub)
+                  populateSchema(resultMasterM, implClubs[i][1], implClubs[i][0] + "MasterM")
+                }
+              })
+            } catch (err) {
+              console.log(err)
             }
-            strava.segments.leaderboard.get(segmentId, paramsMaster64F, function(err, data) {
-              if (data.statusCode != 404) {
+          })
+
+
+          var resultMasterF = []
+
+          var paramsMaster54F = {
+            "date_range": timeFrame,
+            "per_page": 100,
+            "club_id": implClubs[i][1],
+            "age_group": "45_54",
+            "gender": "F"
+          }
+
+          var paramsMaster64F = {
+            "date_range": timeFrame,
+            "per_page": 100,
+            "club_id": implClubs[i][1],
+            "age_group": "55_64",
+            "gender": "F"
+          }
+
+          strava.segments.leaderboard.get(segmentId, paramsMaster54F, function(err, data) {
+            try {
+              if (data.statusCode != 404 && data.entries != "") {
                 for (let i = 0; i < data.entries.length; i++) {
                   resultMasterF.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
                 }
               }
+              strava.segments.leaderboard.get(segmentId, paramsMaster64F, function(err, data) {
+                if (data.statusCode != 404) {
+                  for (let i = 0; i < data.entries.length; i++) {
+                    resultMasterF.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                  }
+                }
 
-              if (results.length != 0) {
-                resultMasterF.sort(sortFunctionClub)
-                populateSchema(resultMasterF, implClubs[i][1], implClubs[i][0] + "MasterF")
-                results.length = 0;
-              }
-            })
-          } catch (err) {
-            console.log(err)
-          }
-        })
-        deleteUsedSegment(implClubs[i])
+                if (resultMasterF.length != 0) {
+                  resultMasterF.sort(sortFunctionClub)
+                  populateSchema(resultMasterF, implClubs[i][1], implClubs[i][0] + "MasterF")
+                }
+              })
+            } catch (err) {
+              console.log(err)
+            }
+          })
+
+          deleteUsedSegment(implClubs[i])
+
+        } catch {
+          console.log("Invalid Segment")
+        }
       }
     })
   }) //Timing Method
@@ -487,13 +491,6 @@ function deleteUsedSegment(clubId) {
   });
 }
 
-function sortFunctionClub(a, b) {
-  if (a[1] === b[1]) {
-    return 0;
-  } else {
-    return (a[1] < b[1]) ? -1 : 1;
-  }
-}
 
 
 
