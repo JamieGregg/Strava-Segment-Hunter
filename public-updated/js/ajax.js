@@ -15,7 +15,7 @@ $(document).ready(function(){
 
     $.ajax({
       type: 'POST',
-      url: '/test',
+      url: '/loadleaderboard',
       dataType: 'json',
       data: postData,
       beforeSend: function(){
