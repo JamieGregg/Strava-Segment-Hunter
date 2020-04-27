@@ -103,397 +103,445 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     "redirect_url": "https://www.stravasegmenthunter.com/"
   });
 
-  findSegmentCodes(clubId)
+    findSegmentCodes(clubId)
+    console.log(segmentId)
 
-  //Gathering Club Data
-  ClubData.find(async function (err, clubInfo) {
-    if (err) {
-      console.log(err)
-    } else {
-      for (let i = 0; i < clubInfo.length; i++) {
-        implClubs.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i].alais])
-      }
-    }
-
-    SegmentData = mongoose.model(clubId + "segment", segSchema)
-
-
-    //Finding upcoming segments
-    SegmentData.find(async function(err, data) {
+    //Gathering Club Data
+    ClubData.find(async function (err, clubInfo) {
       if (err) {
         console.log(err)
       } else {
-        for (let i = 0; i < 5; i++) {
-          if (err) {
-            console.log(err)
-          } else {
-            if (i == 1) {
-              dayOne = [data[1].name, "https://www.strava.com/segments/" + data[1].segmentId]
-            } else if (i == 2) {
-              dayTwo = [data[2].name, "https://www.strava.com/segments/" + data[2].segmentId]
-            } else if (i == 3) {
-              dayThree = [data[3].name, "https://www.strava.com/segments/" + data[3].segmentId]
-            } else if (i == 4) {
-              dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
-            }
-          }
+        for (let i = 0; i < clubInfo.length; i++) {
+          implClubs.push([clubInfo[i].clubName, clubInfo[i].clubId, clubInfo[i].alais])
         }
       }
-    }).sort({
-      counterId: 1
-    }).exec(function(err, docs) {
-      console.log(err);
-    });
 
-    SegmentData.find(async function(err, data) {
-      if (err) {
-        console.log(err)
-      } else {
+      SegmentData = mongoose.model(clubId + "segment", segSchema)
+
+      SegmentData.find(async function (err, data) {
+        if (err) {
+          console.log(err)
+        } else {
+          try{
+            segmentInfo = {
+              "name": data[0].name,
+              "distance": data[0].distance,
+              "average_grade": data[0].grade,
+              "link": "https://www.strava.com/segments/" + data[0].segmentId,
+              "efforts": data[0].efforts,
+            }
+          } catch {
+            segmentInfo = {
+              "name": "Contact your admin to update segments",
+              "distance": 0,
+              "average_grade": 0,
+              "link": "https://www.strava.com/segments/",
+              "efforts": 0,
+            }
+          }
+          
+        }
+      }).sort({
+        counterId: 1
+      }).exec(function (err, docs) {
+        console.log(err);
+      }); //Upcoming Segments
+      
+      console.log(segmentInfo)
+
+      if ( segmentInfo.name === [] ){
         segmentInfo = {
-          "name": data[0].name,
-          "distance": data[0].distance,
+          "name": "Contact your club admin to add more segments",
+          "distance": 0,
           "average_grade": data[0].grade,
           "link": "https://www.strava.com/segments/" + data[0].segmentId,
           "efforts": data[0].efforts,
         }
-      }
-    }).sort({
-      counterId: 1
-    }).exec(function(err, docs) {
-      console.log(err);
-    }); //Upcoming Segments
 
-    if ((ageFilter === 'false') && (gender === '')) {
-      //no age no gender
-      params = {
-        "date_range": timeFrame,
-        "per_page": noOfResults,
-        "club_id": clubId
-      }
+        res.render('home', {
+          data: segment,
+          segmentInfo: segmentInfo,
+          dayOne: "No segment scheduled",
+          dayTwo: "No segment scheduled",
+          dayThree: "No segment scheduled",
+          dayFour: "No segment scheduled",
+          clubId: clubId,
+          reload: reload,
+          masters: false,
+          gender: gender,
+          db: databaseLeaderboard,
+          clubName: implClubs[i][2],
+          clubInfo: implClubs
+        })
+      } else {
+        //Finding upcoming segments
+        SegmentData.find(async function (err, data) {
+          if (err) {
+            console.log(err)
+          } else {
+            for (let i = 0; i < 5; i++) {
+              if (err) {
+                console.log(err)
+              } else {
+                try{
+                  if (i == 1) {
+                    dayOne = [data[1].name, "https://www.strava.com/segments/" + data[1].segmentId]
+                  } else if (i == 2) {
+                    dayTwo = [data[2].name, "https://www.strava.com/segments/" + data[2].segmentId]
+                  } else if (i == 3) {
+                    dayThree = [data[3].name, "https://www.strava.com/segments/" + data[3].segmentId]
+                  } else if (i == 4) {
+                    dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
+                  }
+                } catch {
+                  dayOne = ["No segment has been added", "https://www.strava.com/segments/"]
+                  dayTwo = ["No segment has been added", "https://www.strava.com/segments/"]
+                  dayThree = ["No segment has been added", "https://www.strava.com/segments/"]
+                  dayFour = ["No segment has been added", "https://www.strava.com/segments/"]
+                }
+              }
+            }
+          }
+        }).sort({
+          counterId: 1
+        }).exec(function (err, docs) {
+          console.log(err);
+        });
 
-     strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-        numberOfEntry = data.entries.length
-
-        for (let i = 0; i < numberOfEntry; i++) {
-          segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-        }
-
-        for (let i = 0; i < implClubs.length; i++) {
-          if (clubId == implClubs[i][1]) {
-            const collection = mongoose.model(implClubs[i][0], resultsSchema)
-            if (type === 'POST') {
-              collection.find(function(err, people) {
-                databaseLeaderboard = people
-
-                res.send({
-                  data: segment,
-                  segmentInfo: segmentInfo,
-                  dayOne: dayOne,
-                  dayTwo: dayTwo,
-                  dayThree: dayThree,
-                  dayFour: dayFour,
-                  clubId: clubId,
-                  reload: reload,
-                  masters: false,
-                  gender: gender,
-                  db: databaseLeaderboard,
-                  clubName: implClubs[i][2],
-                  clubInfo: implClubs
-                })
-              }).sort({
-                points: -1
-              }).exec(function(err, docs) {
-                console.log(err);
-              }); //collection
-            } else if (type === 'GET') {
-              collection.find(function(err, people) {
-                databaseLeaderboard = people
-
-                res.render('home', {
-                  data: segment,
-                  segmentInfo: segmentInfo,
-                  dayOne: dayOne,
-                  dayTwo: dayTwo,
-                  dayThree: dayThree,
-                  dayFour: dayFour,
-                  clubId: clubId,
-                  reload: reload,
-                  masters: false,
-                  gender: gender,
-                  db: databaseLeaderboard,
-                  clubName: implClubs[i][2],
-                  clubInfo: implClubs
-                })
-              }).sort({
-                points: -1
-              }).exec(function(err, docs) {
-                console.log(err);
-              }); //collection
-            } //Type Check
-          } //Club Check
-        } //For
-      }) //Api call
-    } else if ((ageFilter === 'false') && (gender != '')) {
-      //no age but gender
-      params = {
-        "date_range": timeFrame,
-        "per_page": noOfResults,
-        "club_id": clubId,
-        "gender": gender
-      }
-
-      strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-        numberOfEntry = data.entries.length
-
-        for (let i = 0; i < numberOfEntry; i++) {
-          segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
-        }
-
-        for (let i = 0; i < implClubs.length; i++) {
-          if (clubId == implClubs[i][1]) {
-            const collection = mongoose.model(implClubs[i][0] + gender, resultsSchema)
-            if (type === 'POST') {
-              collection.find(function(err, people) {
-                databaseLeaderboard = people
-
-                res.send({
-                  data: segment,
-                  segmentInfo: segmentInfo,
-                  dayOne: dayOne,
-                  dayTwo: dayTwo,
-                  dayThree: dayThree,
-                  dayFour: dayFour,
-                  clubId: clubId,
-                  reload: reload,
-                  masters: false,
-                  gender: gender,
-                  db: databaseLeaderboard,
-                  clubName: implClubs[i][2],
-                  clubInfo: implClubs
-                })
-              }).sort({
-                points: -1
-              }).exec(function(err, docs) {
-                console.log(err);
-              }); //collection
-            } else if (type === 'GET') {
-              collection.find(function(err, people) {
-                databaseLeaderboard = people
-
-                res.render('home', {
-                  data: segment,
-                  segmentInfo: segmentInfo,
-                  dayOne: dayOne,
-                  dayTwo: dayTwo,
-                  dayThree: dayThree,
-                  dayFour: dayFour,
-                  clubId: clubId,
-                  reload: reload,
-                  masters: false,
-                  gender: gender,
-                  db: databaseLeaderboard,
-                  clubName: implClubs[i][2],
-                  clubInfo: implClubs
-                })
-              }).sort({
-                points: -1
-              }).exec(function(err, docs) {
-                console.log(err);
-              }); //collection
-            } //Type Check
-          } //Club Check
-        } //For
-      }) //Api call
-    } else if ((ageFilter === 'true') && (gender === '')) {
-      //age but no gender
-      params = {
-        "date_range": timeFrame,
-        "per_page": noOfResults,
-        "club_id": clubId,
-        "age_group": "45_54"
-      }
-
-      params64 = {
-        "date_range": timeFrame,
-        "per_page": noOfResults,
-        "club_id": clubId,
-        "age_group": "55_64"
-      }
-
-      strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-        numberOfEntry = data.entries.length
-
-        for (let i = 0; i < numberOfEntry; i++) {
-          segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
-        }
-
-        strava.segments.leaderboard.get(segmentId, params64, async function(err, data) {
-          numberOfEntry = data.entries.length
-
-          for (let i = 0; i < numberOfEntry; i++) {
-            segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+        if ((ageFilter === 'false') && (gender === '')) {
+          //no age no gender
+          params = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": clubId
           }
 
-          segment.sort(sortFunctionClub);
-          for(let i = 0; i < segment.length; i++){
-            segment[i][2] = i + 1
-            segment[i][1] = convertSecondsToMinutes(segment[i][1])
+          
+          strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+
+            numberOfEntry = data.entries.length 
+       
+            for (let i = 0; i < numberOfEntry; i++) {
+              segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+            }
+
+            for (let i = 0; i < implClubs.length; i++) {
+              if (clubId == implClubs[i][1]) {
+                const collection = mongoose.model(implClubs[i][0], resultsSchema)
+                if (type === 'POST') {
+                  collection.find(function (err, people) {
+                    databaseLeaderboard = people
+
+                    res.send({
+                      data: segment,
+                      segmentInfo: segmentInfo,
+                      dayOne: dayOne,
+                      dayTwo: dayTwo,
+                      dayThree: dayThree,
+                      dayFour: dayFour,
+                      clubId: clubId,
+                      reload: reload,
+                      masters: false,
+                      gender: gender,
+                      db: databaseLeaderboard,
+                      clubName: implClubs[i][2],
+                      clubInfo: implClubs
+                    })
+                  }).sort({
+                    points: -1
+                  }).exec(function (err, docs) {
+                    console.log(err);
+                  }); //collection
+                } else if (type === 'GET') {
+                  collection.find(function (err, people) {
+                    databaseLeaderboard = people
+
+                    res.render('home', {
+                      data: segment,
+                      segmentInfo: segmentInfo,
+                      dayOne: dayOne,
+                      dayTwo: dayTwo,
+                      dayThree: dayThree,
+                      dayFour: dayFour,
+                      clubId: clubId,
+                      reload: reload,
+                      masters: false,
+                      gender: gender,
+                      db: databaseLeaderboard,
+                      clubName: implClubs[i][2],
+                      clubInfo: implClubs
+                    })
+                  }).sort({
+                    points: -1
+                  }).exec(function (err, docs) {
+                    console.log(err);
+                  }); //collection
+                } //Type Check
+              } //Club Check
+            } //For
+          }) //Api call
+        } else if ((ageFilter === 'false') && (gender != '')) {
+          //no age but gender
+          params = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": clubId,
+            "gender": gender
           }
 
-          for (let i = 0; i < implClubs.length; i++) {
-            if (clubId == implClubs[i][1]) {
-              const collection = mongoose.model(implClubs[i][0] + "master", resultsSchema)
-              if (type === 'POST') {
-                collection.find(function(err, people) {
-                  databaseLeaderboard = people
+          strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+            numberOfEntry = data.entries.length
 
-                  res.send({
-                    data: segment,
-                    segmentInfo: segmentInfo,
-                    dayOne: dayOne,
-                    dayTwo: dayTwo,
-                    dayThree: dayThree,
-                    dayFour: dayFour,
-                    clubId: clubId,
-                    reload: reload,
-                    masters: false,
-                    gender: gender,
-                    db: databaseLeaderboard,
-                    clubName: implClubs[i][2],
-                    clubInfo: implClubs
-                  })
-                }).sort({
-                  points: -1
-                }).exec(function(err, docs) {
-                  console.log(err);
-                }); //collection
-              } else if (type === 'GET') {
-                collection.find(function(err, people) {
-                  databaseLeaderboard = people
+            for (let i = 0; i < numberOfEntry; i++) {
+              segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+            }
 
-                  res.render('home', {
-                    data: segment,
-                    segmentInfo: segmentInfo,
-                    dayOne: dayOne,
-                    dayTwo: dayTwo,
-                    dayThree: dayThree,
-                    dayFour: dayFour,
-                    clubId: clubId,
-                    reload: reload,
-                    masters: false,
-                    gender: gender,
-                    db: databaseLeaderboard,
-                    clubName: implClubs[i][2],
-                    clubInfo: implClubs
-                  })
-                }).sort({
-                  points: -1
-                }).exec(function(err, docs) {
-                  console.log(err);
-                }); //collection
-              } //Type Check
-            } //Club Check
-          } //For
-        }) //Api call 54
-      }) //Api call 64
-    } else if ((ageFilter === 'true') && (gender != '')) {
-      //age and gender
-      //age but no gender
-      params = {
-        "date_range": timeFrame,
-        "per_page": noOfResults,
-        "club_id": clubId,
-        "age_group": "45_54",
-        "gender": gender
+            for (let i = 0; i < implClubs.length; i++) {
+              if (clubId == implClubs[i][1]) {
+                const collection = mongoose.model(implClubs[i][0] + gender, resultsSchema)
+                if (type === 'POST') {
+                  collection.find(function (err, people) {
+                    databaseLeaderboard = people
+
+                    res.send({
+                      data: segment,
+                      segmentInfo: segmentInfo,
+                      dayOne: dayOne,
+                      dayTwo: dayTwo,
+                      dayThree: dayThree,
+                      dayFour: dayFour,
+                      clubId: clubId,
+                      reload: reload,
+                      masters: false,
+                      gender: gender,
+                      db: databaseLeaderboard,
+                      clubName: implClubs[i][2],
+                      clubInfo: implClubs
+                    })
+                  }).sort({
+                    points: -1
+                  }).exec(function (err, docs) {
+                    console.log(err);
+                  }); //collection
+                } else if (type === 'GET') {
+                  collection.find(function (err, people) {
+                    databaseLeaderboard = people
+
+                    res.render('home', {
+                      data: segment,
+                      segmentInfo: segmentInfo,
+                      dayOne: dayOne,
+                      dayTwo: dayTwo,
+                      dayThree: dayThree,
+                      dayFour: dayFour,
+                      clubId: clubId,
+                      reload: reload,
+                      masters: false,
+                      gender: gender,
+                      db: databaseLeaderboard,
+                      clubName: implClubs[i][2],
+                      clubInfo: implClubs
+                    })
+                  }).sort({
+                    points: -1
+                  }).exec(function (err, docs) {
+                    console.log(err);
+                  }); //collection
+                } //Type Check
+              } //Club Check
+            } //For
+          }) //Api call
+        } else if ((ageFilter === 'true') && (gender === '')) {
+          //age but no gender
+          params = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": clubId,
+            "age_group": "45_54"
+          }
+
+          params64 = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": clubId,
+            "age_group": "55_64"
+          }
+
+          strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+            numberOfEntry = data.entries.length
+
+            for (let i = 0; i < numberOfEntry; i++) {
+              segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+            }
+
+            strava.segments.leaderboard.get(segmentId, params64, async function (err, data) {
+              numberOfEntry = data.entries.length
+
+              for (let i = 0; i < numberOfEntry; i++) {
+                segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+              }
+
+              segment.sort(sortFunctionClub);
+              for (let i = 0; i < segment.length; i++) {
+                segment[i][2] = i + 1
+                segment[i][1] = convertSecondsToMinutes(segment[i][1])
+              }
+
+              for (let i = 0; i < implClubs.length; i++) {
+                if (clubId == implClubs[i][1]) {
+                  const collection = mongoose.model(implClubs[i][0] + "master", resultsSchema)
+                  if (type === 'POST') {
+                    collection.find(function (err, people) {
+                      databaseLeaderboard = people
+
+                      res.send({
+                        data: segment,
+                        segmentInfo: segmentInfo,
+                        dayOne: dayOne,
+                        dayTwo: dayTwo,
+                        dayThree: dayThree,
+                        dayFour: dayFour,
+                        clubId: clubId,
+                        reload: reload,
+                        masters: false,
+                        gender: gender,
+                        db: databaseLeaderboard,
+                        clubName: implClubs[i][2],
+                        clubInfo: implClubs
+                      })
+                    }).sort({
+                      points: -1
+                    }).exec(function (err, docs) {
+                      console.log(err);
+                    }); //collection
+                  } else if (type === 'GET') {
+                    collection.find(function (err, people) {
+                      databaseLeaderboard = people
+
+                      res.render('home', {
+                        data: segment,
+                        segmentInfo: segmentInfo,
+                        dayOne: dayOne,
+                        dayTwo: dayTwo,
+                        dayThree: dayThree,
+                        dayFour: dayFour,
+                        clubId: clubId,
+                        reload: reload,
+                        masters: false,
+                        gender: gender,
+                        db: databaseLeaderboard,
+                        clubName: implClubs[i][2],
+                        clubInfo: implClubs
+                      })
+                    }).sort({
+                      points: -1
+                    }).exec(function (err, docs) {
+                      console.log(err);
+                    }); //collection
+                  } //Type Check
+                } //Club Check
+              } //For
+            }) //Api call 54
+          }) //Api call 64
+        } else if ((ageFilter === 'true') && (gender != '')) {
+          //age and gender
+          //age but no gender
+          params = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": clubId,
+            "age_group": "45_54",
+            "gender": gender
+          }
+
+          params64 = {
+            "date_range": timeFrame,
+            "per_page": noOfResults,
+            "club_id": clubId,
+            "age_group": "55_64",
+            "gender": gender
+          }
+
+          strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+            numberOfEntry = data.entries.length
+
+            for (let i = 0; i < numberOfEntry; i++) {
+              segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+            }
+
+            strava.segments.leaderboard.get(segmentId, params64, async function (err, data) {
+              numberOfEntry = data.entries.length
+
+              for (let i = 0; i < numberOfEntry; i++) {
+                segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+              }
+
+              segment.sort(sortFunctionClub);
+              for (let i = 0; i < segment.length; i++) {
+                segment[i][2] = i + 1
+                segment[i][1] = convertSecondsToMinutes(segment[i][1])
+              }
+
+              for (let i = 0; i < implClubs.length; i++) {
+                if (clubId == implClubs[i][1]) {
+                  const collection = mongoose.model(implClubs[i][0] + "master" + gender, resultsSchema)
+                  if (type === 'POST') {
+                    collection.find(function (err, people) {
+                      databaseLeaderboard = people
+
+                      res.send({
+                        data: segment,
+                        segmentInfo: segmentInfo,
+                        dayOne: dayOne,
+                        dayTwo: dayTwo,
+                        dayThree: dayThree,
+                        dayFour: dayFour,
+                        clubId: clubId,
+                        reload: reload,
+                        masters: false,
+                        gender: gender,
+                        db: databaseLeaderboard,
+                        clubName: implClubs[i][2],
+                        clubInfo: implClubs
+                      })
+                    }).sort({
+                      points: -1
+                    }).exec(function (err, docs) {
+                      console.log(err);
+                    }); //collection
+                  } else if (type === 'GET') {
+                    collection.find(function (err, people) {
+                      databaseLeaderboard = people
+
+                      res.render('home', {
+                        data: segment,
+                        segmentInfo: segmentInfo,
+                        dayOne: dayOne,
+                        dayTwo: dayTwo,
+                        dayThree: dayThree,
+                        dayFour: dayFour,
+                        clubId: clubId,
+                        reload: reload,
+                        masters: false,
+                        gender: gender,
+                        db: databaseLeaderboard,
+                        clubName: implClubs[i][2],
+                        clubInfo: implClubs
+                      })
+                    }).sort({
+                      points: -1
+                    }).exec(function (err, docs) {
+                      console.log(err);
+                    }); //collection
+                  } //Type Check
+                } //Club Check
+              } //For
+            }) //Api call 54
+          }) // Api call 64
+        } //over looking if
       }
-
-      params64 = {
-        "date_range": timeFrame,
-        "per_page": noOfResults,
-        "club_id": clubId,
-        "age_group": "55_64",
-        "gender": gender
-      }
-
-      strava.segments.leaderboard.get(segmentId, params, async function(err, data) {
-        numberOfEntry = data.entries.length
-
-        for (let i = 0; i < numberOfEntry; i++) {
-          segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
-        }
-
-        strava.segments.leaderboard.get(segmentId, params64, async function(err, data) {
-          numberOfEntry = data.entries.length
-
-          for (let i = 0; i < numberOfEntry; i++) {
-            segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
-          }
-
-          segment.sort(sortFunctionClub);
-          for(let i = 0; i < segment.length; i++){
-            segment[i][2] = i + 1
-            segment[i][1] = convertSecondsToMinutes(segment[i][1])
-          }
-
-          for (let i = 0; i < implClubs.length; i++) {
-            if (clubId == implClubs[i][1]) {
-              const collection = mongoose.model(implClubs[i][0] + "master" + gender, resultsSchema)
-              if (type === 'POST') {
-                collection.find(function(err, people) {
-                  databaseLeaderboard = people
-
-                  res.send({
-                    data: segment,
-                    segmentInfo: segmentInfo,
-                    dayOne: dayOne,
-                    dayTwo: dayTwo,
-                    dayThree: dayThree,
-                    dayFour: dayFour,
-                    clubId: clubId,
-                    reload: reload,
-                    masters: false,
-                    gender: gender,
-                    db: databaseLeaderboard,
-                    clubName: implClubs[i][2],
-                    clubInfo: implClubs
-                  })
-                }).sort({
-                  points: -1
-                }).exec(function(err, docs) {
-                  console.log(err);
-                }); //collection
-              } else if (type === 'GET') {
-                collection.find(function(err, people) {
-                  databaseLeaderboard = people
-
-                  res.render('home', {
-                    data: segment,
-                    segmentInfo: segmentInfo,
-                    dayOne: dayOne,
-                    dayTwo: dayTwo,
-                    dayThree: dayThree,
-                    dayFour: dayFour,
-                    clubId: clubId,
-                    reload: reload,
-                    masters: false,
-                    gender: gender,
-                    db: databaseLeaderboard,
-                    clubName: implClubs[i][2],
-                    clubInfo: implClubs
-                  })
-                }).sort({
-                  points: -1
-                }).exec(function(err, docs) {
-                  console.log(err);
-                }); //collection
-              } //Type Check
-            } //Club Check
-          } //For
-        }) //Api call 54
-      }) // Api call 64
-    } //over looking if
-  }) //club data
-} // function
+    })
+  }// function
 
 //TOKEN REFRESH FUNCTIONS
 function refreshTokens() {
@@ -871,8 +919,11 @@ function findSegmentCodes(clubId) {
     if (err) {
       console.log(err)
     } else {
-      //returning segment id of smallest reocord
-      segmentId = data[0].segmentId
+      try{
+        segmentId = data[0].segmentId
+      } catch {
+        segmentId = -1
+      }
     }
   }).sort({
     counterId: 1
@@ -921,57 +972,13 @@ function sortFunctionClub(a, b) {
   }
 }
 
-function emailResults(club, results) {
-  let transport = nodemailer.createTransport({
-    host: 'smtp.mailtrap.io',
-    port: 2525,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS
-    }
-  });
-
-  var mailOptions = {
-    from: 'segment@stravasegmenthunter.com',
-    to: process.env.EMAIL_ADDRESS,
-    subject: 'Results for ' + club,
-    text: 'Results are as follows: ' + results
-  }
-
-  transport.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
   });
 }
 
-function emailNewSegment(segmentId) {
-  let transport = nodemailer.createTransport({
-    host: 'smtp.mailtrap.io',
-    port: 2525,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS
-    }
-  });
 
-  var mailOptions = {
-    from: 'segment@stravasegmenthunter.com',
-    to: process.env.EMAIL_ADDRESS,
-    subject: 'Segment Refresh',
-    text: 'Todays segment has been updated to https://www.strava.com/segments/' + segmentId
-  }
-
-  transport.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
-}
 
 
 
