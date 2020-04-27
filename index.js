@@ -433,6 +433,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     } else if ((ageFilter === 'true') && (gender != '')) {
       //age and gender
       //age but no gender
+      console.log(gender)
       params = {
         "date_range": timeFrame,
         "per_page": noOfResults,
@@ -471,9 +472,10 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
 
           for (let i = 0; i < implClubs.length; i++) {
             if (clubId == implClubs[i][1]) {
-              const collection = mongoose.model(implClubs[i][0] + "master" + gender, resultsSchema)
+              const collection = mongoose.model(implClubs[i][0] + "master" + gender + "s", resultsSchema)
               if (type === 'POST') {
                 collection.find(function(err, people) {
+                  console.log(people)
                   databaseLeaderboard = people
 
                   res.send({
