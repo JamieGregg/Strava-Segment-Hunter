@@ -154,7 +154,7 @@ function saveDataEvening() {
   rule.dayOfWeek = 0
   rule.hour = 23
   rule.minute = 55
-  rule.second = 55
+  rule.second = 20
 
   var j = schedule.scheduleJob(rule, function() {
     var strava = new require("strava")({
