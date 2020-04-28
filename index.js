@@ -28,12 +28,14 @@ app.use(session({
 var login = require("./routes/login"),
     register = require("./routes/register"),
     loadLeaderboard = require("./routes/loadleaderboard"),
-    admins = require("./routes/admin")
+    admins = require("./routes/admin"),
+    deleteRecords = require("./routes/deleteRecords")
 
 app.use(login);
 app.use(register);
 app.use(loadLeaderboard);
 app.use(admins);
+app.use(deleteRecords)
 app.use(passport.initialize());
 app.use(passport.session());
 

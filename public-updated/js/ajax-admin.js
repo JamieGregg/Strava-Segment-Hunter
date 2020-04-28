@@ -9,19 +9,11 @@ $(document).ready(function() {
 
 
   $('form#delete').click(function () {
-      if (confirm("are u sure?")) {
-      $.ajax({
-        type: 'DELETE',
-        url: '/deleteDatabase',
-        success: function (response) {
-          if (response == 'error') {
-            console.log('Err!');
-          } else {
-            alert('Success');
-            location.reload();
-          }
-        }
-      });
+      if (confirm("Are u sure?")) {
+        $.ajax({
+          type: 'DELETE',
+          url: '/deleteDatabase'
+        });
     } else {
       alert('Canceled!');
     }
