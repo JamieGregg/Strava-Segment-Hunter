@@ -452,53 +452,57 @@ function deleteUsedSegment(clubId) {
   var currentDate = new Date();
   const SegmentInfor = mongoose.model(clubId + "segment", segSchema)
   const SegmentBacklog = mongoose.model(clubId + "segmentBacklog", segBacklogSchema)
+  try {
 
-  SegmentInfor.find(function (err, obj) {
-    var outdatedSegment = new SegmentBacklog({
-      segmentId: obj[0].segmentId,
-      name: obj[0].name,
-      dateDeleted: currentDate
+    SegmentInfor.find(function (err, obj) {
+      var outdatedSegment = new SegmentBacklog({
+        segmentId: obj[0].segmentId,
+        name: obj[0].name,
+        dateDeleted: currentDate
+      });
+
+      // save model to database
+      outdatedSegment.save(function (err, segment) {
+        if (err) return console.error(err);
+        console.log(segment.name + " saved to database collection.");
+      });
+    }).sort({
+      counterId: 1
+    }).exec(function (err, docs) {
+      console.log(err);
     });
 
-    // save model to database
-    outdatedSegment.save(function (err, segment) {
-      if (err) return console.error(err);
-      console.log(segment.name + " saved to database collection.");
+
+    var smallestSegmentId = 0;
+    SegmentInfor.find(function (err, data) {
+      if (err) {
+        console.log(err)
+      } else {
+        smallestSegmentId = data[0].segmentId
+
+        SegmentInfor.deleteOne({
+            segmentId: {
+              $in: [
+                smallestSegmentId
+              ]
+            }
+          },
+          function (err, results) {
+            if (err) {
+              console.log(err)
+            } else {
+              console.log(results)
+            }
+          })
+      }
+    }).sort({
+      counterId: 1
+    }).exec(function (err, docs) {
+      console.log(err);
     });
-  }).sort({
-    counterId: 1
-  }).exec(function (err, docs) {
-    console.log(err);
-  });
-
-
-  var smallestSegmentId = 0;
-  SegmentInfor.find(function (err, data) {
-    if (err) {
-      console.log(err)
-    } else {
-      smallestSegmentId = data[0].segmentId
-      
-      SegmentInfor.deleteOne({
-          segmentId: {
-            $in: [
-              smallestSegmentId
-            ]
-          }
-        },
-        function(err, results) {
-          if (err) {
-            console.log(err)
-          } else {
-            console.log(results)
-          }
-        })
-    }
-  }).sort({
-    counterId: 1
-  }).exec(function(err, docs) {
-    console.log(err);
-  });
+  } catch {
+    console.log("Something has went wrong deleting the segment ")
+  }
 }
 
 function sortFunctionClub(a, b) {
