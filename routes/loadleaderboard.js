@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 });
 
 async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gender, res, req) {
-    findSegmentCodes(clubId)
+    await findSegmentCodes(clubId)
 
     var params = {
         "date_range": timeFrame
@@ -132,7 +132,6 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
             }
 
             strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
-
                 numberOfEntry = data.entries.length
 
                 for (let i = 0; i < numberOfEntry; i++) {
@@ -141,7 +140,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
 
                 for (let i = 0; i < implClubs.length; i++) {
                     if (clubId == implClubs[i][1]) {
-                        const collection = mongoose.model(implClubs[i][0], resultsSchema)
+                        const collection = mongoose.model(implClubs[i][1] + "s", resultsSchema)
                         if (type === 'POST') {
                             collection.find(function (err, people) {
                                 databaseLeaderboard = people
@@ -212,7 +211,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
 
                 for (let i = 0; i < implClubs.length; i++) {
                     if (clubId == implClubs[i][1]) {
-                        const collection = mongoose.model(implClubs[i][0] + gender, resultsSchema)
+                        const collection = mongoose.model(implClubs[i][1] + gender + "s", resultsSchema)
                         if (type === 'POST') {
                             collection.find(function (err, people) {
                                 databaseLeaderboard = people
@@ -303,7 +302,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
 
                     for (let i = 0; i < implClubs.length; i++) {
                         if (clubId == implClubs[i][1]) {
-                            const collection = mongoose.model(implClubs[i][0] + "master", resultsSchema)
+                            const collection = mongoose.model(implClubs[i][1] + "masters", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
                                     databaseLeaderboard = people
@@ -398,7 +397,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
 
                     for (let i = 0; i < implClubs.length; i++) {
                         if (clubId == implClubs[i][1]) {
-                            const collection = mongoose.model(implClubs[i][0] + "master" + gender + "s", resultsSchema)
+                            const collection = mongoose.model(implClubs[i][1] + "master" + gender + "s", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
                                     databaseLeaderboard = people
@@ -456,7 +455,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     })
 } // function
 
-function findSegmentCodes(clubId) {
+async function findSegmentCodes(clubId) {
     const SegmentInfo = mongoose.model(clubId + "segment", segSchema)
 
     SegmentInfo.find(function (err, data) {

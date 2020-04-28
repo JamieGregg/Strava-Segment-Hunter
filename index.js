@@ -2,11 +2,8 @@ require('dotenv').config();
 const express = require('express')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
-const async = require('async')
-const crypto = require ('crypto')
 const mongoose = require('mongoose')
 const schedule = require('node-schedule')
-const nodemailer = require('nodemailer')
 const session = require('express-session')
 const passport = require('passport')
 const User = require("./models/user")
@@ -31,7 +28,6 @@ var login = require("./routes/login"),
     register = require("./routes/register"),
     loadLeaderboard = require("./routes/loadleaderboard"),
     admins = require("./routes/admin")
-
 
 app.use(login);
 app.use(register);
@@ -117,8 +113,7 @@ function assignEnvVariable(res) {
 }
 
 //DATABASE FUNCTIONS
-function populateSchema(results, club, clubName) {
-  var implClubs = []
+function populateSchema(results, clubName) {
   var rank = 0;
   var lastTime = -1;
 
@@ -156,7 +151,7 @@ function saveDataEvening() {
   rule.dayOfWeek = 0
   rule.hour = 23
   rule.minute = 55
-  rule.second = 59
+  rule.second = 45
 
   var j = schedule.scheduleJob(rule, function() {
     var strava = new require("strava")({
@@ -166,14 +161,12 @@ function saveDataEvening() {
       "redirect_url": "https://www.stravasegmenthunter.com/"
     });
 
-    var params = {
-      "date_range": timeFrame
-    }
     var noOfResults = 100
     var gender = ["F", "M"]
     var implClubs = []
     var segment = []
     var results = [];
+
 
     //Gathering Club Data
     ClubData.find(async function (err, clubInfo) {
@@ -188,8 +181,9 @@ function saveDataEvening() {
       //Loop each club
       for (let i = 0; i < implClubs.length; i++) {
         segment.length = 0;
-
-        findSegmentCodes(implClubs[i])
+        findSegmentCodes(implClubs[i][1])
+        await new Promise(resolve => setTimeout(resolve, 5000));
+         
 
         try {
           strava.segments.get(segmentId, function (err, data) {
@@ -219,7 +213,7 @@ function saveDataEvening() {
                   segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
                 }
 
-                populateSchema(segment, implClubs[i][1], implClubs[i][0])
+                populateSchema(segment, implClubs[i][1] + "s")
                 segment.length = 0;
               } //If statment
             }) //API Call
@@ -247,7 +241,7 @@ function saveDataEvening() {
                     segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
                   }
 
-                  populateSchema(segment, implClubs[i][1], implClubs[i][0] + gender[y])
+                  populateSchema(segment, implClubs[i][1] + gender[y] + "s")
                   segment.length = 0;
                 }
               })
@@ -288,7 +282,7 @@ function saveDataEvening() {
 
                 if (resultMaster.length != 0) {
                   resultMaster.sort(sortFunctionClub)
-                  populateSchema(resultMaster, implClubs[i][1], implClubs[i][0] + "Master")
+                  populateSchema(resultMaster, implClubs[i][1] + "Masters")
                   results.length = 0;
                 }
               })
@@ -332,7 +326,7 @@ function saveDataEvening() {
 
                 if (resultMasterM.length != 0) {
                   resultMasterM.sort(sortFunctionClub)
-                  populateSchema(resultMasterM, implClubs[i][1], implClubs[i][0] + "MasterM")
+                  populateSchema(resultMasterM, implClubs[i][1] + "MasterMs")
                 }
               })
             } catch (err) {
@@ -375,7 +369,7 @@ function saveDataEvening() {
 
                 if (resultMasterF.length != 0) {
                   resultMasterF.sort(sortFunctionClub)
-                  populateSchema(resultMasterF, implClubs[i][1], implClubs[i][0] + "MasterFs")
+                  populateSchema(resultMasterF, implClubs[i][1] + "MasterFs")
                 }
               })
             } catch (err) {
@@ -383,7 +377,7 @@ function saveDataEvening() {
             }
           })
 
-          deleteUsedSegment(implClubs[i])
+          //deleteUsedSegment(implClubs[i])
 
         } catch {
           console.log("Invalid Segment")
@@ -439,7 +433,7 @@ function scoringSystem(placing) {
   }
 }
 
-function findSegmentCodes(clubId) {
+async function findSegmentCodes(clubId) {
   const SegmentInfo = mongoose.model(clubId + "segment", segSchema)
 
   SegmentInfo.find(function(err, data) {
@@ -448,6 +442,7 @@ function findSegmentCodes(clubId) {
     } else {
       try{
         segmentId = data[0].segmentId
+        console.log(segmentId)
       } catch {
         segmentId = -1
       }
@@ -491,7 +486,13 @@ function deleteUsedSegment(clubId) {
   });
 }
 
-
+function sortFunctionClub(a, b) {
+  if (a[1] === b[1]) {
+    return 0;
+  } else {
+    return (a[1] < b[1]) ? -1 : 1;
+  }
+}
 
 
 

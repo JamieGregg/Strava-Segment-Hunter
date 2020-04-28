@@ -146,6 +146,15 @@ router.post('/validateSegment', function (req, res) {
     })
 })
 
+router.delete('/deleteDatabase', function(req,res){
+    User.findOne({ username: req.user.username}, 
+        function (err, obj) {
+            var clubId = obj.clubId
+            
+        })
+})
+
+
 function showSegments(res, segInfo) {
     segInfo.sort(sortCounter)
     res.send({
