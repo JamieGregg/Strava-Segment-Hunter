@@ -10,6 +10,7 @@ const User = require("./models/user")
 const ClubData = require("./models/clubdata")
 const resultsSchema = require("./models/results")
 const segSchema = require("./models/segmentSchema")
+const segBacklogSchema = require("./models/segBacklogSchema")
 const app = express();
 
 app.use(express.static(__dirname + '/public-updated'));
@@ -151,7 +152,7 @@ function saveDataEvening() {
   rule.dayOfWeek = 0
   rule.hour = 23
   rule.minute = 55
-  rule.second = 45
+  rule.second = 55
 
   var j = schedule.scheduleJob(rule, function() {
     var strava = new require("strava")({
@@ -377,7 +378,7 @@ function saveDataEvening() {
             }
           })
 
-          //deleteUsedSegment(implClubs[i])
+          deleteUsedSegment(implClubs[i][1])
 
         } catch {
           console.log("Invalid Segment")
@@ -403,31 +404,22 @@ function scoringSystem(placing) {
   switch (placing) {
     case 1:
       return 20;
-      break
     case 2:
       return 16;
-      break
     case 3:
       return 14;
-      break;
     case 4:
       return 12;
-      break;
     case 5:
       return 10;
-      break;
     case 6:
       return 8;
-      break;
     case 7:
       return 6;
-      break;
     case 8:
       return 4;
-      break;
     case 9:
       return 2;
-      break;
     default:
       return 1;
   }
@@ -455,7 +447,28 @@ async function findSegmentCodes(clubId) {
 }
 
 function deleteUsedSegment(clubId) {
+  var currentDate = new Date();
   const SegmentInfor = mongoose.model(clubId + "segment", segSchema)
+  const SegmentBacklog = mongoose.model(clubId + "segmentBacklog", segBacklogSchema)
+
+  SegmentInfor.find(function (err, obj) {
+    var outdatedSegment = new SegmentBacklog({
+      segmentId: obj[0].segmentId,
+      name: obj[0].name,
+      dateDeleted: currentDate
+    });
+
+    // save model to database
+    outdatedSegment.save(function (err, segment) {
+      if (err) return console.error(err);
+      console.log(segment.name + " saved to database collection.");
+    });
+  }).sort({
+    counterId: 1
+  }).exec(function (err, docs) {
+    console.log(err);
+  });
+
 
   var smallestSegmentId = 0;
   SegmentInfor.find(function (err, data) {
@@ -463,8 +476,8 @@ function deleteUsedSegment(clubId) {
       console.log(err)
     } else {
       smallestSegmentId = data[0].segmentId
-
-      SegmentData.deleteMany({
+      
+      SegmentInfor.deleteOne({
           segmentId: {
             $in: [
               smallestSegmentId
@@ -493,14 +506,3 @@ function sortFunctionClub(a, b) {
     return (a[1] < b[1]) ? -1 : 1;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
