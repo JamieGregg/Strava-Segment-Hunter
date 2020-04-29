@@ -2,21 +2,129 @@ require('dotenv').config();
 var express = require("express");
 var router = express.Router();
 const passport = require('passport')
+const session = require('express-session')
+const paypal = require('paypal-rest-sdk')
 var User = require("../models/user");
 const nodemailer =  require('nodemailer')
 const ClubData = require("../models/clubdata")
+const bodyParser = require('body-parser')
+router.use(bodyParser.urlencoded({
+    extended: false
+}))
+
+//const tempUser = require("../models/tempUser")
+var tempUser = {
+        username: "",
+        password: "",
+        clubName: "",
+        clubId: ""
+};
+
+router.use(session({
+    secret: process.env.HASH_KEY,
+    resave: false,
+    saveUninitialized: false
+}))
 
 router.use(passport.initialize());
 router.use(passport.session());
+
+passport.use(User.createStrategy())
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': process.env.PAYPAL_CLIENT,
+    'client_secret': process.env.PAYPAL_SECRET
+});
 
 router.get('/signup', function (req, res) {
     res.render('signup')
 })
 
 router.post('/register', function (req, res) {
-    var clubName = req.body.clubName
-    var clubId = req.body.clubId
+    tempUser = {
+        username: req.body.username,
+        password: req.body.password,
+        clubName: req.body.clubName,
+        clubId: req.body.clubId
+    }
 
+    const create_payment_json = {
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": "http://localhost:8000/success",
+            "cancel_url": "http://localhost:8000/signUp"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "Strava Segment Hunter",
+                    "sku": "001",
+                    "price": "9.99",
+                    "currency": "GBP",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "currency": "GBP",
+                "total": "9.99"
+            },
+            "description": "A subscription to Strava Segment Hunter allowing for admin access for segment management"
+        }] 
+    };
+
+    paypal.payment.create(create_payment_json, function (error, payment) {
+        if (error) {
+            throw error;
+        } else {
+            for ( let i = 0; i < payment.links.length; i++){
+                if ( payment.links[i].rel === 'approval_url'){
+                    res.redirect(payment.links[i].href)
+                }
+            }
+        }
+    });
+})
+
+
+router.get('/success', function(req,res){
+    res.render('signup-confirmation', {
+        clubName: tempUser.clubName,
+        clubId: tempUser.clubId,
+        password: tempUser.password,
+        username: tempUser.username
+    })
+
+    const payerId = req.query.PayerID
+    const paymentId = req.query.paymentId
+
+    const execute_payment_json = {
+        "payer_id": payerId,
+        "transactions": [{
+            "amount": {
+                "currency": "GBP",
+                "total": "9.99"
+            }
+        }]
+    }
+
+    paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+        if (error) {
+            console.log(error.response)
+        } else {
+            console.log("Get payment response")
+            console.log(JSON.stringify(payment))
+        }
+    })
+})
+
+router.post('/confirm-payment', function(req, res){
+    console.log(req.body.username)
     User.register({
         username: req.body.username
     }, req.body.password, function (err, user) {
@@ -30,8 +138,8 @@ router.post('/register', function (req, res) {
                     username: user.username
                 };
                 var update = {
-                    clubName: clubName,
-                    clubId: clubId
+                    clubName: req.body.clubName,
+                    clubId: req.body.clubId
                 }
                 var options = {
                     upsert: true,
@@ -43,32 +151,34 @@ router.post('/register', function (req, res) {
                     console.log(doc);
                 });
 
-                var strava = new require("strava")({
-                    "client_id": process.env.CLIENT_ID,
-                    "access_token": process.env.ACCESS_TOKEN,
-                    "client_secret": process.env.CLIENT_SECRET,
-                    "redirect_url": "https://www.stravasegmenthunter.com/"
-                });
+                 var strava = new require("strava")({
+                     "client_id": process.env.CLIENT_ID,
+                     "access_token": process.env.ACCESS_TOKEN,
+                     "client_secret": process.env.CLIENT_SECRET,
+                     "redirect_url": "https://www.stravasegmenthunter.com/"
+                 });
 
-                strava.clubs.get(req.body.clubId, function (err, data) {
-                    // a document instance
-                    var newClub = new ClubData({
-                        alais: clubName,
-                        clubId: clubId,
-                        clubName: data.name
-                    });
+                 strava.clubs.get(req.body.clubId, function (err, data) {
+                     // a document instance
+                     var newClub = new ClubData({
+                         alais: req.body.clubName,
+                         clubId: req.body.clubId,
+                         clubName: data.name
+                     });
 
-                    // save model to database
-                    newClub.save(function (err, club) {
-                        if (err) return console.error(err);
-                    });
-                })
-                regEmail(clubName, user.username)
+                     // save model to database
+                     newClub.save(function (err, club) {
+                         if (err) return console.error(err);
+                     });
+                 })
+                regEmail(req.body.clubName, user.username)
                 res.redirect('/adminDashboard');
             })
         }
     })
 })
+
+
 
 router.post('/validateClub', async function (req, res) {
     User.findOne({
