@@ -76,7 +76,7 @@
 
           <img class="masthead-avatar mb-5" src="img/portfolio/icon.png" alt="">
           <!-- Results Section Heading -->
-          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Confirm your payment</h2>
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Welcome to Strava Segment Hunter!</h2>
 
 
         </div>
@@ -91,7 +91,7 @@
     <div class="container">
 
       <!-- Sign Up Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Order Confirmation</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Getting Started</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
@@ -102,7 +102,16 @@
         <div class="divider-custom-line"></div>
       </div>
 
+      <p class="lead text-justify">Welcome to Strava Segment Hunter, you now have admin rights to your club!. This means you
+        have complete control over your clubs competition. On the admin dashboard, which you are about to progress to, there is
+        tutorials on how to ensure the best experience is had by all users.<br><br>
 
+        We recommend you add at <strong>least 5 segments</strong> as soon as possible to keep the site up-to-date for
+        your users. Every
+        Sunday evening at 11:30 the site will refresh gathering the leaderboard of the segment you have selected for
+        that week. The riders on the leaderboard will be then assigned points based on their placing (This can be seen in more detail on the dashboard).<br><br>
+
+        For more information on all of this head over to the next page.</p>
       <form action="/confirm-payment" method="POST" id="register">
         <div class="form-row">
           <div class="col">
@@ -110,40 +119,10 @@
             <input hidden name="password" value="<%= password %>">
             <input hidden name="clubName" value="<%= clubName %>">
             <input hidden name="clubId" value="<%= clubId %>">
-          
-          <button id="confirmClub" type="submit" class="btn btn-lg btn-primary">Checkout Now</button><br>
+            
+          <button id="confirmClub" type="submit" class="btn btn-lg btn-primary">Progress and confirm your account!</button><br>
         <br><br><br>
       </form>
-    </div>
-  </section>
-
-
-
-  <!--Help Section -->
-  <section class="page-section portfolio bg-primary text-white" id="club-id-section">
-    <div class="container">
-
-      <!-- Help Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-white mb-0">Finding your Club Id?</h2>
-
-      <!-- Icon Divider -->
-      <div class="divider-custom divider-light">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon">
-          <i class="fas fa-star"></i>
-        </div>
-        <div class="divider-custom-line"></div>
-      </div>
-
-      <p class="lead text-center">Strava Segment Hunter will generate leaderboards for your club based on the Strava Club ID. There is a video below showing the steps to obtain this ID. <a class="text-white"
-          href="https://www.youtube.com/watch?v=-qTjWocDQLg&feature=youtu.be">Video tutorial here.</a></p>
-      <ol class="lead">
-        <li>Go to Stravas website.</li>
-        <li>Click the Explore Tab and select Clubs.</li>
-        <li>Search and select your club.</li>
-        <li>Navigate to the members section of your club.</li>
-        <li>In the website link you will see the club Id after www.strava.com/clubs/<strong>THIS_IS_YOUR_CLUB_ID</strong>/members.</li>
-      </ol>
     </div>
   </section>
 

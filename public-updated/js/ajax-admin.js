@@ -38,7 +38,7 @@ $(document).ready(function() {
             $("#loader").show();
           },
           success: function(info) {
-            $("#responseSegment").html("Segment has been added")
+            $("#responseSegment").html("Segment has been added (You may need to refresh your page)")
             $("#stravaSeg").val("")
             $.ajax({
                 type: 'GET',

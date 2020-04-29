@@ -172,6 +172,7 @@ router.post('/confirm-payment', function(req, res){
                      });
                  })
                 regEmail(req.body.clubName, user.username)
+                
                 res.redirect('/adminDashboard');
             })
         }
