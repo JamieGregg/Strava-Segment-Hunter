@@ -9,6 +9,7 @@ const timeFrame = "this_week"
 let segmentId;
 
 router.post('/loadleaderboard', function (req, res) {
+    findSegmentCodes(req.body.clubs)
     loadLeaderboard('POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
 })
 
@@ -17,10 +18,8 @@ router.get('/', (req, res) => {
 });
 
 async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gender, res, req) {
-    await findSegmentCodes(clubId)
-
     var params = {
-        "date_range": timeFrame
+        "date_range": timeFrame 
     }
     var params64 = {}
     var noOfResults = 30
@@ -32,10 +31,6 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
     var dayTwo = [];
     var dayThree = [];
     var dayFour = [];
-
-    if (req.body.clubs != undefined) {
-        clubName = "Public"
-    }
 
     var strava = new require("strava")({
         "client_id": process.env.CLIENT_ID,
@@ -59,6 +54,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
         SegmentData = mongoose.model(clubId + "segment", segSchema)
 
         SegmentData.find(async function (err, data) {
+            
             if (err) {
                 console.log(err)
             } else {
@@ -69,6 +65,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                         "average_grade": data[0].grade,
                         "link": "https://www.strava.com/segments/" + data[0].segmentId,
                         "efforts": data[0].efforts,
+                        "segmentId": data[0].segmentId
                     }
                 } catch {
                     segmentInfo = {
@@ -94,6 +91,12 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
             if (err) {
                 console.log(err)
             } else {
+
+                dayOne = ["No segment has been added", "https://www.strava.com/segments/"]
+                dayTwo = ["No segment has been added", "https://www.strava.com/segments/"]
+                dayThree = ["No segment has been added", "https://www.strava.com/segments/"]
+                dayFour = ["No segment has been added", "https://www.strava.com/segments/"]
+
                 for (let i = 0; i < 5; i++) {
                     if (err) {
                         console.log(err)
@@ -109,10 +112,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                 dayFour = [data[4].name, "https://www.strava.com/segments/" + data[4].segmentId]
                             }
                         } catch {
-                            dayOne = ["No segment has been added", "https://www.strava.com/segments/"]
-                            dayTwo = ["No segment has been added", "https://www.strava.com/segments/"]
-                            dayThree = ["No segment has been added", "https://www.strava.com/segments/"]
-                            dayFour = ["No segment has been added", "https://www.strava.com/segments/"]
+                            console.log("Not enough segments");
                         }
                     }
                 }
@@ -123,6 +123,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
             console.log(err);
         });
 
+        await new Promise(resolve => setTimeout(resolve, 200));
         if ((ageFilter === 'false') && (gender === '')) {
             //no age no gender
             params = {
@@ -130,8 +131,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                 "per_page": noOfResults,
                 "club_id": clubId
             }
-
-            strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+            console.log(segmentInfo.segmentId)
+            strava.segments.leaderboard.get(segmentInfo.segmentId, params, async function (err, data) {
                 numberOfEntry = data.entries.length
 
                 for (let i = 0; i < numberOfEntry; i++) {
@@ -202,7 +203,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                 "gender": gender
             }
 
-            strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+            strava.segments.leaderboard.get(segmentInfo.segmentId, params, async function (err, data) {
                 numberOfEntry = data.entries.length
 
                 for (let i = 0; i < numberOfEntry; i++) {
@@ -280,14 +281,14 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                 "age_group": "55_64"
             }
 
-            strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+            strava.segments.leaderboard.get(segmentInfo.segmentId, params, async function (err, data) {
                 numberOfEntry = data.entries.length
 
                 for (let i = 0; i < numberOfEntry; i++) {
                     segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
                 }
 
-                strava.segments.leaderboard.get(segmentId, params64, async function (err, data) {
+                strava.segments.leaderboard.get(segmentInfo.segmentId, params64, async function (err, data) {
                     numberOfEntry = data.entries.length
 
                     for (let i = 0; i < numberOfEntry; i++) {
@@ -375,7 +376,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                 "gender": gender
             }
 
-            strava.segments.leaderboard.get(segmentId, params, async function (err, data) {
+            strava.segments.leaderboard.get(segmentInfo.segmentId, params, async function (err, data) {
                 numberOfEntry = data.entries.length
 
                 for (let i = 0; i < numberOfEntry; i++) {

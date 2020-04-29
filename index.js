@@ -39,7 +39,7 @@ app.use(deleteRecords)
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/segLeaderboard', {
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/Test', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
@@ -49,6 +49,7 @@ mongoose.set('useCreateIndex', true)
 passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+
 
 let segmentId;
 let timeFrame = "this_week"
@@ -187,7 +188,6 @@ function saveDataEvening() {
         findSegmentCodes(implClubs[i][1])
         await new Promise(resolve => setTimeout(resolve, 5000));
          
-
         try {
           strava.segments.get(segmentId, function (err, data) {
             var objJSON = JSON.parse(JSON.stringify(data))
@@ -452,9 +452,9 @@ function deleteUsedSegment(clubId) {
   var currentDate = new Date();
   const SegmentInfor = mongoose.model(clubId + "segment", segSchema)
   const SegmentBacklog = mongoose.model(clubId + "segmentBacklog", segBacklogSchema)
-  try {
 
-    SegmentInfor.find(function (err, obj) {
+  SegmentInfor.find(function (err, obj) {
+    if (obj.length > 0 ){
       var outdatedSegment = new SegmentBacklog({
         segmentId: obj[0].segmentId,
         name: obj[0].name,
@@ -463,18 +463,19 @@ function deleteUsedSegment(clubId) {
 
       // save model to database
       outdatedSegment.save(function (err, segment) {
-        if (err) return console.error(err);
-        console.log(segment.name + " saved to database collection.");
+      if (err) return console.error(err);
+      console.log(segment.name + " saved to database collection.");
       });
-    }).sort({
-      counterId: 1
-    }).exec(function (err, docs) {
-      console.log(err);
-    });
-
-
-    var smallestSegmentId = 0;
-    SegmentInfor.find(function (err, data) {
+    }
+  }).sort({
+    counterId: 1
+  }).exec(function (err, docs) {
+    console.log(err);
+  });
+    
+  var smallestSegmentId = 0;
+  SegmentInfor.find(function (err, data) {
+    if( data.length > 0 ) {
       if (err) {
         console.log(err)
       } else {
@@ -495,14 +496,12 @@ function deleteUsedSegment(clubId) {
             }
           })
       }
-    }).sort({
-      counterId: 1
-    }).exec(function (err, docs) {
-      console.log(err);
-    });
-  } catch {
-    console.log("Something has went wrong deleting the segment ")
-  }
+    }
+  }).sort({
+    counterId: 1
+  }).exec(function(err, docs) {
+    console.log(err);
+  });
 }
 
 function sortFunctionClub(a, b) {
@@ -512,3 +511,8 @@ function sortFunctionClub(a, b) {
     return (a[1] < b[1]) ? -1 : 1;
   }
 }
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function (req, res) {
+  res.render('404');
+});
