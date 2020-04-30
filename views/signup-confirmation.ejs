@@ -102,6 +102,10 @@
         <div class="divider-custom-line"></div>
       </div>
 
+
+      <p class="lead text-center">You are about to purchase an Annual subscription to Strava Segment Hunter.<br><br>Use the form below to checkout for £9.99.</p>
+
+
       <form action="/check-card" method="POST"> 
          <input hidden name="username" value="<%= username %>">
          <input hidden name="password" value="<%= password %>">
@@ -126,7 +130,8 @@
           </div>
         </div><br>
 
-        <button  type="submit" class="btn btn-lg btn-primary">Pay Now</button><br>
+        <button type="submit" class="btn btn-lg btn-block btn-primary"><i class="fas fa-shopping-basket"></i>   Checkout £9.99
+          </button><br>
         <br><br><br>
       </form>
     </div>
