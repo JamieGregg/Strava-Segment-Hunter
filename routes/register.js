@@ -39,7 +39,8 @@ router.post('/registering', function (req, res) {
         clubName: req.body.clubName,
         clubId: req.body.clubId,
         password: req.body.password,
-        username: req.body.username
+        username: req.body.username,
+        paymentError: ''
     })
 })
 

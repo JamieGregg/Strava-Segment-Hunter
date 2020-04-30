@@ -87,9 +87,13 @@ router.post("/check-card", async (request, response) => {
             })
         } else {
             // The credit card has an issue
-            response.status(400).json({
-                message: `Could not verify card ${request.body.number.substring(0, 6)}... with Stripe?`
-            })
+              response.render('signup-confirmation', {
+                  clubName: request.body.clubName,
+                  clubId: request.body.clubId,
+                  password: request.body.password,
+                  username: request.body.username,
+                  paymentError: 'Oops, we could not verify this card.'
+              })
         }
     })
 })
@@ -116,7 +120,7 @@ function regEmail(clubName, email) {
         subject: 'Welcome to Strava Segment Hunter',
         html: '<h3>Welcome to Strava Segment Hunter!</h3><br>' +
             'You now have access to the Strava Segment Hunter admin dashboard for ' + clubName + '. This gives you have the ability to add and remove segments on the leaderboard.<br>' +
-            '<h3>So what next?</h3> We suggest adding in 4 segments to get started, this gives you enough time to get up to speed with the site and allow competitors to plan ahead.<br><br>' +
+            '<h3>So what next?</h3> We suggest adding in 5 segments to get started, this gives you enough time to get up to speed with the site and allow competitors to plan ahead.<br><br>' +
             'If you have any queries, suggestions or issues please do not hesitate to get in contact with us.' +
             '<br><br>Thanks again for your support,<br>' +
             'Jamie<br>' +

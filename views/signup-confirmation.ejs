@@ -87,7 +87,7 @@
 
   <!-- Sign Up Section -->
 
-  <<section class="page-section portfolio" id="sign-up">
+  <section class="page-section portfolio" id="sign-up">
     <div class="container">
 
       <!-- Sign Up Section Heading -->
@@ -119,6 +119,7 @@
           <div class="col">
             <label class="lead " for="month">Expiry Month</label>
             <input type="text" class="form-control" id="month" name="exp_month" placeholder="MM" required>
+            <p name="paymentError" class="form-text text-danger lead"><%= paymentError %></p>
           </div>
           <div class="col">
             <label class="lead " for="year">Expiry Year</label>
@@ -128,11 +129,10 @@
             <label class="lead" for="cvc">CVC</label>
             <input type="text" class="form-control" id="cvc" name="cvc" placeholder="434" required>
           </div>
-        </div><br>
-
+        </div>
         <button type="submit" class="btn btn-lg btn-block btn-primary"><i class="fas fa-shopping-basket"></i>   Checkout £9.99
           </button><br>
-        <br><br><br>
+        <br>
       </form>
     </div>
   </section>
