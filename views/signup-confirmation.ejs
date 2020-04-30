@@ -76,7 +76,7 @@
 
           <img class="masthead-avatar mb-5" src="img/portfolio/icon.png" alt="">
           <!-- Results Section Heading -->
-          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Welcome to Strava Segment Hunter!</h2>
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Great, Your nearly there!</h2>
 
 
         </div>
@@ -87,11 +87,11 @@
 
   <!-- Sign Up Section -->
 
-  <section class="page-section portfolio" id="sign-up">
+  <<section class="page-section portfolio" id="sign-up">
     <div class="container">
 
       <!-- Sign Up Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Getting Started</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Payment Infomation</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
@@ -102,25 +102,31 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <p class="lead text-justify">Welcome to Strava Segment Hunter, you now have admin rights to your club!. This means you
-        have complete control over your clubs competition. On the admin dashboard, which you are about to progress to, there is
-        tutorials on how to ensure the best experience is had by all users.<br><br>
-
-        We recommend you add at <strong>least 5 segments</strong> as soon as possible to keep the site up-to-date for
-        your users. Every
-        Sunday evening at 11:30 the site will refresh gathering the leaderboard of the segment you have selected for
-        that week. The riders on the leaderboard will be then assigned points based on their placing (This can be seen in more detail on the dashboard).<br><br>
-
-        For more information on all of this head over to the next page.</p>
-      <form action="/confirm-payment" method="POST" id="register">
+      <form action="/check-card" method="POST"> 
+         <input hidden name="username" value="<%= username %>">
+         <input hidden name="password" value="<%= password %>">
+         <input hidden name="clubName" value="<%= clubName %>">
+         <input hidden name="clubId" value="<%= clubId %>">
+        <div class="form-group">
+          <label class="lead" for="cardNo">Card Number</label>
+          <input type="text" class="form-control" id="cardNo" name="number" placeholder="Card Number" required>
+        </div>
         <div class="form-row">
           <div class="col">
-            <input hidden name="username" value="<%= username %>">
-            <input hidden name="password" value="<%= password %>">
-            <input hidden name="clubName" value="<%= clubName %>">
-            <input hidden name="clubId" value="<%= clubId %>">
-            
-          <button id="confirmClub" type="submit" class="btn btn-lg btn-primary">Progress and confirm your account!</button><br>
+            <label class="lead " for="month">Expiry Month</label>
+            <input type="text" class="form-control" id="month" name="exp_month" placeholder="MM" required>
+          </div>
+          <div class="col">
+            <label class="lead " for="year">Expiry Year</label>
+            <input type="text" class="form-control" id="year" name="exp_year" placeholder="YY" required>
+          </div>
+          <div class="col">
+            <label class="lead" for="cvc">CVC</label>
+            <input type="text" class="form-control" id="cvc" name="cvc" placeholder="434" required>
+          </div>
+        </div><br><br>
+
+        <button  type="submit" class="btn btn-lg btn-primary">Pay Now</button><br>
         <br><br><br>
       </form>
     </div>

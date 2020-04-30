@@ -30,14 +30,19 @@ var login = require("./routes/login"),
     loadLeaderboard = require("./routes/loadleaderboard"),
     admins = require("./routes/admin"),
     deleteRecords = require("./routes/deleteRecords"),
-    verifytoken = require("./routes/auth/verifyToken")
+    checkCard = require("./routes/billing/checkCard"),
+    listPlans = require("./routes/billing/listPlans"),
+    subscribe = require("./routes/billing/subscribe")
+
 
 app.use(login);
 app.use(register);
 app.use(loadLeaderboard);
 app.use(admins);
 app.use(deleteRecords)
-app.use(verifytoken)
+app.use(checkCard)
+app.use(listPlans)
+app.use(subscribe)
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -67,6 +72,10 @@ app.listen(port, () => {
 
 refreshTokens();
 saveDataEvening();
+
+app.get("*", function (request, response) {
+  response.redirect("https://" + request.headers.host + request.url);
+});
 
 //TOKEN REFRESH FUNCTIONS
 function refreshTokens() {
