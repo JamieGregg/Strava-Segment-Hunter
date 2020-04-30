@@ -29,13 +29,15 @@ var login = require("./routes/login"),
     register = require("./routes/register"),
     loadLeaderboard = require("./routes/loadleaderboard"),
     admins = require("./routes/admin"),
-    deleteRecords = require("./routes/deleteRecords")
+    deleteRecords = require("./routes/deleteRecords"),
+    verifytoken = require("./routes/auth/verifyToken")
 
 app.use(login);
 app.use(register);
 app.use(loadLeaderboard);
 app.use(admins);
 app.use(deleteRecords)
+app.use(verifytoken)
 app.use(passport.initialize());
 app.use(passport.session());
 

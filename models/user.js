@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
   clubName: String,
   clubId: Number,
   resetPasswordToken: String,
-  resetPasswordTokenExpires: Date
+  resetPasswordTokenExpires: Date,
+  stripeId: String
 })
 
 userSchema.plugin(passportLocalMongoose)

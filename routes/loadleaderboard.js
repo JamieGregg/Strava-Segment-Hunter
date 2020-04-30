@@ -59,14 +59,26 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                 console.log(err)
             } else {
                 try {
-                    segmentInfo = {
-                        "name": data[0].name,
-                        "distance": data[0].distance,
-                        "average_grade": data[0].grade,
-                        "link": "https://www.strava.com/segments/" + data[0].segmentId,
-                        "efforts": data[0].efforts,
-                        "segmentId": data[0].segmentId
+                    if(data.length != 0 ){
+                        segmentInfo = {
+                            "name": data[0].name,
+                            "distance": data[0].distance,
+                            "average_grade": data[0].grade,
+                            "link": "https://www.strava.com/segments/" + data[0].segmentId,
+                            "efforts": data[0].efforts,
+                            "segmentId": data[0].segmentId
+                        }
+                    } else {
+                         segmentInfo = {
+                             "name": "Contact your admin to update segments",
+                             "distance": 0,
+                             "average_grade": 0,
+                             "link": "https://www.strava.com/segments/",
+                             "efforts": 0,
+                             "segmentId": 23717918
+                         }
                     }
+                   
                 } catch {
                     segmentInfo = {
                         "name": "Contact your admin to update segments",
@@ -466,7 +478,7 @@ async function findSegmentCodes(clubId) {
             try {
                 segmentId = data[0].segmentId
             } catch {
-                segmentId = -1
+                segmentId = 23717918
             }
         }
     }).sort({
