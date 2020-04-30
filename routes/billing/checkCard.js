@@ -81,7 +81,7 @@ router.post("/check-card", async (request, response) => {
                         })
                         regEmail(request.body.clubName, user.username)
 
-                        response.redirect('/adminDashboard');
+                        response.render('welcome');
                     })
                 }
             })
@@ -92,7 +92,6 @@ router.post("/check-card", async (request, response) => {
             })
         }
     })
-    
 })
 
 function regEmail(clubName, email) {

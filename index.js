@@ -31,9 +31,7 @@ var login = require("./routes/login"),
     admins = require("./routes/admin"),
     deleteRecords = require("./routes/deleteRecords"),
     checkCard = require("./routes/billing/checkCard"),
-    listPlans = require("./routes/billing/listPlans"),
-    subscribe = require("./routes/billing/subscribe")
-
+    listPlans = require("./routes/billing/listPlans")
 
 app.use(login);
 app.use(register);
@@ -42,7 +40,6 @@ app.use(admins);
 app.use(deleteRecords)
 app.use(checkCard)
 app.use(listPlans)
-app.use(subscribe)
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -56,7 +53,6 @@ mongoose.set('useCreateIndex', true)
 passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
-
 
 let segmentId;
 let timeFrame = "this_week"
@@ -73,9 +69,9 @@ app.listen(port, () => {
 refreshTokens();
 saveDataEvening();
 
-app.get("*", function (request, response) {
+/*app.get("*", function (request, response) {
   response.redirect("https://" + request.headers.host + request.url);
-});
+});*/
 
 //TOKEN REFRESH FUNCTIONS
 function refreshTokens() {
