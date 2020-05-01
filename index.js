@@ -11,6 +11,7 @@ const ClubData = require("./models/clubdata")
 const resultsSchema = require("./models/results")
 const segSchema = require("./models/segmentSchema")
 const segBacklogSchema = require("./models/segBacklogSchema")
+var nodemailer = require("nodemailer");
 const app = express();
 
 app.use(express.static(__dirname + '/public-updated'));
@@ -161,8 +162,8 @@ function saveDataEvening() {
   var rule = new schedule.RecurrenceRule()
   rule.dayOfWeek = 0
   rule.hour = 23
-  rule.minute = 55
-  rule.second = 20
+  rule.minute = 30
+  rule.second = 55
 
   var j = schedule.scheduleJob(rule, function() {
     var strava = new require("strava")({
@@ -223,6 +224,7 @@ function saveDataEvening() {
                   segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
                 }
 
+                backdatedData(segment, implClubs[i][1] + " Everyone")
                 populateSchema(segment, implClubs[i][1] + "s")
                 segment.length = 0;
               } //If statment
@@ -251,6 +253,7 @@ function saveDataEvening() {
                     segment.push([data.entries[z].athlete_name, convertSecondsToMinutes(data.entries[z].elapsed_time), data.entries[z].rank])
                   }
 
+                  backdatedData(segment, implClubs[i][1] + gender[y])
                   populateSchema(segment, implClubs[i][1] + gender[y] + "s")
                   segment.length = 0;
                 }
@@ -292,6 +295,7 @@ function saveDataEvening() {
 
                 if (resultMaster.length != 0) {
                   resultMaster.sort(sortFunctionClub)
+                  backdatedData(segment, implClubs[i][1] + " Masters")
                   populateSchema(resultMaster, implClubs[i][1] + "Masters")
                   results.length = 0;
                 }
@@ -336,6 +340,7 @@ function saveDataEvening() {
 
                 if (resultMasterM.length != 0) {
                   resultMasterM.sort(sortFunctionClub)
+                  backdatedData(segment, implClubs[i][1] + " Male Masters")
                   populateSchema(resultMasterM, implClubs[i][1] + "MasterMs")
                 }
               })
@@ -379,6 +384,7 @@ function saveDataEvening() {
 
                 if (resultMasterF.length != 0) {
                   resultMasterF.sort(sortFunctionClub)
+                  backdatedData(segment, implClubs[i][1] + " Female Masters")
                   populateSchema(resultMasterF, implClubs[i][1] + "MasterFs")
                 }
               })
@@ -517,6 +523,33 @@ function sortFunctionClub(a, b) {
   } else {
     return (a[1] < b[1]) ? -1 : 1;
   }
+}
+
+function backdatedData(data, clubId) {
+  var smtpTransport = nodemailer.createTransport({
+    host: "smtpout.secureserver.net",
+    secure: true,
+    secureConnection: false, // TLS requires secureConnection to be false
+    tls: {
+      ciphers: 'SSLv3'
+    },
+    requireTLS: true,
+    port: 465,
+    debug: true,
+    auth: {
+      user: 'contact@stravasegmenthunter.com',
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+  var mailOptions = {
+    to: 'contact@stravasegmenthunter.com',
+    from: 'contact@stravasegmenthunter.com',
+    subject: clubId + ' Leaderboard',
+    html: data
+  };
+  smtpTransport.sendMail(mailOptions, function (err) {
+    console.log('mail sent');
+  });
 }
 
 //The 404 Route (ALWAYS Keep this as the last route)

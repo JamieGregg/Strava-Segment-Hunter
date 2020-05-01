@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+const stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY)
 const User = require("../../models/user")
 const passport = require('passport')
 const ClubData = require("../../models/clubdata")
@@ -27,7 +27,7 @@ router.post("/check-card", async (request, response) => {
             const subscription = await stripe.subscriptions.create({
                 customer: customer.id,
                 items: [{
-                    plan: 'plan_HC0nbotstwur6e'
+                    plan: process.env.TEST_STRIPE_PLAN
                 }],
                 expand: ["latest_invoice.payment_intent"]
             })
@@ -59,29 +59,34 @@ router.post("/check-card", async (request, response) => {
                             console.log(doc);
                         });
 
-                        var strava = new require("strava")({
-                            "client_id": process.env.CLIENT_ID,
-                            "access_token": process.env.ACCESS_TOKEN,
-                            "client_secret": process.env.CLIENT_SECRET,
-                            "redirect_url": "https://www.stravasegmenthunter.com/"
-                        });
-
-                        strava.clubs.get(request.body.clubId, function (err, data) {
-                            // a document instance
-                            var newClub = new ClubData({
-                                alais: request.body.clubName,
-                                clubId: request.body.clubId,
-                                clubName: data.name
+                        try{
+                            var strava = new require("strava")({
+                                "client_id": process.env.CLIENT_ID,
+                                "access_token": process.env.ACCESS_TOKEN,
+                                "client_secret": process.env.CLIENT_SECRET,
+                                "redirect_url": "https://www.stravasegmenthunter.com/"
                             });
 
-                            // save model to database
-                            newClub.save(function (err, club) {
-                                if (err) return console.error(err);
-                            });
-                        })
-                        regEmail(request.body.clubName, user.username)
+                            strava.clubs.get(request.body.clubId, function (err, data) {
+                                // a document instance
+                                var newClub = new ClubData({
+                                    alais: request.body.clubName,
+                                    clubId: request.body.clubId,
+                                    clubName: request.body.clubName
+                                });
 
-                        response.render('welcome');
+                                // save model to database
+                                newClub.save(function (err, club) {
+                                    if (err) return console.error(err);
+                                });
+                            })
+                            regEmail(request.body.clubName, user.username)
+
+                            response.render('welcome');
+
+                        } catch {
+                            console.log("saving issue")
+                        }
                     })
                 }
             })

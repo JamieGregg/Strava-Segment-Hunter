@@ -110,16 +110,50 @@
                 We recommend you add at <strong>least 5 segments</strong> as soon as possible to keep the site up-to-date for
                 your users. Every
                 Sunday evening at 11:30 the site will refresh gathering the leaderboard of the segment you have selected for
-                that week. The riders on the leaderboard will be then assigned points based on their placing (This can be seen in more detail on the dashboard).<br><br>
-
-                For more information on all of this head over to the next page.</p>
+                that week. The riders on the leaderboard will be then assigned points based on their placing (This can be seen in more detail on the dashboard).<br><br></p>
       
-            <form action="/adminDashboard" method="GET">
-                <button type="submit" class="btn btn-lg btn-block btn-primary">Continue</button><br>
-                <br><br><br>
-            </form>
         </div>
         </section>
+
+        <!-- Sign Up Section -->
+        <<section class="page-section bg-primary text-white mb-0" id="sign-up">
+            <div class="container">
+        
+                <!-- Sign Up Section Heading -->
+                <h2 class="page-section-heading text-center text-uppercase mb-0">Important Update</h2>
+        
+                <!-- Icon Divider -->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="divider-custom-line"></div>
+                </div>
+        
+                <p class="lead text-justify">Due to a bug in Stravas API (We are hoping for a fix soon) there is something you should know. When we read the leaderboards
+                    the riders names we get back are now abbrivated to their first name followed by the first letter of their surname (e.g John Doe = John D). This poses an 
+                    issue for us recognising club members who have the same first name and first letter of their surname which confuses our points system. An example would be 
+                    John Davies, John Dunn and John Doe all showing as John D on the leaderboard with a cumulative points tally.<br><br>
+        
+                    <strong>How to fix this?</strong><br><br>
+                    
+                    After some trial we believe the best way to solve this temporary issue without completely changing the name of members with confilicting names (If only it was so easy) is to ask members to ensure their name is unique in some way by doing the following:
+                    <ol>
+                        <li class="lead">Add a club abbreviation after your first name and leave surname as it is: John BCC Doe.</li>
+                        <li class="lead">Add a club abbreviation before your first name and leave surname as it is: BCC John Doe.</li>
+                        <li class="lead">Add an emoji before or after your first name and leave surname as it is: 🇬🇧John Doe.</li>
+                    </ol>
+                    <p class="lead">I do apologise if this does apply to your club and we hope the issue will be resolved quickly! If
+                        there is any issues appear please contact us.</p>
+                </p><br><br>
+        
+                <form action="/adminDashboard" method="GET">
+                    <button type="submit" class="btn btn-lg btn-block btn-light">Continue</button><br>
+                    <br><br><br>
+                </form>
+            </div>
+            </section>
         <!-- Footer -->
         <footer class="footer text-center">
             <div class="container">

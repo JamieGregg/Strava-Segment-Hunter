@@ -24,11 +24,6 @@ passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
-paypal.configure({
-    'mode': 'sandbox', //sandbox or live
-    'client_id': process.env.PAYPAL_CLIENT,
-    'client_secret': process.env.PAYPAL_SECRET
-});
 
 router.get('/signup', function (req, res) {
     res.render('signup')

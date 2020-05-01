@@ -37,7 +37,7 @@
   <link href="css/freelancer.min.css" rel="stylesheet">
 </head>
 
-<body onload="openPage()" id="page-top">
+<body id="page-top">
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
@@ -101,8 +101,8 @@
       <!-- Todays Segment Section Content -->
       <div class="divider-custom">
         <div class="text-center">
-          <p class="lead">To add a new segment to your clubs list paste the segment code into the box below.</p>
-          <p class="lead"><a href="https://youtu.be/jG-NT8wWThE">Click here to find out where to locate a segment ID</a>
+          <p class="lead text-justify">To add a new segment to your clubs list paste the segment code into the box below. These segments will be what your users will complete against to appear on the leaderboards. Each segment you enter will be added to the list you can see below, segments runs for one week (Monday to Sunday (11:30pm).</p>
+          <p class="lead text-justify"><a href="https://youtu.be/jG-NT8wWThE">Click here to find out where to locate a segment ID</a>
           </p>
           <form id="addSegment"  method="post">
             <label class="sr-only" for="inlineFormInputGroupUsername2">SegmentId</label>
@@ -118,15 +118,16 @@
                 <div class="input-group-text">Confirm this is the segment:</div>
               </div>
               <input type="text" class="form-control" id="confirmStravaSeg" name="segment" readonly>
+              
             </div><br>
             <div id="continueButton">
-              <button id="continue" class="btn btn-primary"type="button" name="button">Submit Segment</button>
+              <button id="continue" class="btn btn-primary btn-block"type="button" name="button">Submit Segment</button>
             </div>
             <div id="submitButton">
-              <button id="submit" class="btn btn-primary"type="submit" name="button">confirm</button>
+              <button id="submit" class="btn btn-primary btn-block"type="submit" name="button">Confirm</button>
             </div>
+            <small id="responseSegment" class="form-text text-muted"></small>
           </form>
-          <p class="lead" id="responseSegment"></p>
         </div>
       </div>
     </div>
@@ -143,7 +144,7 @@
       <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Upcoming Segments</h2>
 
       <!-- Results Divider -->
-      <div class="divider-custom divider-light">
+      <div class="divider-custom">
         <div class="divider-custom-line"></div>
         <div class="divider-custom-icon">
           <i class="fas fa-star"></i>
@@ -151,6 +152,7 @@
         <div class="divider-custom-line"></div>
       </div>
 
+      <p class="lead text-justify">These are the upcoming segments that have been entered in the box above. Users on the site can see up to 4 weeks in advance so please keep at least 4 segments in the table below if possible. Each of these segments will run for one week (Monday - Sunday). At the end of the week we will read the leaderboard and assign points based on placings! This leaderboard can be seen on the homepage.</p>
 
       <!-- Results Section Content -->
       <table class="table table-hover" id="segment-table">
@@ -216,13 +218,84 @@
        <div class="divider-custom">
          <div class="text-center">
            <form method="DELETE" id='delete'>
-             <p class='lead'>Warning, once your results are gone - there is no return!</p>
-             <button class='btn-primary btn'>Delete Results Leaderboard</button>
+             <p class='lead text-justify'>If you would like to restart the competiton you can reset the leaderboard at anytime, this will wipe all of your leaderboards but will leave your upcoming segments. Warning, once your results are gone - there is no return!</p>
+             <br><button class='btn-primary btn btn-block'>Delete Results Leaderboard</button>
            </form>
          </div>
        </div>
      </div>
    </section>
+
+   <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
+     <div class="container">
+
+       <!-- Results Section Heading -->
+       <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Contacting Us</h2>
+
+       <!-- Results Divider -->
+       <div class="divider-custom divider-light">
+         <div class="divider-custom-line"></div>
+         <div class="divider-custom-icon">
+           <i class="fas fa-star"></i>
+         </div>
+         <div class="divider-custom-line"></div>
+       </div>
+
+
+       <!-- Results Section Content -->
+       <p class="lead text-justify">We monitor the site and our emails regularly, if you have any questions or queries we are more than happy to help! Some popular topics to email us about are:</p> 
+        <ol class='lead'>
+          <li>Suggesting new features to add.</li>
+          <li>Asking questions about getting started.</li>
+          <li>Make an ammendment to your subscription.</li>
+        </ol>
+        <p class="lead text-justify">Please read our <a class="text-white" href="FAQ">FAQS here</a> or contact us at
+          contact@stravasegmenthunter.com. We will always respond on the same day.</p>
+     </div>
+   </section>
+
+    <!-- Sign Up Section -->
+    <<section class="page-section portfolio" id="sign-up">
+      <div class="container">
+
+        <!-- Sign Up Section Heading -->
+        <h2 class="page-section-heading text-center text-uppercase  mb-0">Important Update</h2>
+
+        <!-- Icon Divider -->
+        <div class="divider-custom">
+          <div class="divider-custom-line"></div>
+          <div class="divider-custom-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="divider-custom-line"></div>
+        </div>
+
+        <p class="lead text-justify">Due to a bug in Stravas API (We are hoping for a fix soon) there is something you
+          should know. When we read the leaderboards
+          the riders names we get back are now abbrivated to their first name followed by the first letter of their
+          surname (e.g John Doe = John D). This poses an
+          issue for us recognising club members who have the same first name and first letter of their surname which
+          confuses our points system. An example would be
+          John Davies, John Dunn and John Doe all showing as John D on the leaderboard with a cumulative points
+          tally.<br><br>
+
+          <strong>How to fix this?</strong><br><br>
+
+          After some trial we believe the best way to solve this temporary issue without completely changing the name of
+          members with confilicting names (If only it was so easy) is to ask members to ensure their name is unique in
+          some way by doing the following:
+          <ol>
+            <li class="lead">Add a club abbreviation after your first name and leave surname as it is: John BCC Doe.
+            </li>
+            <li class="lead">Add a club abbreviation before your first name and leave surname as it is: BCC John Doe.
+            </li>
+            <li class="lead">Add an emoji before or after your first name and leave surname as it is: 🇬🇧John Doe.</li>
+          </ol>
+          <p class="lead">I do apologise if this does apply to your club and we hope the issue will be resolved quickly!
+            If
+            there is any issues appear please contact us.</p>
+        </p><br><br>
+      </section>
 
  <!-- Footer -->
  <footer class="footer text-center">
