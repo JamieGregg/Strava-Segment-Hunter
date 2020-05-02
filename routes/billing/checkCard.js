@@ -128,7 +128,6 @@ function regEmail(clubName, email) {
             '<h3>So what next?</h3> We suggest adding in 5 segments to get started, this gives you enough time to get up to speed with the site and allow competitors to plan ahead.<br><br>' +
             'If you have any queries, suggestions or issues please do not hesitate to get in contact with us.' +
             '<br><br>Thanks again for your support,<br>' +
-            'Jamie<br>' +
             'Strava Segment Hunter'
     };
     smtpTransport.sendMail(mailOptions, function (err) {
