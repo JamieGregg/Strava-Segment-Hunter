@@ -19,7 +19,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: false
 }))
-/*app.enable("trust proxy");
+app.enable("trust proxy");
 app.use(function (req, res, next) {
   if (req.secure) {
     // request was via https, so do no special handling
@@ -28,16 +28,13 @@ app.use(function (req, res, next) {
     // request was via http, so redirect to https
     res.redirect('https://' + req.headers.host + req.url);
   }
-}); */
+}); 
 
 app.use(session({
   secret: process.env.HASH_KEY,
   resave: false,
   saveUninitialized: false
 }))
-
-
-
 
 var login = require("./routes/login"),
     register = require("./routes/register"),
