@@ -552,6 +552,10 @@ function backdatedData(data, clubId) {
   });
 }
 
+app.get('/FAQ', function(req,res){
+  res.render('FAQ')
+})
+
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
   res.render('404');
