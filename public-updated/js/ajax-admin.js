@@ -53,6 +53,15 @@ $(document).ready(function() {
         }
       })
   })
+
+  $("#cancel").click(function (e) {
+    $("#continueButton").show();
+    $("#confirmation-box").hide();
+    $("#submitButton").hide();
+    $("#segmentInvalid").hide();
+    $('#stravaSeg').html("")
+    $("#confirmStravaSeg").attr("placeholder", "")
+  })
 })
 
 function loadSegments(data){
@@ -80,3 +89,6 @@ $(document).on("click", ".delete", function(){
       },
     })
   })
+
+  
+
