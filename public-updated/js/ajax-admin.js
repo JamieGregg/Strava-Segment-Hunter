@@ -9,13 +9,13 @@ $(document).ready(function() {
 
 
   $('form#delete').click(function () {
-      if (confirm("Are you sure you want to delete all results? This cannot be undone.")) {
+    if (confirm("Are you sure you want to delete all results? This cannot be undone.")) {
         $.ajax({
           type: 'DELETE',
           url: '/deleteDatabase'
         });
     } else {
-      alert('Canceled!');
+      alert('The leaderboard has not been reset!');
     }
   });
 
