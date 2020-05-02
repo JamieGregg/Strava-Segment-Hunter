@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY)
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 const User = require("../../models/user")
 const passport = require('passport')
 const ClubData = require("../../models/clubdata")
@@ -27,7 +27,7 @@ router.post("/check-card", async (request, response) => {
             const subscription = await stripe.subscriptions.create({
                 customer: customer.id,
                 items: [{
-                    plan: process.env.TEST_STRIPE_PLAN
+                    plan: process.env.STRIPE_PLAN
                 }],
                 expand: ["latest_invoice.payment_intent"]
             })
@@ -124,7 +124,7 @@ function regEmail(clubName, email) {
         from: 'contact@stravasegmenthunter.com',
         subject: 'Welcome to Strava Segment Hunter',
         html: '<h3>Welcome to Strava Segment Hunter!</h3><br>' +
-            'You now have access to the Strava Segment Hunter admin dashboard for ' + clubName + '. This gives you have the ability to add and remove segments on the leaderboard.<br>' +
+            'You now have access to the Strava Segment Hunter Admin Dashboard for ' + clubName + '. This gives you have the ability to add and remove segments on the leaderboard.<br>' +
             '<h3>So what next?</h3> We suggest adding in 5 segments to get started, this gives you enough time to get up to speed with the site and allow competitors to plan ahead.<br><br>' +
             'If you have any queries, suggestions or issues please do not hesitate to get in contact with us.' +
             '<br><br>Thanks again for your support,<br>' +

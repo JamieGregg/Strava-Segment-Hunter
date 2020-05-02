@@ -22,29 +22,33 @@ router.delete('/deleteDatabase', function(req,res){
             const masterFemales = mongoose.model(clubId + "masterfs", resultsSchema)
             const masterMales = mongoose.model(clubId + "masterms", resultsSchema)
 
-            everyone.deleteMany({}, function (err, result) {
-                console.log("Deleted everyone")
-            });
+            try {
+               everyone.deleteMany({}, function (err, result) {
+                  console.log("Deleted everyone")
+               });
 
-            master.deleteMany({}, function (err, result) {
-               console.log("Deleted Masters")
-            });
+               master.deleteMany({}, function (err, result) {
+                  console.log("Deleted Masters")
+               });
 
-            males.deleteMany({}, function (err, result) {
-               console.log("Deleted Males")
-            });
+               males.deleteMany({}, function (err, result) {
+                  console.log("Deleted Males")
+               });
 
-             females.deleteMany({}, function (err, result) {
-                console.log("Deleted Females")
-             });
+               females.deleteMany({}, function (err, result) {
+                  console.log("Deleted Females")
+               });
 
-             masterMales.deleteMany({}, function (err, result) {
-               console.log("Deleted Masters Male")
-             });
+               masterMales.deleteMany({}, function (err, result) {
+                  console.log("Deleted Masters Male")
+               });
 
-              masterFemales.deleteMany({}, function (err, result) {
-                console.log("Deleted Masters Female")
-              });
+               masterFemales.deleteMany({}, function (err, result) {
+                  console.log("Deleted Masters Female")
+               });
+            } catch {
+               console.log("Error")
+            }
         })
 })
 

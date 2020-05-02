@@ -3,7 +3,6 @@ var express = require("express");
 var router = express.Router();
 const passport = require('passport')
 const session = require('express-session')
-const paypal = require('paypal-rest-sdk')
 var User = require("../models/user");
 const ClubData = require("../models/clubdata")
 const bodyParser = require('body-parser')

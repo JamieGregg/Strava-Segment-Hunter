@@ -9,7 +9,6 @@ const timeFrame = "this_week"
 let segmentId;
 
 router.post('/loadleaderboard', function (req, res) {
-    findSegmentCodes(req.body.clubs)
     loadLeaderboard('POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
 })
 
@@ -94,7 +93,7 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
             counterId: 1
         }).exec(function (err, docs) {
             console.log(err);
-        }); //Upcoming Segments
+        }); 
 
         console.log(segmentInfo)
     
