@@ -10,7 +10,6 @@ router.use(passport.initialize());
 router.use(passport.session());
 
 router.delete('/deleteDatabase', function(req,res){
-    console.log("called")
     User.findOne({ username: req.user.username}, 
         function (err, obj) {
             var clubId = obj.clubId

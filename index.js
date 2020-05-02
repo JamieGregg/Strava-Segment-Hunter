@@ -28,7 +28,7 @@ app.use(function (req, res, next) {
     // request was via http, so redirect to https
     res.redirect('https://' + req.headers.host + req.url);
   }
-});
+}); 
 
 app.use(session({
   secret: process.env.HASH_KEY,

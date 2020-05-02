@@ -9,7 +9,7 @@ $(document).ready(function() {
 
 
   $('form#delete').click(function () {
-      if (confirm("Are u sure?")) {
+      if (confirm("Are you sure you want to delete all results? This cannot be undone.")) {
         $.ajax({
           type: 'DELETE',
           url: '/deleteDatabase'
