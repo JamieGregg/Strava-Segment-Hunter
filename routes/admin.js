@@ -146,6 +146,11 @@ router.post('/validateSegment', function (req, res) {
     })
 })
 
+router.get('/log-out', function(req, res){
+    req.logout();
+    res.redirect('/');
+})
+
 function showSegments(res, segInfo) {
     segInfo.sort(sortCounter)
     res.send({
