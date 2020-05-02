@@ -34,67 +34,79 @@ router.get('/forgot-password', function (req, res) {
 })
 
 router.post('/forgot-password', function (req, res, next) {
-    async.waterfall([
-        function (done) {
-            crypto.randomBytes(20, function (err, buf) {
-                var token = buf.toString('hex');
-                done(err, token);
-            });
-        },
-        function (token, done) {
-            User.findOne({
-                username: req.body.emailForgotten
-            }, function (err, user) {
-                if (!user) {
-                    res.send({
-                        response: 'No account with that email address exists.'
-                    })
-                }
-
-                user.resetPasswordToken = token;
-                user.resetPasswordTokenExpires = Date.now() + 3600000; // 1 hour
-
-                user.save(function (err) {
-                    done(err, token, user);
+    try {
+        async.waterfall([
+            function (done) {
+                crypto.randomBytes(20, function (err, buf) {
+                    var token = buf.toString('hex');
+                    done(err, token);
                 });
-            });
-        },
-        function (token, user, done) {
-            var smtpTransport = nodemailer.createTransport({
-                host: "smtpout.secureserver.net",
-                secure: true,
-                secureConnection: false, // TLS requires secureConnection to be false
-                tls: {
-                    ciphers: 'SSLv3'
-                },
-                requireTLS: true,
-                port: 465,
-                debug: true,
-                auth: {
-                    user: 'contact@stravasegmenthunter.com',
-                    pass: process.env.EMAIL_PASSWORD
-                }
-            });
-            var mailOptions = {
-                to: user.username,
-                from: 'contact@stravasegmenthunter.com',
-                subject: 'Strava Segment Hunter Password Reset',
-                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-                    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                    'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-                    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-            };
-            smtpTransport.sendMail(mailOptions, function (err) {
-                console.log('mail sent');
-                res.send({
-                    response: "Success, An e-mail has been sent to " + user.username + " with further instructions."
-                })
-            });
-        }
-    ], function (err) {
-        if (err) return next(err);
-        res.redirect('/forgot-password');
-    });
+            },
+            function (token, done) {
+                User.findOne({
+                    username: req.body.emailForgotten
+                }, function (err, user) {
+                    if (!user) {
+                        res.send({
+                            response: 'No account with that email address exists.'
+                        })
+                    }
+                    try{
+                         user.resetPasswordToken = token;
+                         user.resetPasswordTokenExpires = Date.now() + 3600000; // 1 hour
+                    } catch {
+                        res.send({
+                            response: 'Try again...'
+                        })
+                    }
+                   
+                    user.save(function (err) {
+                        done(err, token, user);
+                    });
+                });
+            },
+            function (token, user, done) {
+                var smtpTransport = nodemailer.createTransport({
+                    host: "smtpout.secureserver.net",
+                    secure: true,
+                    secureConnection: false, // TLS requires secureConnection to be false
+                    tls: {
+                        ciphers: 'SSLv3'
+                    },
+                    requireTLS: true,
+                    port: 465,
+                    debug: true,
+                    auth: {
+                        user: 'contact@stravasegmenthunter.com',
+                        pass: process.env.EMAIL_PASSWORD
+                    }
+                });
+                var mailOptions = {
+                    to: user.username,
+                    from: 'contact@stravasegmenthunter.com',
+                    subject: 'Strava Segment Hunter Password Reset',
+                    text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                        'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                        'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+                };
+                smtpTransport.sendMail(mailOptions, function (err) {
+                    console.log('mail sent');
+                    res.send({
+                        response: "Success, An e-mail has been sent to " + user.username + " with further instructions."
+                    })
+                });
+            }
+        ], function (err) {
+            if (err) return next(err);
+            res.redirect('/forgot-password');
+        });
+    } catch {
+        res.send({
+            response: 'Try again...'
+        })
+    }
+    
 });
 
 router.get('/reset/:token', function (req, res) {
