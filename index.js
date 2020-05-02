@@ -70,8 +70,10 @@ app.listen(port, () => {
 refreshTokens();
 saveDataEvening();
 
-app.get("*", function (request, response) {
-  response.redirect("https://" + request.headers.host + request.url);
+app.use(function (request, response) {
+  if (!request.secure) {
+    response.redirect("https://" + request.headers.host + request.url);
+  }
 });
 
 //TOKEN REFRESH FUNCTIONS
