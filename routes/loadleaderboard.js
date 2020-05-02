@@ -13,7 +13,7 @@ router.post('/loadleaderboard', function (req, res) {
 })
 
 router.get('/', (req, res) => {
-    loadLeaderboard('GET', segmentId, 55274, false, 'false', '', res, req)
+    loadLeaderboard('GET', segmentId, 25799, false, 'false', '', res, req)
 });
 
 async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gender, res, req) {
