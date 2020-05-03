@@ -91,10 +91,14 @@
                 <button type="submit" class="checkout-btn btn text-white btn-block">Subscribe £9.99</button><br>
                 <img src="img/powered_by_stripe.png" alt="">
               </div>
-               <input hidden type="password" name="username" value="<%= username %>">
-               <input hidden type="password" name="password" value="<%= password %>">
-               <input hidden type="password" name="clubName" value="<%= clubName %>">
-               <input hidden type="password" name="clubId" value="<%= clubId %>">
+              <div> 
+                <div>
+                  <input hidden type="password" name="username" value="<%= username %>">
+                  <input hidden type="password" name="password" value="<%= password %>">
+                  <input hidden type="password" name="clubName" value="<%= clubName %>">
+                  <input hidden type="password" name="clubId" value="<%= clubId %>">
+                </div>
+              </div> 
             </div>
           </div>
         </form>
@@ -140,5 +144,6 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="js/protect.js"></script>
 </body>
 </html>
