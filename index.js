@@ -19,6 +19,15 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 
+app.enable("trust proxy");
+app.use(function (req, res, next) {
+  if (req.secure) {
+    next();
+  } else {
+    res.redirect('https://' + req.headers.host + req.url);
+  }
+});
+
 app.use(session({
   secret: process.env.HASH_KEY,
   resave: false,
