@@ -179,7 +179,7 @@ function saveDataEvening() {
   //Alaska -9
   var ruleGMTminus9 = new schedule.RecurrenceRule()
   ruleGMTminus9.dayOfWeek = 1
-  ruleGMTminus9.hour = 9
+  ruleGMTminus9.hour = 8
   ruleGMTminus9.minute = 30
   ruleGMTminus9.second = 55
 
@@ -190,7 +190,7 @@ function saveDataEvening() {
   //Pacific and Cali-8
   var ruleGMTminus8 = new schedule.RecurrenceRule()
   ruleGMTminus8.dayOfWeek = 1
-  ruleGMTminus8.hour = 8
+  ruleGMTminus8.hour = 7
   ruleGMTminus8.minute = 30
   ruleGMTminus8.second = 55
 
@@ -201,7 +201,7 @@ function saveDataEvening() {
   //Arizona -7
   var ruleGMTminus7 = new schedule.RecurrenceRule()
   ruleGMTminus7.dayOfWeek = 1
-  ruleGMTminus7.hour = 7
+  ruleGMTminus7.hour = 6
   ruleGMTminus7.minute = 30
   ruleGMTminus7.second = 55
 
@@ -212,7 +212,7 @@ function saveDataEvening() {
   //Central America -6
   var ruleGMTminus6 = new schedule.RecurrenceRule()
   ruleGMTminus6.dayOfWeek = 1
-  ruleGMTminus6.hour = 6
+  ruleGMTminus6.hour = 5
   ruleGMTminus6.minute = 30
   ruleGMTminus6.second = 55
 
@@ -223,7 +223,7 @@ function saveDataEvening() {
   //Eastern Time -5
   var ruleGMTminus5 = new schedule.RecurrenceRule()
   ruleGMTminus5.dayOfWeek = 1
-  ruleGMTminus5.hour = 5
+  ruleGMTminus5.hour = 4
   ruleGMTminus5.minute = 30
   ruleGMTminus5.second = 55
 
@@ -234,7 +234,7 @@ function saveDataEvening() {
   //Alantic Time -4
   var ruleGMTminus4 = new schedule.RecurrenceRule()
   ruleGMTminus4.dayOfWeek = 1
-  ruleGMTminus4.hour = 4
+  ruleGMTminus4.hour = 3
   ruleGMTminus4.minute = 30
   ruleGMTminus4.second = 55
 
@@ -245,18 +245,18 @@ function saveDataEvening() {
   //Newfoundland -3.5
   var ruleGMTminus3half = new schedule.RecurrenceRule()
   ruleGMTminus3half.dayOfWeek = 1
-  ruleGMTminus3half.hour = 4
-  ruleGMTminus3half.minute = 00
+  ruleGMTminus3half.hour = 3
+  ruleGMTminus3half.minute = 45
   ruleGMTminus3half.second = 55
 
   var gmtMinus3half = schedule.scheduleJob(ruleGMTminus3half, function () {
     saveData(-3.5)
   })
 
-  //Greenland -3
+  //Greenland -2
   var ruleGMTminus3= new schedule.RecurrenceRule()
   ruleGMTminus3.dayOfWeek = 1
-  ruleGMTminus3.hour = 3
+  ruleGMTminus3.hour = 2
   ruleGMTminus3.minute = 30
   ruleGMTminus3.second = 55
 
