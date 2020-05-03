@@ -165,6 +165,129 @@ function populateSchema(results, clubName) {
 }
 
 function saveDataEvening() {
+  /* //Hawaii -10
+  var ruleGMTminus10 = new schedule.RecurrenceRule()
+  ruleGMTminus10.dayOfWeek = 1
+  ruleGMTminus10.hour = 10
+  ruleGMTminus10.minute = 30
+  ruleGMTminus10.second = 55
+
+  var gmtMinus10 = schedule.scheduleJob(ruleGMTminus10, function () {
+    saveData(-10)
+  })
+
+  //Alaska -9
+  var ruleGMTminus9 = new schedule.RecurrenceRule()
+  ruleGMTminus9.dayOfWeek = 1
+  ruleGMTminus9.hour = 9
+  ruleGMTminus9.minute = 30
+  ruleGMTminus9.second = 55
+
+  var gmtMinus9 = schedule.scheduleJob(ruleGMTminus9, function () {
+    saveData(-9)
+  })
+
+  //Pacific and Cali-8
+  var ruleGMTminus8 = new schedule.RecurrenceRule()
+  ruleGMTminus8.dayOfWeek = 1
+  ruleGMTminus8.hour = 8
+  ruleGMTminus8.minute = 30
+  ruleGMTminus8.second = 55
+
+  var gmtMinus8 = schedule.scheduleJob(ruleGMTminus8, function () {
+    saveData(-8)
+  })
+
+  //Arizona -7
+  var ruleGMTminus7 = new schedule.RecurrenceRule()
+  ruleGMTminus7.dayOfWeek = 1
+  ruleGMTminus7.hour = 7
+  ruleGMTminus7.minute = 30
+  ruleGMTminus7.second = 55
+
+  var gmtMinus7 = schedule.scheduleJob(ruleGMTminus7, function () {
+    saveData(-7)
+  })
+
+  //Central America -6
+  var ruleGMTminus6 = new schedule.RecurrenceRule()
+  ruleGMTminus6.dayOfWeek = 1
+  ruleGMTminus6.hour = 6
+  ruleGMTminus6.minute = 30
+  ruleGMTminus6.second = 55
+
+  var gmtMinus6 = schedule.scheduleJob(ruleGMTminus6, function () {
+    saveData(-6)
+  })
+
+  //Eastern Time -5
+  var ruleGMTminus5 = new schedule.RecurrenceRule()
+  ruleGMTminus5.dayOfWeek = 1
+  ruleGMTminus5.hour = 5
+  ruleGMTminus5.minute = 30
+  ruleGMTminus5.second = 55
+
+  var gmtMinus5 = schedule.scheduleJob(ruleGMTminus5, function () {
+    saveData(-5)
+  })
+
+  //Alantic Time -4
+  var ruleGMTminus4 = new schedule.RecurrenceRule()
+  ruleGMTminus4.dayOfWeek = 1
+  ruleGMTminus4.hour = 4
+  ruleGMTminus4.minute = 30
+  ruleGMTminus4.second = 55
+
+  var gmtMinus4 = schedule.scheduleJob(ruleGMTminus4, function () {
+    saveData(-4)
+  })
+
+  //Newfoundland -3.5
+  var ruleGMTminus3half = new schedule.RecurrenceRule()
+  ruleGMTminus3half.dayOfWeek = 1
+  ruleGMTminus3half.hour = 4
+  ruleGMTminus3half.minute = 00
+  ruleGMTminus3half.second = 55
+
+  var gmtMinus3half = schedule.scheduleJob(ruleGMTminus3half, function () {
+    saveData(-3.5)
+  })
+
+  //Greenland -3
+  var ruleGMTminus3= new schedule.RecurrenceRule()
+  ruleGMTminus3.dayOfWeek = 1
+  ruleGMTminus3.hour = 3
+  ruleGMTminus3.minute = 30
+  ruleGMTminus3.second = 55
+
+  var gmtMinus3 = schedule.scheduleJob(ruleGMTminus3, function () {
+    saveData(-3)
+  })
+
+  //Mid-Atlantic -2
+  var ruleGMTminus2 = new schedule.RecurrenceRule()
+  ruleGMTminus2.dayOfWeek = 1
+  ruleGMTminus2.hour = 2
+  ruleGMTminus2.minute = 30
+  ruleGMTminus2.second = 55
+
+  var gmtMinus2 = schedule.scheduleJob(ruleGMTminus2, function () {
+    saveData(-2)
+  })
+
+  //Cape Verde -1
+  var ruleGMTminus1 = new schedule.RecurrenceRule()
+  ruleGMTminus1.dayOfWeek = 1
+  ruleGMTminus1.hour = 1
+  ruleGMTminus1.minute = 30
+  ruleGMTminus1.second = 55
+
+  var gmtMinus1 = schedule.scheduleJob(ruleGMTminus1, function () {
+    saveData(-1)
+  })
+  */
+ 
+  //UK etc
   var ruleGMT0 = new schedule.RecurrenceRule()
   ruleGMT0.dayOfWeek = 0
   ruleGMT0.hour = 23
@@ -173,11 +296,57 @@ function saveDataEvening() {
 
   var gmt0 = schedule.scheduleJob(ruleGMT0, function () {
     saveData(0)
-  }) 
+  })
 
+  /*
+  //Europe + 1 etc
+  var ruleGMT1 = new schedule.RecurrenceRule()
+  ruleGMT1.dayOfWeek = 0
+  ruleGMT1.hour = 22
+  ruleGMT1.minute = 30
+  ruleGMT1.second = 55
+
+  var gmt1 = schedule.scheduleJob(ruleGMT1, function () {
+    saveData(1)
+  })
+
+  //Greece + 2 etc
+  var ruleGMT2 = new schedule.RecurrenceRule()
+  ruleGMT2.dayOfWeek = 0
+  ruleGMT2.hour = 21
+  ruleGMT2.minute = 30
+  ruleGMT2.second = 55
+
+  var gmt2 = schedule.scheduleJob(ruleGMT2, function () {
+    saveData(2)
+  })
+
+  //Russia + 3 etc
+  var ruleGMT3 = new schedule.RecurrenceRule()
+  ruleGMT3.dayOfWeek = 0
+  ruleGMT3.hour = 20
+  ruleGMT3.minute = 30
+  ruleGMT3.second = 55
+
+  var gmt3 = schedule.scheduleJob(ruleGMT3, function () {
+    saveData(3)
+  })
+
+  //Iran + 3.5 etc
+  var ruleGMT3half = new schedule.RecurrenceRule()
+  ruleGMT3half.dayOfWeek = 0
+  ruleGMT3half.hour = 20
+  ruleGMT3half.minute = 00
+  ruleGMT3half.second = 55
+
+  var gmt3half = schedule.scheduleJob(ruleGMT3half, function () {
+    saveData(3.5)
+  })
+
+  //BST END Baku + 4
   var ruleGMT4 = new schedule.RecurrenceRule()
   ruleGMT4.dayOfWeek = 0
-  ruleGMT4.hour = 19
+  ruleGMT4.hour = 20
   ruleGMT4.minute = 30
   ruleGMT4.second = 55
 
@@ -185,6 +354,137 @@ function saveDataEvening() {
     saveData(4)
   })
 
+  //Afganistan + 4:30 
+  var ruleGMT4Half = new schedule.RecurrenceRule()
+  ruleGMT4Half.dayOfWeek = 0
+  ruleGMT4Half.hour = 20
+  ruleGMT4Half.minute = 00
+  ruleGMT4Half.second = 55
+
+  var gmt4half = schedule.scheduleJob(ruleGMT4Half, function () {
+    saveData(4.5)
+  })
+
+  //More Russia + 5
+  var ruleGMT5 = new schedule.RecurrenceRule()
+  ruleGMT5.dayOfWeek = 0
+  ruleGMT5.hour = 19
+  ruleGMT5.minute = 30
+  ruleGMT5.second = 55
+
+  var gmt5 = schedule.scheduleJob(ruleGMT5, function () {
+    saveData(5)
+  })
+
+  //Mumbai + 5:30 
+  var ruleGMT5half = new schedule.RecurrenceRule()
+  ruleGMT5half.dayOfWeek = 0
+  ruleGMT5half.hour = 19
+  ruleGMT5half.minute = 00
+  ruleGMT5half.second = 55
+
+  var gmt5half = schedule.scheduleJob(ruleGMT5half, function () {
+    saveData(5.5)
+  })
+
+  //Kathmandu + 5:45
+  var ruleGMT545 = new schedule.RecurrenceRule()
+  ruleGMT545.dayOfWeek = 0
+  ruleGMT545.hour = 18
+  ruleGMT545.minute = 45
+  ruleGMT545.second = 55
+
+  var gmt545 = schedule.scheduleJob(ruleGMT545, function () {
+    saveData(5.75)
+  })
+
+  //Astana + 6
+  var ruleGMT6 = new schedule.RecurrenceRule()
+  ruleGMT6.dayOfWeek = 0
+  ruleGMT6.hour = 18
+  ruleGMT6.minute = 30
+  ruleGMT6.second = 55
+
+  var gmt6 = schedule.scheduleJob(ruleGMT6, function () {
+    saveData(6)
+  })
+
+  //Bangkok + 7
+  var ruleGMT7 = new schedule.RecurrenceRule()
+  ruleGMT7.dayOfWeek = 0
+  ruleGMT7.hour = 17
+  ruleGMT7.minute = 30
+  ruleGMT7.second = 55
+
+  var gmt7 = schedule.scheduleJob(ruleGMT7, function () {
+    saveData(7)
+  })
+
+  //Beijing + 8
+  var ruleGMT8 = new schedule.RecurrenceRule()
+  ruleGMT8.dayOfWeek = 0
+  ruleGMT8.hour = 16
+  ruleGMT8.minute = 30
+  ruleGMT8.second = 55
+
+  var gmt8 = schedule.scheduleJob(ruleGMT8, function () {
+    saveData(8)
+  })
+
+  //Tokyo + 9
+  var ruleGMT9 = new schedule.RecurrenceRule()
+  ruleGMT9.dayOfWeek = 0
+  ruleGMT9.hour = 15
+  ruleGMT9.minute = 30
+  ruleGMT9.second = 55
+
+  var gmt9 = schedule.scheduleJob(ruleGMT9, function () {
+    saveData(9)
+  })
+
+  //Adelaide + 9.5
+  var ruleGMT9half = new schedule.RecurrenceRule()
+  ruleGMT9half.dayOfWeek = 0
+  ruleGMT9half.hour = 15
+  ruleGMT9half.minute = 00
+  ruleGMT9half.second = 55
+
+  var gmt9half = schedule.scheduleJob(ruleGMT9half, function () {
+    saveData(9.5)
+  })
+
+  //Syndney + 10
+  var ruleGMT10 = new schedule.RecurrenceRule()
+  ruleGMT10.dayOfWeek = 0
+  ruleGMT10.hour = 14
+  ruleGMT10.minute = 30
+  ruleGMT10.second = 55
+
+  var gmt10 = schedule.scheduleJob(ruleGMT10, function () {
+    saveData(10)
+  })
+
+  //Even more russia + 11
+  var ruleGMT11 = new schedule.RecurrenceRule()
+  ruleGMT11.dayOfWeek = 0
+  ruleGMT11.hour = 13
+  ruleGMT11.minute = 30
+  ruleGMT11.second = 55
+
+  var gmt11 = schedule.scheduleJob(ruleGMT11, function () {
+    saveData(11)
+  })
+
+  //New Zealand + 12
+  var ruleGMT12 = new schedule.RecurrenceRule()
+  ruleGMT12.dayOfWeek = 0
+  ruleGMT12.hour = 12
+  ruleGMT12.minute = 30
+  ruleGMT12.second = 55
+
+  var gmt12 = schedule.scheduleJob(ruleGMT12, function () {
+    saveData(12)
+  })*/
 }
 
 //DATA CONVERSION
