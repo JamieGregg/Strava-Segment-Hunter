@@ -20,14 +20,14 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 
-app.enable("trust proxy");
+/*app.enable("trust proxy");
 app.use(function (req, res, next) {
   if (req.secure) {
     next();
   } else {
     res.redirect('https://' + req.headers.host + req.url);
   }
-});
+});*/
 
 app.use(session({
   secret: process.env.HASH_KEY,
@@ -874,7 +874,16 @@ function saveData(time){
 }
 
 app.get('/FAQ', function(req,res){
-  res.render('FAQ')
+  if (req.isAuthenticated(req, res)) {
+    res.render('FAQ' , {
+      isAuthenticated: true
+    })
+  } else {
+    res.render('FAQ' ,{
+      isAuthenticated: false
+    })
+  }
+  
 })
 
 //The 404 Route (ALWAYS Keep this as the last route)

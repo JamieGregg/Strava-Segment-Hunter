@@ -9,14 +9,22 @@ const timeFrame = "this_week"
 let segmentId;
 
 router.post('/loadleaderboard', function (req, res) {
-    loadLeaderboard('POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
+    if (req.isAuthenticated(req, res)) {
+        loadLeaderboard(true, 'POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
+    } else {
+        loadLeaderboard(false, 'POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
+    }
 })
 
 router.get('/', (req, res) => {
-    loadLeaderboard('GET', segmentId, 25799, false, 'false', '', res, req)
+     if (req.isAuthenticated(req, res)) {
+        loadLeaderboard(true, 'GET', segmentId, 25799, false, 'false', '', res, req)
+     } else {
+        loadLeaderboard(false, 'GET', segmentId, 25799, false, 'false', '', res, req)
+     }
 });
 
-async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gender, res, req) {
+async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload, ageFilter, gender, res, req) {
     var params = {
         "date_range": timeFrame 
     }
@@ -170,7 +178,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                     gender: gender,
                                     db: databaseLeaderboard,
                                     clubName: implClubs[i][2],
-                                    clubInfo: implClubs
+                                    clubInfo: implClubs,
+                                    isAuthenticated: isAuthenticated
                                 })
                             }).sort({
                                 points: -1
@@ -194,7 +203,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                     gender: gender,
                                     db: databaseLeaderboard,
                                     clubName: implClubs[i][2],
-                                    clubInfo: implClubs
+                                    clubInfo: implClubs,
+                                    isAuthenticated: isAuthenticated
                                 })
                             }).sort({
                                 points: -1
@@ -241,7 +251,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                     gender: gender,
                                     db: databaseLeaderboard,
                                     clubName: implClubs[i][2],
-                                    clubInfo: implClubs
+                                    clubInfo: implClubs,
+                                    isAuthenticated: isAuthenticated
                                 })
                             }).sort({
                                 points: -1
@@ -265,7 +276,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                     gender: gender,
                                     db: databaseLeaderboard,
                                     clubName: implClubs[i][2],
-                                    clubInfo: implClubs
+                                    clubInfo: implClubs,
+                                    isAuthenticated: isAuthenticated
                                 })
                             }).sort({
                                 points: -1
@@ -332,7 +344,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                         gender: gender,
                                         db: databaseLeaderboard,
                                         clubName: implClubs[i][2],
-                                        clubInfo: implClubs
+                                        clubInfo: implClubs,
+                                        isAuthenticated: isAuthenticated
                                     })
                                 }).sort({
                                     points: -1
@@ -356,7 +369,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                         gender: gender,
                                         db: databaseLeaderboard,
                                         clubName: implClubs[i][2],
-                                        clubInfo: implClubs
+                                        clubInfo: implClubs, 
+                                        isAuthenticated: isAuthenticated
                                     })
                                 }).sort({
                                     points: -1
@@ -427,7 +441,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                         gender: gender,
                                         db: databaseLeaderboard,
                                         clubName: implClubs[i][2],
-                                        clubInfo: implClubs
+                                        clubInfo: implClubs,
+                                        isAuthenticated: isAuthenticated
                                     })
                                 }).sort({
                                     points: -1
@@ -451,7 +466,8 @@ async function loadLeaderboard(type, segmentId, clubId, reload, ageFilter, gende
                                         gender: gender,
                                         db: databaseLeaderboard,
                                         clubName: implClubs[i][2],
-                                        clubInfo: implClubs
+                                        clubInfo: implClubs,
+                                        isAuthenticated: isAuthenticated
                                     })
                                 }).sort({
                                     points: -1
