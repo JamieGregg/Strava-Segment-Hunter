@@ -3,7 +3,8 @@ var mongoose = require("mongoose");
 const segClubData = new mongoose.Schema({
     clubName: String,
     clubId: Number,
-    alais: String
+    alais: String,
+    timeZone: Number
 })
 
 module.exports = mongoose.model("clubData", segClubData);

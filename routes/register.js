@@ -29,11 +29,13 @@ router.get('/signup', function (req, res) {
 })
 
 router.post('/registering', function (req, res) {
+    console.log(req.body.timezone)
     res.render('signup-confirmation', {
         clubName: req.body.clubName,
         clubId: req.body.clubId,
         password: req.body.password,
         username: req.body.username,
+        time: req.body.timezone,
         paymentError: ''
     })
 })

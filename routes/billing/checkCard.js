@@ -60,28 +60,20 @@ router.post("/check-card", async (request, response) => {
                         });
 
                         try{
-                            var strava = new require("strava")({
-                                "client_id": process.env.CLIENT_ID,
-                                "access_token": process.env.ACCESS_TOKEN,
-                                "client_secret": process.env.CLIENT_SECRET,
-                                "redirect_url": "https://www.stravasegmenthunter.com/"
+                            // a document instance
+                            var newClub = new ClubData({
+                                alais: request.body.clubName,
+                                clubId: request.body.clubId,
+                                clubName: request.body.clubName,
+                                timezone: request.body.timezone
                             });
 
-                            strava.clubs.get(request.body.clubId, function (err, data) {
-                                // a document instance
-                                var newClub = new ClubData({
-                                    alais: request.body.clubName,
-                                    clubId: request.body.clubId,
-                                    clubName: request.body.clubName
-                                });
-
-                                // save model to database
-                                newClub.save(function (err, club) {
-                                    if (err) return console.error(err);
-                                });
-                            })
+                            // save model to database
+                            newClub.save(function (err, club) {
+                                if (err) return console.error(err);
+                            });
+                            
                             regEmail(request.body.clubName, user.username)
-
                             response.render('welcome');
 
                         } catch {
@@ -97,6 +89,7 @@ router.post("/check-card", async (request, response) => {
                   clubId: request.body.clubId,
                   password: request.body.password,
                   username: request.body.username,
+                  time: request.body.timezone,
                   paymentError: 'Oops, we could not verify this card.'
               })
         }
