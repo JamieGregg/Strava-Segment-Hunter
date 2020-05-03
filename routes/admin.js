@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 router.use(passport.initialize());
 router.use(passport.session());
 
-router.get('/adminDashboard', function (req, res) {
+router.get('/admin-dashboard', function (req, res) {
     if (req.isAuthenticated(req, res)) {
         console.log("Authentication Complete")
         loadAdminBoard(req, res);

@@ -23,7 +23,7 @@ router.get("/loginFailed", function (req, res) {
 })
 
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/adminDashboard',
+    successRedirect: '/admin-dashboard',
     failureRedirect: '/loginFailed'
 }));
 
@@ -185,12 +185,12 @@ router.post('/reset/:token', function (req, res) {
                     'This is a confirmation that the password for your account ' + user.username + ' has just been changed.\n'
             };
             smtpTransport.sendMail(mailOptions, function (err) {
-                res.redirect('/adminDashboard');
+                res.redirect('/admin-dashboard');
                 done(err);
             });
         }
     ], function (err) {
-        res.redirect('/adminDashboard');
+        res.redirect('/admin-dashboard');
     });
 });
 
