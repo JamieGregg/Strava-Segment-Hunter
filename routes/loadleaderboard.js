@@ -54,7 +54,6 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
         "client_secret": process.env.CLIENT_SECRET,
         "redirect_url": "https://www.stravasegmenthunter.com/"
     });
-   
     //Gathering Club Data
     ClubData.find(async function (err, clubInfo) {
         if (err) {
@@ -66,9 +65,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
         }
 
         SegmentData = mongoose.model(clubId + "segment", segSchema)
-
         SegmentData.find(async function (err, data) {
-            
             if (err) {
                 console.log(err)
             } else {
@@ -102,7 +99,6 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                         "efforts": 0,
                     }
                 }
-
             }
         }).sort({
             counterId: 1
@@ -110,14 +106,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
             console.log(err);
         }); 
 
-        console.log(segmentInfo)
-    
         //Finding upcoming segments
         SegmentData.find(async function (err, data) {
             if (err) {
                 console.log(err)
             } else {
-
                 dayOne = ["No segment has been added", "https://www.strava.com/segments/"]
                 dayTwo = ["No segment has been added", "https://www.strava.com/segments/"]
                 dayThree = ["No segment has been added", "https://www.strava.com/segments/"]
@@ -157,12 +150,19 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                 "per_page": noOfResults,
                 "club_id": clubId
             }
-            console.log(segmentInfo.segmentId)
             strava.segments.leaderboard.get(segmentInfo.segmentId, params, async function (err, data) {
-                numberOfEntry = data.entries.length
+                try {
+                    if (!data.entries.length) {
+                        console.log("No Entries")
+                    } else {
+                        numberOfEntry = data.entries.length
 
-                for (let i = 0; i < numberOfEntry; i++) {
-                    segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
+                        for (let i = 0; i < numberOfEntry; i++) {
+                            segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                        }
+                    }
+                } catch {
+                    console.log("No entries")
                 }
 
                 for (let i = 0; i < implClubs.length; i++) {
@@ -174,10 +174,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 if (people.length) {
                                     databaseLeaderboard = people
                                 } else {
-                                    databaseLeaderboard = {
+                                    databaseLeaderboard = [{
                                         name: "No Competitors",
-                                        points: 0
-                                    }
+                                        points: 0,
+                                        lastweek: 0
+                                    }]
                                 }
                                 
                                 res.send({
@@ -206,10 +207,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                  if (people.length) {
                                      databaseLeaderboard = people
                                  } else {
-                                     databaseLeaderboard = {
+                                     databaseLeaderboard = [{
                                          name: "No Competitors",
-                                         points: 0
-                                     }
+                                         points: 0,
+                                         lastweek: 0
+                                     }]
                                  }
 
                                 res.render('home', {
@@ -261,10 +263,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                  if (people.length) {
                                      databaseLeaderboard = people
                                  } else {
-                                     databaseLeaderboard = {
+                                     databaseLeaderboard = [{
                                          name: "No Competitors",
-                                         points: 0
-                                     }
+                                         points: 0,
+                                         lastweek: 0
+                                     }]
                                  }
 
                                 res.send({
@@ -293,10 +296,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                  if (people.length) {
                                      databaseLeaderboard = people
                                  } else {
-                                     databaseLeaderboard = {
+                                     databaseLeaderboard = [{
                                          name: "No Competitors",
-                                         points: 0
-                                     }
+                                         points: 0,
+                                         lastweek: 0
+                                     }]
                                  }
 
                                 res.render('home', {
@@ -368,10 +372,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                      if (people.length) {
                                          databaseLeaderboard = people
                                      } else {
-                                         databaseLeaderboard = {
+                                         databaseLeaderboard = [{
                                              name: "No Competitors",
-                                             points: 0
-                                         }
+                                             points: 0,
+                                             lastweek: 0
+                                         }]
                                      }
 
                                     res.send({
@@ -400,10 +405,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                      if (people.length) {
                                          databaseLeaderboard = people
                                      } else {
-                                         databaseLeaderboard = {
+                                         databaseLeaderboard = [{
                                              name: "No Competitors",
-                                             points: 0
-                                         }
+                                             points: 0,
+                                             lastweek: 0
+                                         }]
                                      }
 
                                     res.render('home', {
@@ -452,17 +458,33 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
             }
 
             strava.segments.leaderboard.get(segmentInfo.segmentId, params, async function (err, data) {
-                numberOfEntry = data.entries.length
+                try {
+                    if (!data.entries.length){
+                        console.log("No Entries")
+                    } else {
+                        numberOfEntry = data.entries.length
 
-                for (let i = 0; i < numberOfEntry; i++) {
-                    segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                        for (let i = 0; i < numberOfEntry; i++) {
+                            segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                        }
+                    } 
+                } catch {
+                    console.log("No entries")
                 }
 
                 strava.segments.leaderboard.get(segmentId, params64, async function (err, data) {
-                    numberOfEntry = data.entries.length
+                    try {
+                        if ( !data.entries.length) {
+                            console.log("No Entries")
+                        } else {
+                            numberOfEntry = data.entries.length
 
-                    for (let i = 0; i < numberOfEntry; i++) {
-                        segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                            for (let i = 0; i < numberOfEntry; i++) {
+                                segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                            }
+                        }
+                    } catch {
+                        console.log("No entries")
                     }
 
                     segment.sort(sortFunctionClub);
@@ -476,14 +498,15 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             const collection = mongoose.model(implClubs[i][1] + "master" + gender + "s", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
-                                     if (people.length) {
-                                         databaseLeaderboard = people
-                                     } else {
-                                         databaseLeaderboard = {
-                                             name: "No Competitors",
-                                             points: 0
-                                         }
-                                     }
+                                    if ( people.length ) {
+                                        databaseLeaderboard = people
+                                    } else {
+                                        databaseLeaderboard = [ {
+                                            name: "No Competitors",
+                                            points: 0,
+                                            lastweek: 0
+                                        } ]
+                                    }
 
                                     res.send({
                                         data: segment,
@@ -511,10 +534,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                     if ( people.length ) {
                                         databaseLeaderboard = people
                                     } else {
-                                        databaseLeaderboard = {
+                                        databaseLeaderboard = [{
                                             name: "No Competitors",
-                                            points: 0
-                                        }
+                                            points: 0,
+                                            lastweek: 0
+                                        }]
                                     }
 
                                     res.render('home', {

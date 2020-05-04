@@ -68,8 +68,6 @@ $(document).ready(function(){
       }
     })
   })
-
-
 })
 
 function loadDaily(data){
