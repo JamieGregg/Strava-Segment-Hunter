@@ -158,7 +158,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                         numberOfEntry = data.entries.length
 
                         for (let i = 0; i < numberOfEntry; i++) {
-                            segment.push([data.entries[i].athlete_name, data.entries[i].elapsed_time, data.entries[i].rank])
+                            segment.push([data.entries[i].athlete_name, convertSecondsToMinutes(data.entries[i].elapsed_time), data.entries[i].rank])
                         }
                     }
                 } catch {
