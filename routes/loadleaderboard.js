@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const ClubData = require("../models/clubdata")
 const mongoose = require('mongoose')
+const passport = require('passport')
 const segSchema = require("../models/segmentSchema")
 const resultsSchema = require("../models/results")
 var User = require("../models/user");
