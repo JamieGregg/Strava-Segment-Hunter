@@ -24,6 +24,7 @@ $(document).ready(function() {
           $("#segmentInvalid").show();
           $("#segmentInvalid").html("Strava timed out, try resubmitting");
         } else {
+          $('#stravaSeg').attr("disabled", "disabled");
           $("#segmentInvalid").hide();
           $("#confirmation-box").show();
           $("#confirmStravaSeg").attr("placeholder", info.segmentName)
@@ -40,6 +41,7 @@ $(document).ready(function() {
 
 
   $("#submit").click(function() {
+    $("#stravaSeg").removeAttr("disabled")
     $("#continueButton").show();
     $("#confirmation-box").hide();
     $("#submitButton").hide();

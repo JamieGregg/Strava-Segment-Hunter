@@ -39,6 +39,7 @@ $(document).ready(function() {
           },
           success: function(info) {
             $("#responseSegment").html("Segment has been added (You may need to refresh your page to see segment in the table below)")
+            $("#stravaSeg").removeAttr("disabled")
             $("#stravaSeg").val("")
             $.ajax({
                 type: 'GET',
@@ -61,6 +62,7 @@ $(document).ready(function() {
     $("#segmentInvalid").hide();
     $('#stravaSeg').html("")
     $("#confirmStravaSeg").attr("placeholder", "")
+    $("#stravaSeg").removeAttr("disabled")
   })
 })
 
