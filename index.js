@@ -313,7 +313,7 @@ function saveDataEvening() {
   ruleGMT0.dayOfWeek = 0
   ruleGMT0.hour = 23
   ruleGMT0.minute = 30
-  ruleGMT0.second = 45
+  ruleGMT0.second = 30
 
   var gmt0 = schedule.scheduleJob(ruleGMT0, function () {
     saveData(0)
