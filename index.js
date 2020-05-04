@@ -20,14 +20,14 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 
-/*app.enable("trust proxy");
+app.enable("trust proxy");
 app.use(function (req, res, next) {
   if (req.secure) {
     next();
   } else {
     res.redirect('https://' + req.headers.host + req.url);
   }
-});*/
+});
 
 app.use(session({
   secret: process.env.HASH_KEY,
@@ -139,7 +139,19 @@ function populateSchema(results, clubName) {
   const collection = mongoose.model(clubName, resultsSchema)
   collection.find(function (err, people) {
     for(let i = 0; i < people.length; i++){
-      people.lastweek = 0
+      var query = {
+        name: people[i].name
+      };
+      var update = {
+        lastweek: 0
+      }
+      var options = {
+        upsert: true,
+        'new': true,
+        'useFindAndModify': true
+      };
+      collection.update(query, update, options, function (err, doc) {
+      });
     }
   })
 
@@ -157,7 +169,7 @@ function populateSchema(results, clubName) {
     var update = {
       $inc: {
         points: scoringSystem(rank)
-      },
+      }, 
       lastweek: scoringSystem(rank)
     }
     var options = {
@@ -301,7 +313,7 @@ function saveDataEvening() {
   ruleGMT0.dayOfWeek = 0
   ruleGMT0.hour = 23
   ruleGMT0.minute = 30
-  ruleGMT0.second = 55
+  ruleGMT0.second = 45
 
   var gmt0 = schedule.scheduleJob(ruleGMT0, function () {
     saveData(0)
@@ -494,6 +506,8 @@ function saveDataEvening() {
   var gmt12 = schedule.scheduleJob(ruleGMT12, function () {
     saveData(12)
   })*/
+
+  console.log("Updates complete")
 }
 
 //DATA CONVERSION

@@ -38,8 +38,6 @@ router.post('/addSegment', async function (req, res) {
                 if (err) {
                     console.log(err)
                 } else {
-                    console.log(member)
-
                     var lastCounter = 0;
                     if (member == null) {
                         lastCounter = 1;
@@ -88,7 +86,6 @@ router.get('/upcomingSegments', async function (req, res) {
                 console.log(err)
             } else {
                 for (let i = 0; i < data.length; i++) {
-                    console.log(data)
                     segmentList.push([i, data[i].name])
 
                     if (i === data.length - 1) {
@@ -105,7 +102,6 @@ router.get('/upcomingSegments', async function (req, res) {
 })
 
 router.post('/deleteSegment', function (req, res) {
-    console.log("called")
     User.findOne({
         username: req.user.username
     }, function (err, obj) {
@@ -118,7 +114,6 @@ router.post('/deleteSegment', function (req, res) {
             name: segmentName
         }, function (err) {
             if (!err) {
-                console.log("removed " + segmentName)
                 res.send({
                     result: "Pass"
                 })
@@ -138,7 +133,6 @@ router.post('/validateSegment', function (req, res) {
     });
 
     strava.segments.get(req.body.segmentId, function (err, data) {
-        console.log(data)
         res.send({
             segmentName: data.name,
             statusCode: data.statusCode

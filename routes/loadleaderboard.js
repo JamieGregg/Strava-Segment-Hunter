@@ -54,8 +54,6 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
         "client_secret": process.env.CLIENT_SECRET,
         "redirect_url": "https://www.stravasegmenthunter.com/"
     });
-
-    
    
     //Gathering Club Data
     ClubData.find(async function (err, clubInfo) {

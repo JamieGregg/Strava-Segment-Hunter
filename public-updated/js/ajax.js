@@ -102,7 +102,7 @@ function loadPoints(data){
 }
 
 function loadHeadings(data){
-  $('#daily-leaderboard-heading').html(data + " Daily Leaderboard")
+  $('#daily-leaderboard-heading').html(data + " Weekly Leaderboard")
   $('#points-leaderboard-heading').html(data + " Points Leaderboard")
   $('.segment-heading').html(data + " Weekly Segment")
 }
