@@ -170,8 +170,16 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                         const collection = mongoose.model(implClubs[i][1] + "s", resultsSchema)
                         if (type === 'POST') {
                             collection.find(function (err, people) {
-                                databaseLeaderboard = people
 
+                                if ( people.length != 0 ) {
+                                    databaseLeaderboard = people
+                                } else {
+                                    databaseLeaderboard = {
+                                        name: "No Competitors",
+                                        points: 0
+                                    }
+                                }
+                                
                                 res.send({
                                     data: segment,
                                     segmentInfo: segmentInfo,
@@ -195,7 +203,14 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             }); //collection
                         } else if (type === 'GET') {
                             collection.find(function (err, people) {
-                                databaseLeaderboard = people
+                                 if (people.length != 0) {
+                                     databaseLeaderboard = people
+                                 } else {
+                                     databaseLeaderboard = {
+                                         name: "No Competitors",
+                                         points: 0
+                                     }
+                                 }
 
                                 res.render('home', {
                                     data: segment,
@@ -243,7 +258,14 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                         const collection = mongoose.model(implClubs[i][1] + gender + "s", resultsSchema)
                         if (type === 'POST') {
                             collection.find(function (err, people) {
-                                databaseLeaderboard = people
+                                 if (people.length != 0) {
+                                     databaseLeaderboard = people
+                                 } else {
+                                     databaseLeaderboard = {
+                                         name: "No Competitors",
+                                         points: 0
+                                     }
+                                 }
 
                                 res.send({
                                     data: segment,
@@ -268,7 +290,14 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             }); //collection
                         } else if (type === 'GET') {
                             collection.find(function (err, people) {
-                                databaseLeaderboard = people
+                                 if (people.length != 0) {
+                                     databaseLeaderboard = people
+                                 } else {
+                                     databaseLeaderboard = {
+                                         name: "No Competitors",
+                                         points: 0
+                                     }
+                                 }
 
                                 res.render('home', {
                                     data: segment,
@@ -336,7 +365,14 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             const collection = mongoose.model(implClubs[i][1] + "masters", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
-                                    databaseLeaderboard = people
+                                     if (people.length != 0) {
+                                         databaseLeaderboard = people
+                                     } else {
+                                         databaseLeaderboard = {
+                                             name: "No Competitors",
+                                             points: 0
+                                         }
+                                     }
 
                                     res.send({
                                         data: segment,
@@ -361,7 +397,14 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 }); //collection
                             } else if (type === 'GET') {
                                 collection.find(function (err, people) {
-                                    databaseLeaderboard = people
+                                     if (people.length != 0) {
+                                         databaseLeaderboard = people
+                                     } else {
+                                         databaseLeaderboard = {
+                                             name: "No Competitors",
+                                             points: 0
+                                         }
+                                     }
 
                                     res.render('home', {
                                         data: segment,
@@ -433,7 +476,14 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             const collection = mongoose.model(implClubs[i][1] + "master" + gender + "s", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
-                                    databaseLeaderboard = people
+                                     if (people.length != 0) {
+                                         databaseLeaderboard = people
+                                     } else {
+                                         databaseLeaderboard = {
+                                             name: "No Competitors",
+                                             points: 0
+                                         }
+                                     }
 
                                     res.send({
                                         data: segment,
@@ -458,7 +508,14 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 }); //collection
                             } else if (type === 'GET') {
                                 collection.find(function (err, people) {
-                                    databaseLeaderboard = people
+                                    if (people.length != 0) {
+                                        databaseLeaderboard = people
+                                    } else {
+                                        databaseLeaderboard = {
+                                            name: "No Competitors",
+                                            points: 0
+                                        }
+                                    }
 
                                     res.render('home', {
                                         data: segment,
