@@ -5,8 +5,7 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we
-  have selected for the day.">
+  <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in weekly to see the segment your club has selected.">
   <meta name="author" content="Jamie Gregg">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
   <link rel="apple-touch-icon" sizes="57x57" href="img/fav-icon/apple-icon-57x57.png">
@@ -238,23 +237,21 @@
         <!-- Image loader -->
       <br>
 
-
-
       <!-- Results Section Content -->
       <table class="table table-hover" id="daily-leaderboard-table">
         <thead>
           <tr class="text-white">
-            <th scope="col">Rank</th>
-            <th scope="col">Name</th>
-            <th scope="col">Time</th>
+            <th  scope="col">Rank</th>
+            <th  scope="col">Name</th>
+            <th  scope="col">Time</th>
           </tr>
         </thead>
         <tbody>
           <% for(var i=0; i < data.length; i++) { %>
           <tr class="text-white">
-            <th><%- data[i][2] %></th>
-            <td><%- data[i][0] %></td>
-            <td><%- data[i][1] %></td>
+            <th ><%- data[i][2] %></th>
+            <td ><%- data[i][0] %></td>
+            <td ><%- data[i][1] %></td>
           </tr>
           <% } %>
         </tbody>
@@ -284,9 +281,9 @@
         <thead>
           <tr>
             <th scope="col">Rank</th>
-            <th scope="col">Name</th>
-            <th scope="col">Points</th>
-            <th scope="col">Last Weeks Points</th>
+            <th class="text-center" scope="col">Name</th>
+            <th class="text-center" scope="col">Points</th>
+            <th class="text-center" scope="col">Last Weeks Points</th>
           </tr>
         </thead>
         <tbody>
@@ -301,9 +298,9 @@
                 <%} else { %>
                       <%- rank %>
                 <%}%></td>
-            <td><%- db[i].name %></td>
-            <td><%- db[i].points %></td>
-            <td><%- db[i].lastweek %></td>
+            <td class="text-center"><%- db[i].name %></td>
+            <td class="text-center"><%- db[i].points %></td>
+            <td class="text-center"><%- db[i].lastweek %></td>
           </tr>
           <% } %>
         </tbody>
@@ -472,7 +469,7 @@
         <!-- Footer About Text -->
         <div class="col-lg-4">
           <h4 class="text-uppercase mb-4">About Segment Hunter</h4>
-          <p class="lead mb-0 text-justify">Complete Weekly segments to top the leaderboards in your club! Check in every week for that weeks segment.</p>
+          <p class="lead mb-0 text-justify">Complete weekly segments to top the leaderboards in your club! Check in every week for that weeks segment.</p>
         </div>
 
       </div>

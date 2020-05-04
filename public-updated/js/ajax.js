@@ -96,7 +96,7 @@ function loadPoints(data){
     }
 
     pointsLeaderboardTable.append(
-      "<tr><th>" + rank + "</th><td>" + pointsPerson.name + "</td><td>" + pointsPerson.points + "</td><td>" + pointsPerson.lastweek + "</td></tr>"
+      "<tr><th>" + rank + "</th><td class=\'text-center\'>" + pointsPerson.name + "</td><td class=\'text-center\'>" + pointsPerson.points + "</td><td class=\'text-center\'>" + pointsPerson.lastweek + "</td></tr>"
     )
   })
 }
