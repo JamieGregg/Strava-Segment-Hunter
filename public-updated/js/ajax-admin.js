@@ -69,7 +69,7 @@ function loadSegments(data){
   dailyLeaderboardTable.find("tbody tr").remove();
   data.forEach(function(segment){
     dailyLeaderboardTable.append(
-      "<tr class=\'text-white\'><th>" + segment[0] + "</th><td class=\'seg-name\'>" + segment[1] + "</td><td><button class=\'delete'\>Clear</button</td</tr>"
+      "<tr class=\'text-white\'><th>" + segment[0] + "</th><td class=\'seg-name\'>" + segment[1] + "</td><td><button class=\'delete'\>Delete</button</td</tr>"
     )
   })
 }
