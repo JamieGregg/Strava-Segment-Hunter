@@ -171,7 +171,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                         if (type === 'POST') {
                             collection.find(function (err, people) {
 
-                                if ( people.length != 0 ) {
+                                if (people.length) {
                                     databaseLeaderboard = people
                                 } else {
                                     databaseLeaderboard = {
@@ -203,7 +203,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             }); //collection
                         } else if (type === 'GET') {
                             collection.find(function (err, people) {
-                                 if (people.length != 0) {
+                                 if (people.length) {
                                      databaseLeaderboard = people
                                  } else {
                                      databaseLeaderboard = {
@@ -258,7 +258,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                         const collection = mongoose.model(implClubs[i][1] + gender + "s", resultsSchema)
                         if (type === 'POST') {
                             collection.find(function (err, people) {
-                                 if (people.length != 0) {
+                                 if (people.length) {
                                      databaseLeaderboard = people
                                  } else {
                                      databaseLeaderboard = {
@@ -290,7 +290,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             }); //collection
                         } else if (type === 'GET') {
                             collection.find(function (err, people) {
-                                 if (people.length != 0) {
+                                 if (people.length) {
                                      databaseLeaderboard = people
                                  } else {
                                      databaseLeaderboard = {
@@ -365,7 +365,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             const collection = mongoose.model(implClubs[i][1] + "masters", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
-                                     if (people.length != 0) {
+                                     if (people.length) {
                                          databaseLeaderboard = people
                                      } else {
                                          databaseLeaderboard = {
@@ -397,7 +397,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 }); //collection
                             } else if (type === 'GET') {
                                 collection.find(function (err, people) {
-                                     if (people.length != 0) {
+                                     if (people.length) {
                                          databaseLeaderboard = people
                                      } else {
                                          databaseLeaderboard = {
@@ -476,7 +476,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                             const collection = mongoose.model(implClubs[i][1] + "master" + gender + "s", resultsSchema)
                             if (type === 'POST') {
                                 collection.find(function (err, people) {
-                                     if (people.length != 0) {
+                                     if (people.length) {
                                          databaseLeaderboard = people
                                      } else {
                                          databaseLeaderboard = {
@@ -508,7 +508,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 }); //collection
                             } else if (type === 'GET') {
                                 collection.find(function (err, people) {
-                                    if (people.length != 0) {
+                                    if ( people.length ) {
                                         databaseLeaderboard = people
                                     } else {
                                         databaseLeaderboard = {
