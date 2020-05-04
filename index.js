@@ -135,6 +135,14 @@ function populateSchema(results, clubName) {
   var rank = 0;
   var lastTime = -1;
 
+  //Clearing lastweeks points
+  const collection = mongoose.model(clubName, resultsSchema)
+  collection.find(function (err, people) {
+    for(let i = 0; i < people.length; i++){
+      people.lastweek = 0
+    }
+  })
+
   for (let z = 0; z < results.length; z++) {
     var currentName = results[z][0]
 
@@ -149,7 +157,8 @@ function populateSchema(results, clubName) {
     var update = {
       $inc: {
         points: scoringSystem(rank)
-      }
+      },
+      lastweek: scoringSystem(rank)
     }
     var options = {
       upsert: true,
@@ -664,6 +673,7 @@ function saveData(time){
   //Loop each club
   for (let i = 0; i < implClubs.length; i++) {
     segment.length = 0;
+
     findSegmentCodes(implClubs[i][1])
     await new Promise(resolve => setTimeout(resolve, 5000));
 

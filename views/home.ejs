@@ -286,6 +286,7 @@
             <th scope="col">Rank</th>
             <th scope="col">Name</th>
             <th scope="col">Points</th>
+            <th scope="col">Last Weeks Points</th>
           </tr>
         </thead>
         <tbody>
@@ -302,6 +303,7 @@
                 <%}%></td>
             <td><%- db[i].name %></td>
             <td><%- db[i].points %></td>
+            <td><%- db[i].lastweek %></td>
           </tr>
           <% } %>
         </tbody>
