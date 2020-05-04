@@ -18,7 +18,11 @@ router.post('/loadleaderboard', function (req, res) {
 
 router.get('/', (req, res) => {
      if (req.isAuthenticated(req, res)) {
-        loadLeaderboard(true, 'GET', segmentId, 25799, false, 'false', '', res, req)
+         User.findOne({
+            username: req.user.username
+        }, function (err, obj) {
+            loadLeaderboard(true, 'GET', segmentId, obj.clubId, false, 'false', '', res, req)
+        })
      } else {
         loadLeaderboard(false, 'GET', segmentId, 25799, false, 'false', '', res, req)
      }
