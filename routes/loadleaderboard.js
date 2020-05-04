@@ -547,26 +547,6 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
     })
 } // function
 
-async function findSegmentCodes(clubId) {
-    const SegmentInfo = mongoose.model(clubId + "segment", segSchema)
-
-    SegmentInfo.find(function (err, data) {
-        if (err) {
-            console.log(err)
-        } else {
-            try {
-                segmentId = data[0].segmentId
-            } catch {
-                segmentId = 23717918
-            }
-        }
-    }).sort({
-        counterId: 1
-    }).exec(function (err, docs) {
-        console.log(err);
-    });
-}
-
 function convertSecondsToMinutes(seconds) {
     var minutes = Math.floor(seconds / 60);
     var seconds = ((seconds % 60) / 100).toFixed(2);
