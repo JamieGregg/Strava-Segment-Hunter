@@ -5,8 +5,12 @@ const ClubData = require("../models/clubdata")
 const mongoose = require('mongoose')
 const segSchema = require("../models/segmentSchema")
 const resultsSchema = require("../models/results")
+var User = require("../models/user");
 const timeFrame = "this_week"
 let segmentId;
+
+router.use(passport.initialize());
+router.use(passport.session());
 
 router.post('/loadleaderboard', function (req, res) {
     if (req.isAuthenticated(req, res)) {
