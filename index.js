@@ -618,7 +618,7 @@ function saveData(time){
 }
 
 function saveDataEvening() {
-  /* //Hawaii -10
+  //Hawaii -10
   var ruleGMTminus10 = new schedule.RecurrenceRule()
   ruleGMTminus10.dayOfWeek = 1
   ruleGMTminus10.hour = 10
@@ -738,7 +738,6 @@ function saveDataEvening() {
   var gmtMinus1 = schedule.scheduleJob(ruleGMTminus1, function () {
     saveData(-1)
   })
-  */
 
   //UK etc
   var ruleGMT0 = new schedule.RecurrenceRule()
@@ -751,7 +750,7 @@ function saveDataEvening() {
     saveData(0)
   })
 
-  /*
+  
   //Europe + 1 etc
   var ruleGMT1 = new schedule.RecurrenceRule()
   ruleGMT1.dayOfWeek = 0
@@ -866,13 +865,13 @@ function saveDataEvening() {
   var ruleGMT7 = new schedule.RecurrenceRule()
   ruleGMT7.dayOfWeek = 0
   ruleGMT7.hour = 17
-  ruleGMT7.minute = 30
-  ruleGMT7.second = 55
+  ruleGMT7.minute = 34
+  ruleGMT7.second = 0
 
   var gmt7 = schedule.scheduleJob(ruleGMT7, function () {
     saveData(7)
   })
-
+  
   //Beijing + 8
   var ruleGMT8 = new schedule.RecurrenceRule()
   ruleGMT8.dayOfWeek = 0
@@ -937,7 +936,7 @@ function saveDataEvening() {
 
   var gmt12 = schedule.scheduleJob(ruleGMT12, function () {
     saveData(12)
-  })*/
+  })
 
   console.log("Updates complete")
 }
