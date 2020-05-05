@@ -16,15 +16,19 @@ router.get("/login", function (req, res) {
     })
 })
 
-router.get("/loginFailed", function (req, res) {
+router.get("/login-failed", function (req, res) {
     res.render('login', {
         invalidPassword: "Incorrect username or password"
     })
 })
 
+router.get("/loginFailed", function (req, res) {
+    res.redirect('/login-failed')
+})
+
 router.post('/login', passport.authenticate('local', {
     successRedirect: '/admin-dashboard',
-    failureRedirect: '/loginFailed'
+    failureRedirect: '/login-failed'
 }));
 
 router.get('/forgot-password', function (req, res) {
