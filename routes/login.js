@@ -133,69 +133,77 @@ router.get('/reset/:token', function (req, res) {
 });
 
 router.post('/reset/:token', function (req, res) {
-    async.waterfall([
-        function (done) {
-            User.findOne({
-                resetPasswordToken: req.params.token,
-                resetPasswordTokenExpires: {
-                    $gt: Date.now()
-                }
-            }, function (err, user) {
-                if (!user) {
-                    res.render('forgot-password', {
-                        response: 'Password reset token is invalid or has expired.'
-                    })
-                }
-                if (req.body.password === req.body.passwordRetyped) {
-                    user.setPassword(req.body.password, function (err) {
-                        user.resetPasswordToken = undefined;
-                        user.resetPasswordExpires = undefined;
+    var password = req.body.password
+    if (!password.includes('<') || !password.includes('>')) {
+        async.waterfall([
+            function (done) {
+                User.findOne({
+                    resetPasswordToken: req.params.token,
+                    resetPasswordTokenExpires: {
+                        $gt: Date.now()
+                    }
+                }, function (err, user) {
+                    if (!user) {
+                        res.render('forgot-password', {
+                            response: 'Password reset token is invalid or has expired.'
+                        })
+                    }
+                    if (req.body.password === req.body.passwordRetyped) {
+                        user.setPassword(req.body.password, function (err) {
+                            user.resetPasswordToken = undefined;
+                            user.resetPasswordExpires = undefined;
 
-                        user.save(function (err) {
-                            req.logIn(user, function (err) {
-                                done(err, user);
+                            user.save(function (err) {
+                                req.logIn(user, function (err) {
+                                    done(err, user);
+                                });
                             });
-                        });
-                    })
-                } else {
-                    res.render('reset', {
-                        response: 'Passwords do not match',
-                        token: req.params.token
-                    })
-                }
-            });
-        },
-        function (user, done) {
-            var smtpTransport = nodemailer.createTransport({
-                host: "smtpout.secureserver.net",
-                secure: true,
-                secureConnection: false, // TLS requires secureConnection to be false
-                tls: {
-                    ciphers: 'SSLv3'
-                },
-                requireTLS: true,
-                port: 465,
-                debug: true,
-                auth: {
-                    user: 'contact@stravasegmenthunter.com',
-                    pass: process.env.EMAIL_PASSWORD
-                }
-            });
-            var mailOptions = {
-                to: user.username,
-                from: 'contact@stravasegmenthunter.com',
-                subject: 'Your password has been changed',
-                text: 'Hello,\n\n' +
-                    'This is a confirmation that the password for your account ' + user.username + ' has just been changed.\n'
-            };
-            smtpTransport.sendMail(mailOptions, function (err) {
-                res.redirect('/admin-dashboard');
-                done(err);
-            });
-        }
-    ], function (err) {
-        res.redirect('/admin-dashboard');
-    });
+                        })
+                    } else {
+                        res.render('reset', {
+                            response: 'Passwords do not match',
+                            token: req.params.token
+                        })
+                    }
+                });
+            },
+            function (user, done) {
+                var smtpTransport = nodemailer.createTransport({
+                    host: "smtpout.secureserver.net",
+                    secure: true,
+                    secureConnection: false, // TLS requires secureConnection to be false
+                    tls: {
+                        ciphers: 'SSLv3'
+                    },
+                    requireTLS: true,
+                    port: 465,
+                    debug: true,
+                    auth: {
+                        user: 'contact@stravasegmenthunter.com',
+                        pass: process.env.EMAIL_PASSWORD
+                    }
+                });
+                var mailOptions = {
+                    to: user.username,
+                    from: 'contact@stravasegmenthunter.com',
+                    subject: 'Your password has been changed',
+                    text: 'Hello,\n\n' +
+                        'This is a confirmation that the password for your account ' + user.username + ' has just been changed.\n'
+                };
+                smtpTransport.sendMail(mailOptions, function (err) {
+                    res.redirect('/admin-dashboard');
+                    done(err);
+                });
+            }
+        ], function (err) {
+            res.redirect('/admin-dashboard');
+        });
+    } else {
+        res.render('reset', {
+            response: 'Password contains a blocked character',
+            token: req.params.token
+        })
+    }
 });
 
 module.exports = router;
