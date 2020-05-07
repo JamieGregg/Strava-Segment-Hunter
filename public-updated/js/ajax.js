@@ -39,10 +39,10 @@ $(document).ready(function(){
 
   $("form#register").submit(function(e){
     e.preventDefault();
-    let clubName = $("#clubAlaias").val();
-    let password = $("#password").val();
-    let emailAddress = $("#emailAddress").val();
-    let clubId = $("#clubId").val();
+    let clubName = escapeHtml($("#clubAlaias").val());
+    let password = escapeHtml($("#password").val());
+    let emailAddress = escapeHtml($("#emailAddress").val());
+    let clubId = escapeHtml($("#clubId").val());
 
     let postInfo = {
       clubName: clubName,
@@ -60,7 +60,7 @@ $(document).ready(function(){
         $("#loader").show();
       },
       success: function(info){
-        $("#passwordInvalid").html(info.passwordVal)
+        $("#passwordInvalid").text(info.passwordVal)
       },
       complete:function(data){
         // Hide image container
@@ -100,9 +100,9 @@ function loadPoints(data){
 }
 
 function loadHeadings(data){
-  $('#daily-leaderboard-heading').html(data + " Weekly Leaderboard")
-  $('#points-leaderboard-heading').html(data + " Points Leaderboard")
-  $('.segment-heading').html(data + " Weekly Segment")
+  $('#daily-leaderboard-heading').text(data + " Weekly Leaderboard")
+  $('#points-leaderboard-heading').text(data + " Points Leaderboard")
+  $('.segment-heading').text(data + " Weekly Segment")
 }
 
 function clubLink(clubId){
@@ -128,4 +128,22 @@ function loadSegments(data){
   $('.day-two').attr('href', data.dayTwo[1])
   $('.day-three').attr('href', data.dayThree[1])
   $('.day-four').attr('href', data.dayFour[1])
+}
+
+
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml(string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
 }

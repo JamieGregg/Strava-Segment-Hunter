@@ -23,10 +23,10 @@ $(document).ready(function() {
   $("#loader").hide();
   $("form#addSegment").submit(function(e) {
       e.preventDefault();
-      let segmentId = $("#stravaSeg").val();
+      let segmentId = escapeHtml($("#stravaSeg").val());
 
       let postData = {
-        segmentId: segmentId,
+        segmentId: parseInt(segmentId),
       }
 
       $.ajax({
@@ -38,7 +38,7 @@ $(document).ready(function() {
             $("#loader").show();
           },
           success: function(info) {
-            $("#responseSegment").html("Segment has been added (You may need to refresh your page to see segment in the table below)")
+            $("#responseSegment").text("Segment has been added (You may need to refresh your page to see segment in the table below)")
             $("#stravaSeg").removeAttr("disabled")
             $("#stravaSeg").val("")
             $.ajax({
@@ -60,7 +60,7 @@ $(document).ready(function() {
     $("#confirmation-box").hide();
     $("#submitButton").hide();
     $("#segmentInvalid").hide();
-    $('#stravaSeg').html("")
+    $('#stravaSeg').text("")
     $("#confirmStravaSeg").attr("placeholder", "")
     $("#stravaSeg").removeAttr("disabled")
   })
@@ -92,5 +92,22 @@ $(document).on("click", ".delete", function(){
     })
   })
 
-  
 
+
+  
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml(string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
+}
