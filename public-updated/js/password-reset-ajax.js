@@ -1,6 +1,6 @@
 
 $('body').on('submit','#reset-password', function(e){
-  e.preventDefault();
+  e.preventDefault()
 
   var emailAddresses = {
     emailForgotten: escapeHtml($("#emailForgotten").val())
