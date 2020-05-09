@@ -19,7 +19,7 @@ router.post("/check-card", async (request, response) => {
             try{
                 const customer = await stripe.customers.create({
                     payment_method: paymentMethod.id,
-                    email: request.body.email,
+                    email: request.body.username,
                     invoice_settings: {
                         default_payment_method: paymentMethod.id
                     }
