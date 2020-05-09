@@ -4,8 +4,7 @@
   <title>Strava Segment Hunter</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta http-equiv="Content-Security-Policy"
-     content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self' ;  frame-ancestors 'none">
+   <meta http-equiv="Content-Security-Policy">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <!-- Custom fonts for this theme -->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -111,7 +110,7 @@
               <div> 
                 <div>
                   <input hidden type="text" name="timezone" value="<%= time %>">
-                  <input hidden type="password" name="email" value="<%= username %>">
+                  <input hidden type="text" name="username" value="<%= username %>">
                   <input hidden type="password" name="password" value="<%= password %>">
                   <input hidden type="password" name="clubName" value="<%= clubName %>">
                   <input hidden type="password" name="clubId" value="<%= clubId %>">
