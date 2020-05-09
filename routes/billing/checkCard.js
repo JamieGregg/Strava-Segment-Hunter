@@ -54,7 +54,7 @@ router.post("/check-card", async (request, response) => {
                 } else {
                     passport.authenticate('local')(request, response, function () {
                         var query = {
-                            username: user.username
+                            username: request.body.username
                         };
                         var update = {
                             clubName: request.body.clubName,
@@ -68,7 +68,11 @@ router.post("/check-card", async (request, response) => {
                         };
 
                         User.update(query, update, options, function (err, doc) {
-                            console.log(doc);
+                            if( err ){
+                                console.log(err)
+                            } else {
+                                console.log(doc);
+                            } 
                         });
 
                         try{
