@@ -8,13 +8,25 @@ $(document).ready(function() {
   })
 
 
+  $('form#delete').click(function () {
+    if (confirm("Are you sure you want to delete all results? This cannot be undone.")) {
+        $.ajax({
+          type: 'DELETE',
+          url: '/deleteDatabase'
+        });
+    } else {
+      alert('The leaderboard has not been reset!');
+    }
+  });
+
+
   $("#loader").hide();
   $("form#addSegment").submit(function(e) {
       e.preventDefault();
-      let segmentId = $("#stravaSeg").val();
+      let segmentId = escapeHtml($("#stravaSeg").val());
 
       let postData = {
-        segmentId: segmentId,
+        segmentId: parseInt(segmentId),
       }
 
       $.ajax({
@@ -26,7 +38,8 @@ $(document).ready(function() {
             $("#loader").show();
           },
           success: function(info) {
-            $("#responseSegment").html("Segment has been added")
+            $("#responseSegment").text("Segment has been added (You may need to refresh your page to see segment in the table below)")
+            $("#stravaSeg").removeAttr("disabled")
             $("#stravaSeg").val("")
             $.ajax({
                 type: 'GET',
@@ -41,6 +54,16 @@ $(document).ready(function() {
         }
       })
   })
+
+  $("#cancel").click(function (e) {
+    $("#continueButton").show();
+    $("#confirmation-box").hide();
+    $("#submitButton").hide();
+    $("#segmentInvalid").hide();
+    $('#stravaSeg').text("")
+    $("#confirmStravaSeg").attr("placeholder", "")
+    $("#stravaSeg").removeAttr("disabled")
+  })
 })
 
 function loadSegments(data){
@@ -48,7 +71,7 @@ function loadSegments(data){
   dailyLeaderboardTable.find("tbody tr").remove();
   data.forEach(function(segment){
     dailyLeaderboardTable.append(
-      "<tr class=\'text-white\'><th>" + segment[0] + "</th><td class=\'seg-name\'>" + segment[1] + "</td><td><button class=\'delete'\>Clear</button</td</tr>"
+      "<tr class=\'text-white\'><th>" + segment[0] + "</th><td class=\'seg-name\'>" + segment[1] + "</td><td><button class=\'delete'\>Delete</button</td</tr>"
     )
   })
 }
@@ -68,3 +91,23 @@ $(document).on("click", ".delete", function(){
       },
     })
   })
+
+
+
+  
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml(string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
+}

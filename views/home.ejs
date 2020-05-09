@@ -5,10 +5,10 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we
-  have selected for the day.">
+  <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in weekly to see the segment your club has selected.">
   <meta name="author" content="Jamie Gregg">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self' ;  frame-ancestors 'none">
   <link rel="apple-touch-icon" sizes="57x57" href="img/fav-icon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="img/fav-icon//apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/fav-icon//apple-icon-72x72.png">
@@ -35,17 +35,19 @@
   <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
   <!-- Theme CSS -->
   <link href="css/freelancer.min.css" rel="stylesheet">
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-165412592-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
 
-  function gtag() {
-    dataLayer.push(arguments);
-  }
-  gtag('js', new Date());
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-165412592-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'UA-165412592-1');
-</script>
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-165412592-1');
+  </script>
 
 </head>
 
@@ -54,7 +56,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
     <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">Segment Hunter</a>
+      <a class="navbar-brand js-scroll-trigger" href="/">Segment Hunter</a>
       <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
         aria-label="Toggle navigation">
         Menu
@@ -68,12 +70,26 @@
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#point-leaderboard">Leaderboards</a>
           </li>
-          <!--<li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="adminDashboard">Admin</a>
-          </li>-->
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#help-section">Help</a>
           </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="FAQ">FAQs</a>
+          </li>
+          <% if (!isAuthenticated) { %>
+            <li class="nav-item mx-0 mx-lg-1">
+              <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="admin-dashboard">Sign In /
+                Register</a>
+            </li>
+          <% } else { %>
+              <li class="nav-item mx-0 mx-lg-1">
+                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="admin-dashboard">Admin
+                  Dashboard</a>
+              </li>
+              <li class="nav-item mx-0 mx-lg-1">
+                <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/log-out">Log-Out</a>
+              </li>
+          <% } %>
         </ul>
       </div>
     </div>
@@ -100,7 +116,29 @@
 
       <!-- Masthead Subheading -->
       <p class="masthead-subheading font-weight-light mb-0">
-        Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we have selected for the week. For more information check out the guides below.</p>
+        Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in weekly to see the segment we have selected for the week. For more information check out the guides below.</p>
+    </div>
+
+    <div class="divider-custom">
+      <p class="lead text-white">Select your club from the drop down to see this weeks segment and leaderboards below. <br><a class='text-white' href="signup"><u>Register your club here</u></a>
+      </p>
+    </div>
+
+    <div class="container">
+      <form method="POST" class="filterTable">
+        <div class="form-row">
+          <div class="col">
+            <select class="form-control" id="club" name="clubs">
+              <%for(let i = 0; i < clubInfo.length; i++){ %>
+              <option value="<%- clubInfo[i][1] -%>" <%if(clubInfo[i][2] == clubName) {%> selected
+                <%}%> ><%- clubInfo[i][2] -%></option> <%} %> </select> </div>
+                <button type="submit" class="btn btn-light ">Select Club </button>
+          </div>
+          <!-- Image loader -->
+          <div id='loader' style='display: none;'>
+            <img src='img/portfolio/ajax-loader.gif' width='32px' height='32px'>
+          </div>
+      </form>
     </div>
   </header>
 
@@ -110,26 +148,26 @@
     <div class="container">
 
       <!-- Todays Segement Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">This Weeks Segment</h2>
+      <h2 class="page-section-heading segment-heading text-center text-uppercase text-secondary mb-0"><%- clubName -%> Weekly Segment</h2>
 
-      <!-- Icon Divider -->
-      <div class="divider-custom">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon">
-          <i class="fas fa-star"></i>
-        </div>
-        <div class="divider-custom-line"></div>
-      </div>
+       <!-- Points Divider -->
+       <div class="divider-custom">
+         <div class="divider-custom-line"></div>
+         <div class="divider-custom-icon">
+           <i class="fas fa-star"></i>
+         </div>
+         <div class="divider-custom-line"></div>
+       </div>
 
       <!-- Todays Segment Section Content -->
-      <div class="divider-custom">
+      <div class="centre">
         <div class="text-center">
-          <h1 class="text-secondary text-uppercase"><%-segmentInfo.name-%></h1>
-          <p class="lead"><strong>Distance:</strong> <%-segmentInfo.distance-%></p>
-          <p class="lead"><b>Average Grade:</b> <%-segmentInfo.average_grade-%>%</p>
-          <p class="lead"><b>Number of Attempts:</b> <%-segmentInfo.efforts-%></p>
-          <a href=<%-segmentInfo.link-%>>
-            <p class="lead">Click here to view on Strava</p>
+          <h1 class="seg-name text-secondary text-uppercase"><%-segmentInfo.name-%></h1>
+          <p class="seg-distance lead" ><strong>Distance:</strong> <%-segmentInfo.distance-%></p>
+          <p class="seg-grade lead" ><b>Average Grade:</b> <%-segmentInfo.average_grade-%>%</p>
+          <p class="seg-efforts lead" ><b>Number of Attempts:</b> <%-segmentInfo.efforts-%></p>
+          <a class="seg-link" href=<%-segmentInfo.link-%>>
+            <p class="lead"><u>Click here to view on Strava</u></p>
           </a>
         </div>
       </div>
@@ -152,18 +190,8 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <form method="POST" id="filterTable">
+      <form method="POST" class="filterTable">
         <div class="form-row">
-          <div class="col">
-            <select class="form-control" id="club" name="clubs">
-              <%for(let i = 0; i < clubInfo.length; i++){ %>
-                  <option value="<%- clubInfo[i][1] -%>"
-                  <%if(clubInfo[i][2] == clubName) {%> selected <%}%>
-                  ><%- clubInfo[i][2] -%></option>
-              <%} %>
-            </select>
-          </div>
-
           <div class="col">
             <select class="form-control" id="masters" name="masters">
                   <%if(masters == true){%>
@@ -201,37 +229,31 @@
       </form>
 
       <br>
-        <p id="#clubLinkTag"><a class ="text-white" id="clubLink" href="https://www.strava.com/clubs/<%- clubId -%>">Not appearing in your club leaderboard? Make sure to join the club by clicking here.</a></p>
-        <p ><a class ="text-white" href="#privacy">Still not appearing in your clubs leaderboard... Look here.</a></p>
-
-        <!-- Image loader -->
-        <div id='loader' style='display: none;'>
-          <img src='img/portfolio/ajax-loader.gif' width='32px' height='32px'>
-        </div>
-        <!-- Image loader -->
+        <p id="#clubLinkTag"><a class="text-white" id="clubLink" href="https://www.strava.com/clubs/<%- clubId -%>">Not
+            appearing in your club leaderboard? Make sure to join the club by <u>clicking here.</u></a></p>
+        <p ><a class ="text-white" href="#privacy">Still not appearing in your clubs leaderboard...  <u>Look here.</u></a></p>
       <br>
-
-
 
       <!-- Results Section Content -->
       <table class="table table-hover" id="daily-leaderboard-table">
         <thead>
           <tr class="text-white">
-            <th scope="col">Rank</th>
-            <th scope="col">Name</th>
-            <th scope="col">Time</th>
+            <th  scope="col">Rank</th>
+            <th  scope="col">Name</th>
+            <th  scope="col">Time</th>
           </tr>
         </thead>
         <tbody>
           <% for(var i=0; i < data.length; i++) { %>
           <tr class="text-white">
-            <th><%- data[i][2] %></th>
-            <td><%- data[i][0] %></td>
-            <td><%- data[i][1] %></td>
+            <th ><%- data[i][2] %></th>
+            <td ><%- data[i][0] %></td>
+            <td ><%- data[i][1] %></td>
           </tr>
           <% } %>
         </tbody>
       </table>
+      <p><a class="text-white" href="/signUp"><u>Add your club here!</u></a></p>
     </div>
   </section>
 
@@ -252,12 +274,13 @@
       </div>
 
       <!-- Points Section Content -->
+      <p class="lead font-weight-bold">Top 30 Riders</p>
       <table class="table table-hover" id="points-leaderboard-table">
         <thead>
           <tr>
             <th scope="col">Rank</th>
-            <th scope="col">Name</th>
-            <th scope="col">Points</th>
+            <th class="text-center" scope="col">Name</th>
+            <th class="text-center" scope="col">Points</th>
           </tr>
         </thead>
         <tbody>
@@ -272,8 +295,8 @@
                 <%} else { %>
                       <%- rank %>
                 <%}%></td>
-            <td><%- db[i].name %></td>
-            <td><%- db[i].points %></td>
+            <td class="text-center"><%- db[i].name %></td>
+            <td class="text-center"><%- db[i].points %></td>
           </tr>
           <% } %>
         </tbody>
@@ -301,10 +324,10 @@
       <div class="divider-custom">
         <div class="text-center">
           <h1 class="lead font-weight-bold text-uppercase">Click on the segment to see more information!</h1><br>
-            <p class="lead"><span class="font-weight-bold">Next Week</span><a class="text-white"href=<%-dayOne[1]%>>: <%-dayOne[0]%></a></p>
-            <p class="lead"><span class="font-weight-bold">Following Week</span><a class="text-white"href=<%-dayTwo[1]%>>: <%-dayTwo[0]%></a></p>
-            <p class="lead"><span class="font-weight-bold">Following Week</span><a class="text-white"href=<%-dayThree[1]%>>: <%-dayThree[0]%></a></p>
-            <p class="lead"><span class="font-weight-bold">Following Week</span><a class="text-white"href=<%-dayFour[1]%>>: <%-dayFour[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Next Week: </span><a class=" day-one text-white"href=<%-dayOne[1]%>> <%-dayOne[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Following Week: </span><a class="day-two text-white"href=<%-dayTwo[1]%>> <%-dayTwo[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Following Week: </span><a class="day-three text-white"href=<%-dayThree[1]%>> <%-dayThree[0]%></a></p>
+            <p class="lead"><span class="font-weight-bold">Following Week: </span><a class="day-four text-white"href=<%-dayFour[1]%>> <%-dayFour[0]%></a></p>
         </div>
       </div>
     </div>
@@ -326,7 +349,7 @@
         <div class="divider-custom-line"></div>
       </div>
 
-      <p class="lead text-center">Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in Weekly to see the segment we
+      <p class="lead text-center">Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in weekly to see the segment we
       have selected for the week. For more information check out the guides below.</p>
 
       <!-- Todays Segment Section Content -->
@@ -336,9 +359,9 @@
           <div class="divider-custom">
             <div class="divider-custom-line"></div>
           </div>
-          <p class="lead">Complete the Weekly segment shown on the site to appear on the Weekly leaderboards. These leaderboards are broken down into different
-          clubs (To appear in your club you should join the club on Strava). Points will be assigned based
-          on these Weekly leaderboard placings at 11.45pm that evening.</p>
+          <p class="lead">Complete the weekly segment shown on the site to appear on the weekly leaderboards. These leaderboards are broken down into different
+          clubs (to appear in your club you should join the club on Strava). Points will be assigned based
+          on these weekly leaderboard placings at 11.30pm on Sunday evening.</p>
           <table class="table table-hover">
             <thead>
               <tr>
@@ -394,8 +417,8 @@
               <div class="divider-custom-line"></div>
             </div>
             <p class="lead">To appear in one of our club leaderboards join the club on Strava. If your club does not have one now is the time to do it.
-            <a href="https://www.strava.com/clubs/search">Click here to access the clubs section of Strava.</a> Upon joining, get in contact with me at contact@stravasegmenthunter.com
-            and I will add your club to the site!</p>
+            <a href="https://www.strava.com/clubs/search">Click here to access the clubs section of Strava.</a> Upon
+            joining <a href="signup">sign-up your club to Strava Segment Hunter here!</a></p>
 
 
             <h1 id="privacy"class="text-secondary">PRIVACY CONTROLS</h1>
@@ -403,11 +426,11 @@
               <div class="divider-custom-line"></div>
             </div>
             <p class="lead">If you are not appearing on your club leaderboard even after joining the club it will be down to a privacy setting. To update this go
-            to
+            to:
             <br>
             Settings in Strava > Privacy Controls > Activities > Select Everyone
             <br>
-            This means you will appear on a public Strava leaderboard which we can read, otherwise your PBs wont even update!
+            This means you will appear on a public Strava leaderboard which we can read, otherwise your PBs won't even update!
             </p>
         </div>
       </div>
@@ -422,7 +445,10 @@
         <!-- Footer Location -->
         <div class="col-lg-4 mb-5 mb-lg-0">
           <h4 class="text-uppercase mb-4">Contact Me</h4>
-          <p class="lead mb-0">To get your club added onto the leaderboard, report any bugs or to suggest new features contact me at: <p class="text-uppercase font-weight-bold">contact@stravasegmenthunter.com </p>
+          <p class="lead mb-0 text-justify">To get your club added onto the leaderboard <a href="/signUp"><u>sign-up
+                here.</u> </a>To report
+            any bugs or to suggest new features contact us at: <p class="text-uppercase font-weight-bold">
+              contact@stravasegmenthunter.com </p>
         </div>
 
         <!-- Footer Social Icons -->
@@ -438,8 +464,8 @@
 
         <!-- Footer About Text -->
         <div class="col-lg-4">
-          <h4 class="text-uppercase mb-4">About Segment Challenge</h4>
-          <p class="lead mb-0">Complete Weekly segments to top the leaderboards in your club and all rides on Strava that week! Check back in every day for that days segment.</p>
+          <h4 class="text-uppercase mb-4">About Segment Hunter</h4>
+          <p class="lead mb-0 text-justify">Complete weekly segments to top the leaderboards in your club! Check in every week for that weeks segment.</p>
         </div>
 
       </div>
@@ -449,7 +475,7 @@
   <!-- Copyright Section -->
   <section class="copyright py-4 text-center text-white">
     <div class="container">
-      <small>Copyright &copy; Jamie Gregg 2020</small>
+      <small>Copyright &copy; Strava Segment Hunter 2020</small>
     </div>
   </section>
 
@@ -459,15 +485,6 @@
       <i class="fa fa-chevron-up"></i>
     </a>
   </div>
-
-  <script>
-    function openPage(){
-      if(<%-reload%> == true) {
-
-        document.getElementById("todays-seg").click();
-      }
-    }
-  </script>
 
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>

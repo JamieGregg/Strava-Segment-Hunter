@@ -8,8 +8,9 @@
   <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in daily to see the segment we
   have selected for the day.">
   <meta name="author" content="Jamie Gregg">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
-  <link rel="apple-touch-icon" sizes="57x57" href="img/fav-icon/apple-icon-57x57.png">
+ <meta http-equiv="Content-Security-Policy"
+   content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self' ;  frame-ancestors 'none">
+ <link rel="apple-touch-icon" sizes="57x57" href="img/fav-icon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="img/fav-icon//apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/fav-icon//apple-icon-72x72.png">
   <link rel="apple-touch-icon" sizes="76x76" href="img/fav-icon//apple-icon-76x76.png">
@@ -35,34 +36,55 @@
   <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
   <!-- Theme CSS -->
   <link href="css/freelancer.min.css" rel="stylesheet">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-165412592-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-165412592-1');
+  </script>
+
 </head>
 
-<body onload="openPage()" id="page-top">
+<body id="page-top">
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
     <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">Segment Hunter</a>
+      <a class="navbar-brand js-scroll-trigger" href="/">Segment Hunter</a>
       <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
         aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/">Home</a>
-          </li>
-          <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="signup">Sign Up</a>
-          </li>
-          <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="login">Log in</a>
-          </li>
-          <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="adminDashboard">Admin Dashboard</a>
-          </li>
-        </ul>
+         <ul class="navbar-nav ml-auto">
+           <li class="nav-item mx-0 mx-lg-1">
+             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#today-segment">Segment</a>
+           </li>
+           <li class="nav-item mx-0 mx-lg-1">
+             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#point-leaderboard">Leaderboards</a>
+           </li>
+           <li class="nav-item mx-0 mx-lg-1">
+             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#help-section">Help</a>
+           </li>
+           <li class="nav-item mx-0 mx-lg-1">
+             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="FAQ">FAQs</a>
+           </li>
+           <li class="nav-item mx-0 mx-lg-1">
+             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger active" href="admin-dashboard">Admin
+               Dashboard</a>
+           </li>
+            <li class="nav-item mx-0 mx-lg-1">
+              <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/log-out">Log Out</a>
+            </li>
+         </ul>
       </div>
     </div>
   </nav>
@@ -101,8 +123,10 @@
       <!-- Todays Segment Section Content -->
       <div class="divider-custom">
         <div class="text-center">
-          <p class="lead">To add a new segment to your clubs list paste the segment code into the box below.</p>
-          <p class="lead"><a href="#">Click here to find out where to locate a segment ID</a></p>
+          <p class="lead text-justify">To add a new segment to your clubs list, paste the segment code into the box below. If you are unsure how to get a segment code click the link below. Your users will complete these segments to appear on the leaderboards. Each segment you enter will be added to the list below and each segment will run for one week (Monday to Sunday at 11:30pm).</p>
+          <p class="lead text-justify"><a href="https://youtu.be/9NpqSET9c_o">Click here for a video on where to locate
+              a segment ID.</a>
+          </p>
           <form id="addSegment"  method="post">
             <label class="sr-only" for="inlineFormInputGroupUsername2">SegmentId</label>
             <div class="input-group mb-2 mr-sm-2">
@@ -117,15 +141,17 @@
                 <div class="input-group-text">Confirm this is the segment:</div>
               </div>
               <input type="text" class="form-control" id="confirmStravaSeg" name="segment" readonly>
+              
             </div><br>
             <div id="continueButton">
-              <button id="continue" class="btn btn-primary"type="button" name="button">Submit Segment</button>
+              <button id="continue" class="btn btn-primary btn-block"type="button" name="button">Submit Segment</button>
             </div>
             <div id="submitButton">
-              <button id="submit" class="btn btn-primary"type="submit" name="button">confirm</button>
+              <button id="submit" class="btn btn-primary btn-block" type="submit" name="button">Confirm</button>
+              <button id="cancel" class="btn btn-primary btn-block" type="button" name="button">Cancel</button>
             </div>
+            <small id="responseSegment" class="form-text text-muted"></small>
           </form>
-          <p class="lead" id="responseSegment"></p>
         </div>
       </div>
     </div>
@@ -150,6 +176,7 @@
         <div class="divider-custom-line"></div>
       </div>
 
+      <p class="lead text-justify">These are the upcoming segments that you have selected. Users on the site can see up to 4 weeks in advance so please keep at least 4 segments in the table below if possible. Each of these segments will run for one week (Monday - Sunday). At the end of the week we will read the leaderboard and assign points based on placings. This leaderboard can be seen on the homepage.</p>
 
       <!-- Results Section Content -->
       <table class="table table-hover" id="segment-table">
@@ -171,43 +198,193 @@
     </div>
   </section>
 
-
-  <!-- Footer -->
-  <footer class="footer text-center">
+  <section hidden class="page-section portfolio" id="today-segment">
     <div class="container">
-      <div class="row">
 
-        <!-- Footer Location -->
-        <div class="col-lg-4 mb-5 mb-lg-0">
-          <h4 class="text-uppercase mb-4">Contact Me</h4>
-          <p class="lead mb-0">To get your club added onto the leaderboard, report any bugs or to suggest new features contact me at: <p class="text-uppercase font-weight-bold">contact@stravasegmenthunter.com</p>
+      <!-- Todays Segement Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Download your results</h2>
+
+      <!-- Icon Divider -->
+      <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon">
+          <i class="fas fa-star"></i>
         </div>
+        <div class="divider-custom-line"></div>
+      </div>
 
-        <!-- Footer Social Icons -->
-        <div class="col-lg-4 mb-5 mb-lg-0">
-          <h4 class="text-uppercase mb-4">Developer Links</h4>
-          <a class="btn btn-outline-light btn-social mx-1" href="https://www.strava.com/athletes/8460844">
-            <i class="fab fa-fw fa-strava"></i>
-          </a>
-          <a class="btn btn-outline-light btn-social mx-1" href="https://github.com/JamieGregg">
-            <i class="fab fa-fw fa-github"></i>
-          </a>
+      <div class="divider-custom">
+        <div class="text-center">
+          <form method="GET" action='/download'>
+            <p class='lead'>Export results to CSV</p>
+            <button class='btn-primary btn'>Export</button>
+          </form>
         </div>
-
-        <!-- Footer About Text -->
-        <div class="col-lg-4">
-          <h4 class="text-uppercase mb-4">About Segment Challenge</h4>
-          <p class="lead mb-0">Complete daily segments to top the leaderboards in your club and all rides on Strava that day! Check back in every day for that days segment.</p>
-        </div>
-
       </div>
     </div>
-  </footer>
+  </section>
+
+   <section class="page-section portfolio" id="today-segment">
+     <div class="container">
+
+       <!-- Todays Segement Section Heading -->
+       <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Reset the Points Leaderboard</h2>
+
+       <!-- Icon Divider -->
+       <div class="divider-custom">
+         <div class="divider-custom-line"></div>
+         <div class="divider-custom-icon">
+           <i class="fas fa-star"></i>
+         </div>
+         <div class="divider-custom-line"></div>
+       </div>
+
+       <div class="divider-custom">
+         <div class="text-center">
+           <form method="DELETE" id='delete'>
+             <p class='lead text-justify'>If you would like to restart the competiton you can reset the leaderboard at anytime - this will wipe all of your leaderboards but will leave your upcoming segments. Warning, once your results are gone, there is no return!</p>
+             <br><button class='btn-primary btn btn-block'>Delete Results Leaderboard</button>
+           </form>
+         </div>
+       </div>
+     </div>
+   </section>
+
+   <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
+     <div class="container">
+
+       <!-- Results Section Heading -->
+       <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Contacting Us</h2>
+
+       <!-- Results Divider -->
+       <div class="divider-custom divider-light">
+         <div class="divider-custom-line"></div>
+         <div class="divider-custom-icon">
+           <i class="fas fa-star"></i>
+         </div>
+         <div class="divider-custom-line"></div>
+       </div>
+
+
+       <!-- Results Section Content -->
+       <p class="lead text-justify">We monitor the site and our emails regularly, however, if you have any questions or queries we are more than happy to help. Some popular topics to email us about are:</p> 
+        <ol class='lead'>
+          <li>Club member has changed their name which has impacted the results.</li>
+          <li>Suggesting new features to add.</li>
+          <li>Asking questions about getting started.</li>
+          <li>Make an amendment to your subscription.</li>
+        </ol>
+        <p class="lead text-justify">Please read our <a class="text-white" href="FAQ"><u>FAQS here</u></a> or contact us
+          at
+          contact@stravasegmenthunter.com. We will always respond on the same day.</p>
+     </div>
+   </section>
+
+    <!-- Sign Up Section -->
+    <section class="page-section portfolio" id="sign-up">
+      <div class="container">
+
+        <!-- Sign Up Section Heading -->
+        <h2 class="page-section-heading text-center text-uppercase  mb-0">Important Update</h2>
+
+        <!-- Icon Divider -->
+        <div class="divider-custom">
+          <div class="divider-custom-line"></div>
+          <div class="divider-custom-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="divider-custom-line"></div>
+        </div>
+
+        <p class="lead text-justify">Due to a bug in Stravas API (we are hoping for a fix soon) there is something you
+          should know. When we read the leaderboards
+          the riders names we get back are now abbreviated to their first name followed by the first letter of their
+          surname (e.g John Doe = John D). This poses an
+          issue for us recognising club members who have the same first name and first letter of their surname which
+          confuses our points system. An example would be
+          John Davies, John Dunn and John Doe all showing as John D on the leaderboard with a cumulative points
+          tally.<br><br>
+
+          <strong>How to fix this?</strong><br><br>
+
+          After some testing, we believe the best way to solve this temporary issue with confilicting names (if only it
+          was so easy) is to ask members to ensure their name is unique in some way by doing the following:
+          <ol>
+            <li class="lead">Add a club abbreviation after your first name and leave surname as it is: John BCC Doe.
+            </li>
+            <li class="lead">Add a club abbreviation before your first name and leave surname as it is: BCC John Doe.
+            </li>
+            <li class="lead">Add an emoji before or after your first name and leave surname as it is: 🚴John Doe.</li>
+          </ol>
+          <p class="lead">Note if a user changes their name it will not update their points but create a "new person" on the leaderboard. Fire us an email and we can resolve this.
+            I do apologise if this does apply to your club and we do hope Strava resolve this issue soon.
+            If
+            you have any issues with this please contact us.</p>
+        </p><br><br>
+      </section>
+
+      <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
+        <div class="container">
+
+          <!-- Results Section Heading -->
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">
+            Log Out</h2>
+
+          <!-- Results Divider -->
+          <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="divider-custom-line"></div>
+          </div>
+
+          <form method="get" action="/log-out">
+            <button type="submit" class="btn btn-light btn-block">Log Out</button>
+          </form>
+        </div>
+      </section>
+
+ <!-- Footer -->
+ <footer class="footer text-center">
+   <div class="container">
+     <div class="row">
+
+       <!-- Footer Location -->
+       <div class="col-lg-4 mb-5 mb-lg-0">
+         <h4 class="text-uppercase mb-4">Contact Me</h4>
+         <p class="lead mb-0 text-justify">To get your club added onto the leaderboard <a href="/signUp"> sign-up here.
+           </a>To report
+           any bugs or to suggest new features contact us at: <p class="text-uppercase font-weight-bold">
+             contact@stravasegmenthunter.com </p>
+       </div>
+
+       <!-- Footer Social Icons -->
+       <div class="col-lg-4 mb-5 mb-lg-0">
+         <h4 class="text-uppercase mb-4">Developer Links</h4>
+         <a class="btn btn-outline-light btn-social mx-1" href="https://www.strava.com/athletes/8460844">
+           <i class="fab fa-fw fa-strava"></i>
+         </a>
+         <a class="btn btn-outline-light btn-social mx-1" href="https://github.com/JamieGregg">
+           <i class="fab fa-fw fa-github"></i>
+         </a>
+       </div>
+
+       <!-- Footer About Text -->
+       <div class="col-lg-4">
+         <h4 class="text-uppercase mb-4">About Segment Hunter</h4>
+         <p class="lead mb-0 text-justify">Complete weekly segments to top the leaderboards in your club! Check back in
+           every week for that weeks segment.</p>
+       </div>
+
+     </div>
+   </div>
+ </footer>
 
   <!-- Copyright Section -->
   <section class="copyright py-4 text-center text-white">
     <div class="container">
-      <small>Copyright &copy; Jamie Gregg 2020</small>
+      <small>Copyright &copy; Strava Segment Hunter 2020</small>
     </div>
   </section>
 

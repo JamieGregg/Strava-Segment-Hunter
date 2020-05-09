@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
   $("#loader").hide();
-  $("form#filterTable").submit(function(e){
+  $("form.filterTable").submit(function(e){
     e.preventDefault();
     let clubId = $("#club option:selected").val();
     let masters = $("#masters option:selected").val();
@@ -15,7 +15,7 @@ $(document).ready(function(){
 
     $.ajax({
       type: 'POST',
-      url: '/test',
+      url: '/loadleaderboard',
       dataType: 'json',
       data: postData,
       beforeSend: function(){
@@ -27,6 +27,7 @@ $(document).ready(function(){
         clubLink(info.clubId)
         loadDaily(info.data)
         loadPoints(info.db)
+        loadSegments(info)
       },
       complete:function(data){
         // Hide image container
@@ -38,10 +39,10 @@ $(document).ready(function(){
 
   $("form#register").submit(function(e){
     e.preventDefault();
-    let clubName = $("#clubAlaias").val();
-    let password = $("#password").val();
-    let emailAddress = $("#emailAddress").val();
-    let clubId = $("#clubId").val();
+    let clubName = escapeHtml($("#clubAlaias").val());
+    let password = escapeHtml($("#password").val());
+    let emailAddress = escapeHtml($("#emailAddress").val());
+    let clubId = escapeHtml($("#clubId").val());
 
     let postInfo = {
       clubName: clubName,
@@ -59,7 +60,7 @@ $(document).ready(function(){
         $("#loader").show();
       },
       success: function(info){
-        $("#passwordInvalid").html(info.passwordVal)
+        $("#passwordInvalid").text(info.passwordVal)
       },
       complete:function(data){
         // Hide image container
@@ -67,8 +68,6 @@ $(document).ready(function(){
       }
     })
   })
-
-
 })
 
 function loadDaily(data){
@@ -95,14 +94,15 @@ function loadPoints(data){
     }
 
     pointsLeaderboardTable.append(
-      "<tr><th>" + rank + "</th><td>" + pointsPerson.name + "</td><td>" + pointsPerson.points + "</td></tr>"
+      "<tr><th>" + rank + "</th><td class=\'text-center\'>" + pointsPerson.name + "</td><td class=\'text-center\'>" + pointsPerson.points + "</td></tr>"
     )
   })
 }
 
 function loadHeadings(data){
-  $('#daily-leaderboard-heading').html(data + " Daily Leaderboard")
-  $('#points-leaderboard-heading').html(data + " Points Leaderboard")
+  $('#daily-leaderboard-heading').text(data + " Weekly Leaderboard")
+  $('#points-leaderboard-heading').text(data + " Points Leaderboard")
+  $('.segment-heading').text(data + " Weekly Segment")
 }
 
 function clubLink(clubId){
@@ -110,4 +110,40 @@ function clubLink(clubId){
     $("#clubLinkTag").show();
     $("#clubLink").attr('href','https://www.strava.com/clubs/' + clubId)
   }
+}
+
+function loadSegments(data){
+  $('.seg-name').text(data.segmentInfo.name)
+  $('.seg-grade').text("Average Grade: " + data.segmentInfo.average_grade)
+  $('.seg-distance').text("Distance: " + data.segmentInfo.distance)
+  $('.seg-efforts').text("Number of Attempts: " + data.segmentInfo.efforts)
+  $('.seg-link').attr('href', data.segmentInfo.link)
+
+  $('.day-one').text(data.dayOne[0])
+  $('.day-two').text(data.dayTwo[0])
+  $('.day-three').text(data.dayThree[0])
+  $('.day-four').text(data.dayFour[0])
+
+  $('.day-one').attr('href', data.dayOne[1])
+  $('.day-two').attr('href', data.dayTwo[1])
+  $('.day-three').attr('href', data.dayThree[1])
+  $('.day-four').attr('href', data.dayFour[1])
+}
+
+
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml(string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
 }
