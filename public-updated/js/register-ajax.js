@@ -39,7 +39,7 @@ $(document).ready(function(){
           } else if (info.statusCode === 1500){
             $('#passwordNotSame').text("This club has already registered")
           } else if (info.statusCode === 1501){
-            $('#passwordNotSame').text("A user with this email has already registered")
+            $('#passwordNotSame').text("This Club ID or Email Address has already been registered")
           } else {
             escapeHtml($("#clubName").text(info.clubName))
             $("#club-icon").attr("src", info.clubIcon)
