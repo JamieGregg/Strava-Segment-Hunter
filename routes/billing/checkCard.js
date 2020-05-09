@@ -16,22 +16,34 @@ router.post("/check-card", async (request, response) => {
         }
     }, async (paymentError, paymentMethod) => {
         if (!paymentError) {
-            const customer = await stripe.customers.create({
-                payment_method: paymentMethod.id,
-                email: request.body.username,
-                invoice_settings: {
-                    default_payment_method: paymentMethod.id
-                }
-            })
+            try{
+                const customer = await stripe.customers.create({
+                    payment_method: paymentMethod.id,
+                    email: request.body.email,
+                    invoice_settings: {
+                        default_payment_method: paymentMethod.id
+                    }
+                })
 
-            const subscription = await stripe.subscriptions.create({
-                customer: customer.id,
-                items: [{
-                    plan: process.env.STRIPE_PLAN
-                }],
-                expand: ["latest_invoice.payment_intent"]
-            })
+                const subscription = await stripe.subscriptions.create({
+                    customer: customer.id,
+                    items: [{
+                        plan: process.env.STRIPE_PLAN
+                    }],
+                    expand: ["latest_invoice.payment_intent"]
+                })
 
+            } catch {
+                response.render('signup-confirmation', {
+                    clubName: request.body.clubName,
+                    clubId: request.body.clubId,
+                    password: request.body.password,
+                    username: request.body.username,
+                    time: request.body.timezone,
+                    paymentError: 'Oops, we could not verify this card.'
+                })
+            }
+            
             User.register({
                 username: request.body.username
             }, request.body.password, async function (err, user) {
