@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
             loadLeaderboard(true, 'GET', segmentId, obj.clubId, false, 'false', '', res, req)
         })
      } else {
-        loadLeaderboard(false, 'GET', segmentId, 25799, false, 'false', '', res, req)
+        loadLeaderboard(false, 'GET', segmentId, 55274, false, 'false', '', res, req)
      }
 });
 
