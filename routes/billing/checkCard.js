@@ -33,6 +33,61 @@ router.post("/check-card", async (request, response) => {
                     expand: ["latest_invoice.payment_intent"]
                 })
 
+                 User.register({
+                     username: request.body.username
+                 }, request.body.password, async function (err, user) {
+                     console.log("Registered")
+                     if (err) {
+                         console.log(err)
+                         response.redirect("/signup")
+                     } else {
+                         passport.authenticate('local')(request, response, function () {
+                             var query = {
+                                 username: request.body.username
+                             };
+                             var update = {
+                                 clubName: request.body.clubName,
+                                 clubId: request.body.clubId,
+                                 stripeId: customer.id
+                             }
+                             var options = {
+                                 upsert: true,
+                                 'new': true,
+                                 'useFindAndModify': true
+                             };
+
+                             User.update(query, update, options, function (err, doc) {
+                                 if (err) {
+                                     console.log(err)
+                                 } else {
+                                     console.log(doc);
+                                 }
+                             });
+
+                             try {
+                                 // a document instance
+                                 var newClub = new ClubData({
+                                     alais: request.body.clubName,
+                                     clubId: request.body.clubId,
+                                     clubName: request.body.clubName,
+                                     timezone: request.body.timezone
+                                 });
+
+                                 // save model to database
+                                 newClub.save(function (err, club) {
+                                     if (err) return console.error(err);
+                                 });
+
+                                 regEmail(request.body.clubName, user.username)
+                                 response.render('welcome');
+
+                             } catch {
+                                 console.log("saving issue")
+                             }
+                         })
+                     }
+                 })
+
             } catch {
                 response.render('signup-confirmation', {
                     clubName: request.body.clubName,
@@ -44,60 +99,6 @@ router.post("/check-card", async (request, response) => {
                 })
             }
             
-            User.register({
-                username: request.body.username
-            }, request.body.password, async function (err, user) {
-                console.log("Registered")
-                if (err) {
-                    console.log(err)
-                    response.redirect("/signup")
-                } else {
-                    passport.authenticate('local')(request, response, function () {
-                        var query = {
-                            username: request.body.username
-                        };
-                        var update = {
-                            clubName: request.body.clubName,
-                            clubId: request.body.clubId,
-                            stripeId: customer.id
-                        }
-                        var options = {
-                            upsert: true,
-                            'new': true,
-                            'useFindAndModify': true
-                        };
-
-                        User.update(query, update, options, function (err, doc) {
-                            if( err ){
-                                console.log(err)
-                            } else {
-                                console.log(doc);
-                            } 
-                        });
-
-                        try{
-                            // a document instance
-                            var newClub = new ClubData({
-                                alais: request.body.clubName,
-                                clubId: request.body.clubId,
-                                clubName: request.body.clubName,
-                                timezone: request.body.timezone
-                            });
-
-                            // save model to database
-                            newClub.save(function (err, club) {
-                                if (err) return console.error(err);
-                            });
-                            
-                            regEmail(request.body.clubName, user.username)
-                            response.render('welcome');
-
-                        } catch {
-                            console.log("saving issue")
-                        }
-                    })
-                }
-            })
         } else {
             // The credit card has an issue
               response.render('signup-confirmation', {
