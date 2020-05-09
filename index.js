@@ -53,7 +53,7 @@ app.use(listPlans)
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/Test', {
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@cluster0-tnkii.mongodb.net/' + process.env.DB_NAME, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }).then(() => console.log('Connected to MongoDB...'))
