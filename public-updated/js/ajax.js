@@ -75,7 +75,7 @@ function loadDaily(data){
   dailyLeaderboardTable.find("tbody tr").remove();
   data.forEach(function(person){
     dailyLeaderboardTable.append(
-      "<tr class=\'text-white\'><th>" + person[2] + "</th><td>" + person[0] + "</td><td>" + person[1] + "</td></tr>"
+      "<tr class=\'text-white\'><th>" + person[2] + "</th><td class=\'text-center\'>" + person[0] + "</td><td class=\'text-center\'>" + person[1] + "</td></tr>"
     )
   })
 }
