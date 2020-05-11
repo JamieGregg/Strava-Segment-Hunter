@@ -42,70 +42,61 @@ router.post('/registering', function (req, res) {
 
 router.post('/validateClub', async function (req, res) {
     console.log(req.body.clubId)
-    User.findOne({
+    
+    ClubData.findOne({
         clubId: req.body.clubId
-    }, function (err, person) {
-        if (!person) {
-            ClubData.findOne({
-                clubId: req.body.clubId
-            }, function (err, obj) {
-                if (err) {
-                    res.send({
-                        clubName: "",
-                        clubIcon: "",
-                        statusCode: 404
-                    })
-                } else {
-                    try {
-                        console.log("Here")
-                        console.log(obj)
-                        if (obj.length === 0 || obj === 'NULL' || obj === 'null' || obj === null) {
-                            var strava = new require("strava")({
-                                "client_id": process.env.CLIENT_ID,
-                                "access_token": process.env.ACCESS_TOKEN,
-                                "client_secret": process.env.CLIENT_SECRET,
-                                "redirect_url": "https://www.stravasegmenthunter.com/"
-                            });
-
-                            strava.clubs.get(req.body.clubId, function (err, data) {
-                                res.send({
-                                    clubName: data.name,
-                                    clubIcon: data.profile,
-                                    statusCode: data.statusCode
-                                })
-                            })
-                        } else {
-                            res.send({
-                                clubName: "",
-                                clubIcon: "",
-                                statusCode: 1500
-                            })
-                        }
-                    } catch {
-                        var strava = new require("strava")({
-                            "client_id": process.env.CLIENT_ID,
-                            "access_token": process.env.ACCESS_TOKEN,
-                            "client_secret": process.env.CLIENT_SECRET,
-                            "redirect_url": "https://www.stravasegmenthunter.com/"
-                        });
-
-                        strava.clubs.get(req.body.clubId, function (err, data) {
-                            console.log(data)
-                            res.send({
-                                clubName: data.name,
-                                clubIcon: data.profile,
-                                statusCode: data.statusCode
-                            })
-                        })
-                    }
-                }
-            })
-        } else {
+    }, function (err, obj) {
+        if (err) {
             res.send({
                 clubName: "",
                 clubIcon: "",
-                statusCode: 1501
+                statusCode: 404
             })
+        } else {
+            //try {
+                if (obj === 'NULL' || obj === 'null' || obj === null) {
+                    var strava = new require("strava")({
+                        "client_id": process.env.CLIENT_ID,
+                        "access_token": process.env.ACCESS_TOKEN,
+                        "client_secret": process.env.CLIENT_SECRET,
+                        "redirect_url": "https://www.stravasegmenthunter.com/"
+                    });
+
+                    User.findOne({
+                        username: req.body.email
+                        }, function (err, obj) {
+                            if (err) {
+                                res.send({
+                                    clubName: "",
+                                    clubIcon: "",
+                                    statusCode: 404
+                                })
+                            } else {
+                                if (obj === 'NULL' || obj === 'null' || obj === null){
+                                    strava.clubs.get(req.body.clubId, function (err, data) {
+                                        res.send({
+                                            clubName: data.name,
+                                            clubIcon: data.profile,
+                                            statusCode: data.statusCode
+                                        })
+                                    })
+                                } else {
+                                    res.send({
+                                        clubName: "",
+                                        clubIcon: "",
+                                        statusCode: 1501
+                                    })
+                                }
+                        }
+                    })
+                } else {
+                    res.send({
+                        clubName: "",
+                        clubIcon: "",
+                        statusCode: 1500
+                    })
+                }
+        
         }
     })
 })
