@@ -4,6 +4,7 @@ const User = require("../../models/user")
 const passport = require('passport')
 const ClubData = require("../../models/clubdata")
 const nodemailer = require('nodemailer')
+const timestamp = require('unix-timestamp')
 
 router.post("/check-card", async (request, response) => {
     stripe.paymentMethods.create({
@@ -30,9 +31,10 @@ router.post("/check-card", async (request, response) => {
                     items: [{
                         plan: process.env.STRIPE_PLAN
                     }],
+                    trial_end: Math.round(timestamp.add(timestamp.now(), '2w')),
                     expand: ["latest_invoice.payment_intent"]
                 })
-
+                
                  User.register({
                      username: request.body.username
                  }, request.body.password, async function (err, user) {
@@ -88,14 +90,14 @@ router.post("/check-card", async (request, response) => {
                      }
                  })
 
-            } catch {
+             } catch {
                 response.render('signup-confirmation', {
                     clubName: request.body.clubName,
                     clubId: request.body.clubId,
                     password: request.body.password,
                     username: request.body.username,
                     time: request.body.timezone,
-                    paymentError: 'Oops, we could not verify this card.'
+                    paymentError: 'Wow, something went wrong on our end... Please try and log in before making another attempt'
                 })
             }
             
