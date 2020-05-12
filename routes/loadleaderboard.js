@@ -4,24 +4,37 @@ const router = express.Router();
 const ClubData = require("../models/clubdata")
 const mongoose = require('mongoose')
 const passport = require('passport')
+const session = require('express-session')
 const segSchema = require("../models/segmentSchema")
 const resultsSchema = require("../models/results")
 var User = require("../models/user");
 const timeFrame = "this_week"
+var cookieParser = require('cookie-parser')
 let segmentId;
 
 router.use(passport.initialize());
 router.use(passport.session());
+router.use(cookieParser())
 
 router.post('/loadleaderboard', function (req, res) {
     if (req.isAuthenticated(req, res)) {
         loadLeaderboard(true, 'POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
+        
     } else {
+        res.cookie('counter', req.body.clubs)
         loadLeaderboard(false, 'POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
+        
     }
 })
 
 router.get('/', (req, res) => {
+     let clubIdentity = 0;
+     if (!req.cookies.counter) {
+         clubIdentity = 55274
+     } else {
+         clubIdentity = req.cookies.counter
+     }
+
      if (req.isAuthenticated(req, res)) {
          User.findOne({
             username: req.user.username
@@ -29,7 +42,7 @@ router.get('/', (req, res) => {
             loadLeaderboard(true, 'GET', segmentId, obj.clubId, false, 'false', '', res, req)
         })
      } else {
-        loadLeaderboard(false, 'GET', segmentId, 55274, false, 'false', '', res, req)
+        loadLeaderboard(false, 'GET', segmentId, clubIdentity, false, 'false', '', res, req)
      }
 });
 
