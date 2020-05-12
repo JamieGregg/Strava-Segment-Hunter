@@ -49,12 +49,12 @@ router.post('/addSegment', async function (req, res) {
                         console.log(info.name)
 
                         var newSegment = new collection({
-                            counterId: lastCounter,
-                            segmentId: req.body.segmentId,
+                            counterId: parseInt(lastCounter),
+                            segmentId: parseInt(req.body.segmentId),
                             name: info.name,
                             distance: convertingMetersToMiles(info.distance),
-                            grade: info.average_grade,
-                            efforts: info.effort_count
+                            grade: parseInt(info.average_grade),
+                            efforts: parseInt(info.effort_count)
                         });
 
                         // save model to database
