@@ -1,6 +1,6 @@
 require('dotenv').config();
 const router = require("express").Router(),
-    stripe = require("stripe")(process.env.STRIPE_SECRET_KEY),
+    stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY),
     User = require("../../models/user"),
     passport = require('passport'),
     ClubData = require("../../models/clubdata"),
@@ -30,7 +30,7 @@ router.post("/check-card", async (request, response) => {
                 const subscription = await stripe.subscriptions.create({
                     customer: customer.id,
                     items: [{
-                        plan: process.env.STRIPE_PLAN
+                        plan: process.env.TEST_STRIPE_PLAN
                     }],
                     trial_end: Math.round(timestamp.add(timestamp.now(), '2w')),
                     expand: ["latest_invoice.payment_intent"]
@@ -125,13 +125,13 @@ function regEmail(clubName, email) {
         port: 465,
         debug: true,
         auth: {
-            user: 'contact@stravasegmenthunter.com',
+            user: 'contact@segmenthunter.co.uk',
             pass: process.env.EMAIL_PASSWORD
         }
     });
     var mailOptions = {
         to: email,
-        from: 'contact@stravasegmenthunter.com',
+        from: 'contact@segmenthunter.co.uk',
         subject: 'Welcome to Strava Segment Hunter',
         html: '<h3>Welcome to Strava Segment Hunter!</h3><br>' +
             'You now have access to the Strava Segment Hunter Admin Dashboard for ' + clubName + '. This gives you the ability to add and remove segments on the leaderboard.<br>' +
