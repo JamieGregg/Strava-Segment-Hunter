@@ -1,33 +1,33 @@
 require('dotenv').config();
-const express = require('express')
-const bodyParser = require('body-parser')
-const fetch = require('node-fetch')
-const mongoose = require('mongoose')
-const schedule = require('node-schedule')
-const session = require('express-session')
-const passport = require('passport')
-const User = require("./models/user")
-const ClubData = require("./models/clubdata")
-const resultsSchema = require("./models/results")
-const segSchema = require("./models/segmentSchema")
-const segBacklogSchema = require("./models/segBacklogSchema")
-var nodemailer = require("nodemailer");
-const app = express();
+const express = require('express'),
+ bodyParser = require('body-parser'),
+ fetch = require('node-fetch'),
+ nodemailer = require("nodemailer"),
+ mongoose = require('mongoose'),
+ schedule = require('node-schedule'),
+ session = require('express-session'),
+ passport = require('passport'),
+ User = require("./models/user"),
+ ClubData = require("./models/clubdata"),
+ resultsSchema = require("./models/results"),
+ segSchema = require("./models/segmentSchema"),
+ segBacklogSchema = require("./models/segBacklogSchema"),
+ app = express();
 
-app.use(express.static(__dirname + '/public-updated'));
+app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: false
 }))
 
-app.enable("trust proxy");
+/*app.enable("trust proxy");
 app.use(function (req, res, next) {
   if (req.secure) {
     next();
   } else {
     res.redirect('https://' + req.headers.host + req.url);
   }
-});
+});*/
 
 app.use(session({
   secret: process.env.HASH_KEY,
@@ -35,13 +35,14 @@ app.use(session({
   saveUninitialized: false
 }))
 
-var login = require("./routes/login"),
-    register = require("./routes/register"),
-    loadLeaderboard = require("./routes/loadleaderboard"),
-    admins = require("./routes/admin"),
-    deleteRecords = require("./routes/deleteRecords"),
+var login = require("./routes/account-handling/login"),
+    register = require("./routes/account-handling/register"),
+    loadLeaderboard = require("./routes/home/loadleaderboard"),
+    admins = require("./routes/admin/admin"),
+    deleteRecords = require("./routes/admin/deleteRecords"),
     checkCard = require("./routes/billing/checkCard"),
-    listPlans = require("./routes/billing/listPlans")
+    listPlans = require("./routes/billing/listPlans"),
+    faq = require("./routes/FAQ/faq")
 
 app.use(login);
 app.use(register);
@@ -50,6 +51,7 @@ app.use(admins);
 app.use(deleteRecords)
 app.use(checkCard)
 app.use(listPlans)
+app.use(faq)
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -76,18 +78,6 @@ app.listen(port, () => {
   console.log("server is now running on port 8000")
   refreshTokensNow()
 });
-
-app.get('/FAQ', function (req, res) {
-  if (req.isAuthenticated(req, res)) {
-    res.render('FAQ', {
-      isAuthenticated: true
-    })
-  } else {
-    res.render('FAQ', {
-      isAuthenticated: false
-    })
-  }
-})
 
 refreshTokens();
 saveDataEvening();
@@ -144,7 +134,7 @@ function assignEnvVariable(res) {
 
 //DATABASE FUNCTIONS
 function populateSchema(results, clubName) {
-  var rank = 0;
+  var rank = 0
   var lastTime = -1;
 
   //Clearing lastweeks points
@@ -368,7 +358,6 @@ function saveData(time){
   var segment = []
   var results = [];
 
-
   //Gathering Club Data
   ClubData.find({timezone : time}, async function (err, clubInfo) {
   if (err) {
@@ -421,8 +410,8 @@ function saveData(time){
 
             backdatedData(content, implClubs[i][1] + " Everyone")
             segment.length = 0;
-          } //If statment
-        }) //API Call
+          } 
+        }) 
       } catch (err) {
         console.log(err)
       }
@@ -454,7 +443,6 @@ function saveData(time){
               }, '');
 
               backdatedData(content, implClubs[i][1] + " Gender: " + gender[y])
-
               segment.length = 0;
             }
           })
@@ -559,9 +547,7 @@ function saveData(time){
         }
       })
 
-
       var resultMasterF = []
-
       var paramsMaster54F = {
         "date_range": timeFrame,
         "per_page": 100,
@@ -607,9 +593,7 @@ function saveData(time){
           console.log(err)
         }
       })
-
       deleteUsedSegment(implClubs[i][1])
-
     } catch {
       console.log("Invalid Segment")
     }
@@ -937,12 +921,10 @@ function saveDataEvening() {
   var gmt12 = schedule.scheduleJob(ruleGMT12, function () {
     saveData(12)
   })
-
-  console.log("Updates complete")
 }
 
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
-  res.render('404');
+  res.render('pages/404');
 });

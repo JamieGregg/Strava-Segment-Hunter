@@ -8,8 +8,8 @@
   <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in daily to see the segment we
   have selected for the day.">
   <meta name="author" content="Jamie Gregg">
- <meta http-equiv="Content-Security-Policy"
-   content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self' ;  frame-ancestors 'none">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self' ;  frame-ancestors 'none">
   <link rel="apple-touch-icon" sizes="57x57" href="img/fav-icon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="img/fav-icon//apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/fav-icon//apple-icon-72x72.png">
@@ -28,12 +28,13 @@
   <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
 
-  <title>Strava Segment Hunter</title>
+  <title>Segment Hunter</title>
 
   <!-- Custom fonts for this theme -->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+    type="text/css">
   <!-- Theme CSS -->
   <link href="css/freelancer.min.css" rel="stylesheet">
 
@@ -58,32 +59,33 @@
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
     <div class="container">
       <a class="navbar-brand js-scroll-trigger" href="/">Segment Hunter</a>
-      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-        aria-label="Toggle navigation">
+      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded"
+        type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+        aria-expanded="false" aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-         <ul class="navbar-nav ml-auto">
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/">Segment</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#point-leaderboard">Leaderboards</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#help-section">Help</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="FAQ">FAQs</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="signup">Register</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="login">Log in</a>
-           </li>
-         </ul>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/">Segment</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#point-leaderboard">Leaderboards</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#help-section">Help</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="FAQ">FAQs</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="signup">Register</a>
+          </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="login">Log in</a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -95,16 +97,16 @@
       <section class="page-section bg-primary text-white mb-0" id="today-leaderboard">
         <div class="container">
 
-          <img class="masthead-avatar mb-5" src="img/portfolio/icon.png" alt="">
+          <img class="masthead-avatar mb-5" src="img/assets/icon.png" alt="">
           <!-- Results Section Heading -->
-          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Forgotten Password</h2>
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">
+            Forgotten Password</h2>
 
 
         </div>
       </section>
     </div>
   </header>
-
 
   <!-- Sign Up Section -->
   <section class="page-section portfolio" id="today-segment">
@@ -127,7 +129,8 @@
       <form method="POST" id="reset-password">
         <div class="form-group">
           <label class="lead" for="emailAddress">Email Address</label>
-          <input type="email" class="form-control" id ="emailForgotten" name="emailForgotten" aria-describedby="emailHelp" placeholder="Enter email" required>
+          <input type="email" class="form-control" id="emailForgotten" name="emailForgotten"
+            aria-describedby="emailHelp" placeholder="Enter email" required>
           <small id="emailHelp" class="form-text text-muted"><a href="#club-id-section"></a></small>
         </div>
         <p class="lead"></p>
@@ -175,7 +178,7 @@
   <!-- Copyright Section -->
   <section class="copyright py-4 text-center text-white">
     <div class="container">
-      <small>Copyright &copy; Strava Segment Hunter 2020</small>
+      <small>Copyright &copy;  Segment Hunter 2020</small>
     </div>
   </section>
 

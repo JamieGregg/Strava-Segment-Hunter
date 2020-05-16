@@ -1,10 +1,10 @@
-const router = require("express").Router()
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
-const User = require("../../models/user")
-const passport = require('passport')
-const ClubData = require("../../models/clubdata")
-const nodemailer = require('nodemailer')
-const timestamp = require('unix-timestamp')
+const router = require("express").Router(),
+    stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY),
+    User = require("../../models/user"),
+    passport = require('passport'),
+    ClubData = require("../../models/clubdata"),
+    nodemailer = require('nodemailer'),
+    timestamp = require('unix-timestamp')
 
 router.post("/check-card", async (request, response) => {
     stripe.paymentMethods.create({
@@ -13,11 +13,11 @@ router.post("/check-card", async (request, response) => {
             number: request.body.number,
             exp_month: request.body.exp_month,
             exp_year: request.body.exp_year,
-            cvc:request.body.cvc
+            cvc: request.body.cvc
         }
     }, async (paymentError, paymentMethod) => {
         if (!paymentError) {
-            try{
+            try {
                 const customer = await stripe.customers.create({
                     payment_method: paymentMethod.id,
                     email: request.body.username,
@@ -29,69 +29,67 @@ router.post("/check-card", async (request, response) => {
                 const subscription = await stripe.subscriptions.create({
                     customer: customer.id,
                     items: [{
-                        plan: process.env.STRIPE_PLAN
+                        plan: process.env.TEST_STRIPE_PLAN
                     }],
                     trial_end: Math.round(timestamp.add(timestamp.now(), '2w')),
                     expand: ["latest_invoice.payment_intent"]
                 })
-                
-                 User.register({
-                     username: request.body.username
-                 }, request.body.password, async function (err, user) {
-                     console.log("Registered")
-                     if (err) {
-                         console.log(err)
-                         response.redirect("/signup")
-                     } else {
-                         passport.authenticate('local')(request, response, function () {
-                             var query = {
-                                 username: request.body.username
-                             };
-                             var update = {
-                                 clubName: request.body.clubName,
-                                 clubId: request.body.clubId,
-                                 stripeId: customer.id
-                             }
-                             var options = {
-                                 upsert: true,
-                                 'new': true,
-                                 'useFindAndModify': true
-                             };
 
-                             User.update(query, update, options, function (err, doc) {
-                                 if (err) {
-                                     console.log(err)
-                                 } else {
-                                     console.log(doc);
-                                 }
-                             });
+                User.register({
+                    username: request.body.username
+                }, request.body.password, async function (err, user) {
+                    if (err) {
+                        console.log(err)
+                        response.redirect("/signup")
+                    } else {
+                        passport.authenticate('local')(request, response, function () {
+                            var query = {
+                                username: request.body.username
+                            };
+                            var update = {
+                                clubName: request.body.clubName,
+                                clubId: request.body.clubId,
+                                stripeId: customer.id
+                            }
+                            var options = {
+                                upsert: true,
+                                'new': true,
+                                'useFindAndModify': true
+                            };
 
-                             try {
-                                 // a document instance
-                                 var newClub = new ClubData({
-                                     alais: request.body.clubName,
-                                     clubId: request.body.clubId,
-                                     clubName: request.body.clubName,
-                                     timezone: request.body.timezone
-                                 });
+                            User.update(query, update, options, function (err, doc) {
+                                if (err) {
+                                    console.log(err)
+                                } else {
+                                    console.log(doc);
+                                }
+                            });
 
-                                 // save model to database
-                                 newClub.save(function (err, club) {
-                                     if (err) return console.error(err);
-                                 });
+                            try {
+                                // a document instance
+                                var newClub = new ClubData({
+                                    alais: request.body.clubName,
+                                    clubId: request.body.clubId,
+                                    clubName: request.body.clubName,
+                                    timezone: request.body.timezone
+                                });
 
-                                 regEmail(request.body.clubName, user.username)
-                                 response.render('welcome');
+                                // save model to database
+                                newClub.save(function (err, club) {
+                                    if (err) return console.error(err);
+                                });
 
-                             } catch {
-                                 console.log("saving issue")
-                             }
-                         })
-                     }
-                 })
+                                regEmail(request.body.clubName, user.username)
+                                response.render('pages/welcome');
 
-             } catch {
-                response.render('signup-confirmation', {
+                            } catch {
+                                console.log("saving issue")
+                            }
+                        })
+                    }
+                })
+            } catch {
+                response.render('pages/signup-confirmation', {
                     clubName: request.body.clubName,
                     clubId: request.body.clubId,
                     password: request.body.password,
@@ -100,17 +98,16 @@ router.post("/check-card", async (request, response) => {
                     paymentError: 'Wow, something went wrong on our end... Please try and log in before making another attempt'
                 })
             }
-            
         } else {
             // The credit card has an issue
-              response.render('signup-confirmation', {
-                  clubName: request.body.clubName,
-                  clubId: request.body.clubId,
-                  password: request.body.password,
-                  username: request.body.username,
-                  time: request.body.timezone,
-                  paymentError: 'Oops, we could not verify this card.'
-              })
+            response.render('pages/signup-confirmation', {
+                clubName: request.body.clubName,
+                clubId: request.body.clubId,
+                password: request.body.password,
+                username: request.body.username,
+                time: request.body.timezone,
+                paymentError: 'Oops, we could not verify this card.'
+            })
         }
     })
 })
@@ -143,7 +140,9 @@ function regEmail(clubName, email) {
             'Strava Segment Hunter'
     };
     smtpTransport.sendMail(mailOptions, function (err) {
-        console.log('mail sent');
+        if (err) {
+            console.log(err)
+        } 
     });
 }
 

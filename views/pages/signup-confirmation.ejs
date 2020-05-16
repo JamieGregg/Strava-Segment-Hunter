@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Strava Segment Hunter</title>
+  <title>Segment Hunter</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta http-equiv="Content-Security-Policy">
+  <meta http-equiv="Content-Security-Policy">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <!-- Custom fonts for this theme -->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -26,7 +27,6 @@
   </script>
 
 </head>
-
 <body>
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
@@ -52,10 +52,10 @@
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="FAQ">FAQs</a>
           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="admin-dashboard">Sign In /
-               Register</a>
-           </li>
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="admin-dashboard">Sign In /
+              Register</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -64,7 +64,7 @@
     <section class="payment-form dark">
       <div class="container">
         <div class="block-heading">
-          <br><br><br>    
+          <br><br><br>
         </div>
         <form action="/check-card" method="POST">
           <div class="products">
@@ -72,7 +72,8 @@
             <div class="item">
               <span class="price">£0</span>
               <p class="item-name">14 day free trial</p>
-              <p class="item-description">This will renew after 14 days at £9.99 as an Annual Strava Segment Hunter subscription</p>
+              <p class="item-description">This will renew after 14 days at £9.99 as an Annual Strava Segment Hunter
+                subscription</p>
             </div>
             <div class="total">Total<span class="price">£0.00</span></div>
           </div>
@@ -81,7 +82,8 @@
             <div class="row">
               <div class="form-group col-sm-7">
                 <label for="card-holder">Card Holder</label>
-                <input id="card-holder" type="text" class="form-control" placeholder="Card Holder" aria-label="Card Holder" aria-describedby="basic-addon1">
+                <input id="card-holder" type="text" class="form-control" placeholder="Card Holder"
+                  aria-label="Card Holder" aria-describedby="basic-addon1">
               </div>
               <div class="form-group col-sm-5">
                 <label for="">Expiration Date</label>
@@ -97,17 +99,18 @@
                 <label for="card-number">Card Number</label>
                 <input id="card-number" type="text" name="number" class="form-control" placeholder="Card Number"
                   aria-label="Card Holder" aria-describedby="basic-addon1">
-                  <small name="paymentError" class="form-text text-muted text-danger"><%= paymentError %></small>
+                <small name="paymentError" class="form-text text-muted text-danger"><%= paymentError %></small>
               </div>
               <div class="form-group col-sm-4">
                 <label for="cvc">CVC</label>
-                <input id="cvc" type="text" class="form-control" name="cvc" placeholder="CVC" aria-label="Card Holder" aria-describedby="basic-addon1">
+                <input id="cvc" type="text" class="form-control" name="cvc" placeholder="CVC" aria-label="Card Holder"
+                  aria-describedby="basic-addon1">
               </div>
               <div class="form-group col-sm-12">
                 <button type="submit" class="checkout-btn btn text-white btn-block">Subscribe Now</button><br>
                 <img src="img/powered_by_stripe.png" alt="">
               </div>
-              <div> 
+              <div>
                 <div>
                   <input hidden type="text" name="timezone" value="<%= time %>">
                   <input hidden type="text" name="username" value="<%= username %>">
@@ -115,7 +118,7 @@
                   <input hidden type="text" name="clubName" value="<%= clubName %>">
                   <input hidden type="text" name="clubId" value="<%= clubId %>">
                 </div>
-              </div> 
+              </div>
             </div>
           </div>
         </form>
@@ -162,4 +165,5 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="js/protect.js"></script>
 </body>
+
 </html>

@@ -1,10 +1,10 @@
 require('dotenv').config();
-var express = require("express");
-var router = express.Router();
-const passport = require('passport')
-var User = require("../models/user");
-const segCodeSchema = require("../models/segmentSchema")
-const mongoose = require('mongoose')
+const express = require("express"),
+    router = express.Router(),
+    passport = require('passport'),
+    User = require("../../models/user"),
+    segCodeSchema = require("../../models/segmentSchema"),
+    mongoose = require('mongoose')
 
 router.use(passport.initialize());
 router.use(passport.session());
@@ -39,6 +39,7 @@ router.post('/addSegment', async function (req, res) {
                     console.log(err)
                 } else {
                     var lastCounter = 0;
+
                     if (member == null) {
                         lastCounter = 1;
                     } else {
@@ -46,8 +47,6 @@ router.post('/addSegment', async function (req, res) {
                     }
 
                     strava.segments.get(req.body.segmentId, async function (err, info) {
-                        console.log(info.name)
-
                         var newSegment = new collection({
                             counterId: parseInt(lastCounter),
                             segmentId: parseInt(req.body.segmentId),
@@ -57,7 +56,6 @@ router.post('/addSegment', async function (req, res) {
                             efforts: parseInt(info.effort_count)
                         });
 
-                        // save model to database
                         newSegment.save(function (err, segment) {
                             if (err) return console.error(err);
                             console.log(info.name + " saved to database collection.");
@@ -76,7 +74,6 @@ router.get('/upcomingSegments', async function (req, res) {
     User.findOne({
         username: req.user.username
     }, function (err, obj) {
-
         var segmentList = [];
         var clubId = obj.clubId;
 
@@ -140,7 +137,7 @@ router.post('/validateSegment', function (req, res) {
     })
 })
 
-router.get('/log-out', function(req, res){
+router.get('/log-out', function (req, res) {
     req.logout();
     res.redirect('/');
 })
@@ -156,7 +153,7 @@ function loadAdminBoard(req, res) {
     User.findOne({
         username: req.user.username
     }, function (err, obj) {
-        res.render('admindash', {
+        res.render('pages/admindash', {
             clubName: obj.clubName,
             clubId: obj.clubId,
             segment: ""

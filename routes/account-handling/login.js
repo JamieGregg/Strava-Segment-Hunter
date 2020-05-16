@@ -1,23 +1,23 @@
 require('dotenv').config();
-var express = require("express");
-var router = express.Router();
-const passport = require('passport')
-var User = require("../models/user");
-var async = require("async");
-var nodemailer = require("nodemailer");
-var crypto = require("crypto");
+const express = require("express"),
+ router = express.Router(),
+ passport = require('passport'),
+ User = require("../../models/user"),
+ async = require("async"),
+ nodemailer = require("nodemailer"),
+ crypto = require("crypto")
 
 router.use(passport.initialize());
 router.use(passport.session());
 
 router.get("/login", function (req, res) {
-    res.render('login', {
+    res.render('pages/login', {
         invalidPassword: ""
     })
 })
 
 router.get("/login-failed", function (req, res) {
-    res.render('login', {
+    res.render('pages/login', {
         invalidPassword: "Incorrect username or password"
     })
 })
@@ -32,7 +32,7 @@ router.post('/login', passport.authenticate('local', {
 }));
 
 router.get('/forgot-password', function (req, res) {
-    res.render('forgot', {
+    res.render('pages/forgot', {
         invalidEmail: ""
     })
 })
@@ -121,11 +121,11 @@ router.get('/reset/:token', function (req, res) {
         }
     }, function (err, user) {
         if (!user) {
-            res.render('forgot-password', {
+            res.render('pages/forgot-password', {
                 response: 'Password reset token is invalid or has expired.'
             })
         }
-        res.render('reset', {
+        res.render('pages/reset', {
             token: req.params.token,
             response: ""
         });
@@ -144,7 +144,7 @@ router.post('/reset/:token', function (req, res) {
                     }
                 }, function (err, user) {
                     if (!user) {
-                        res.render('forgot-password', {
+                        res.render('pages/forgot-password', {
                             response: 'Password reset token is invalid or has expired.'
                         })
                     }
@@ -160,7 +160,7 @@ router.post('/reset/:token', function (req, res) {
                             });
                         })
                     } else {
-                        res.render('reset', {
+                        res.render('pages/reset', {
                             response: 'Passwords do not match',
                             token: req.params.token
                         })
@@ -199,7 +199,7 @@ router.post('/reset/:token', function (req, res) {
             res.redirect('/admin-dashboard');
         });
     } else {
-        res.render('reset', {
+        res.render('pages/reset', {
             response: 'Password contains a blocked character',
             token: req.params.token
         })

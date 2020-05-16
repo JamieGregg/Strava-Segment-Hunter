@@ -2,14 +2,13 @@
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Strava Segment Hunter is a tool built to provide a platform for some competition surrounding Strava segments. Check in daily to see the segment we
   have selected for the day.">
   <meta name="author" content="Jamie Gregg">
- <meta http-equiv="Content-Security-Policy"
-   content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self' ;  frame-ancestors 'none">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self' ;  frame-ancestors 'none">
   <link rel="apple-touch-icon" sizes="57x57" href="img/fav-icon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="img/fav-icon//apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/fav-icon//apple-icon-72x72.png">
@@ -28,14 +27,15 @@
   <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
 
-  <title>Strava Segment Hunter</title>
+  <title>Segment Hunter</title>
 
   <!-- Custom fonts for this theme -->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+    type="text/css">
   <!-- Theme CSS -->
-  <link href="css/freelancer.min.css" rel="stylesheet">
+  <link href="/css/freelancer.min.css" rel="stylesheet">
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-165412592-1"></script>
@@ -49,38 +49,24 @@
 
     gtag('config', 'UA-165412592-1');
   </script>
-
 </head>
-
 <body onload="openPage()" id="page-top">
-
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
     <div class="container">
       <a class="navbar-brand js-scroll-trigger" href="/">Segment Hunter</a>
-      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-        aria-label="Toggle navigation">
+      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded"
+        type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+        aria-expanded="false" aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-         <ul class="navbar-nav ml-auto">
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/">Segment</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#point-leaderboard">Leaderboards</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/#help-section">Help</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="FAQ">FAQs</a>
-           </li>
-           <li class="nav-item mx-0 mx-lg-1">
-             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="signup">Register</a>
-           </li>
-         </ul>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/">Home</a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -93,21 +79,19 @@
         <div class="container">
 
           <!-- Results Section Heading -->
-          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Log into Strava Segment Hunter.</h2>
-
-
+          <h2 class="page-section-heading text-center text-uppercase text-white" id="daily-leaderboard-heading">Password
+            Reset</h2>
         </div>
       </section>
     </div>
   </header>
-
 
   <!-- Sign Up Section -->
   <section class="page-section portfolio" id="today-segment">
     <div class="container">
 
       <!-- Sign Up Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Sign In to your Admin Account</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Reset your password</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
@@ -116,23 +100,23 @@
           <i class="fas fa-star"></i>
         </div>
         <div class="divider-custom-line"></div>
-      </div>
-
-      <br>
-      <p class="lead"><a href="signup">Haven’t got an account yet? <u>Sign up here.</u></a></p>
-      <form action="/login" method="POST" id="register">
-        <div class="form-group">
-          <label class="lead" for="emailAddress">Email Address</label>
-          <input type="email" class="form-control" id="emailAddress" name="username" aria-describedby="emailHelp" placeholder="Enter email" required>
-        </div>
+      </div><br>
+      
+      <p class="lead"><a href="login">Remembered your password? Sign in here.</a></p>
+      <form method="POST" action="/reset/<%= token %>">
         <div class="form-group">
           <label class="lead" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-          <small id="passwordInvalid" class="form-text text-muted"><a href="#club-id-section"></a></small>
-          <small class="text-danger"><%-invalidPassword%></small>
-          <p class="text-muted"><a href="forgot-password">Forgotten Password?</a></p>
+          <small id="passwordInvalid" class="form-text text-danger"></small>
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">Log In</button>
+        <div class="form-group">
+          <label class="lead" for="password">Retype Password</label>
+          <input type="password" class="form-control" id="passwordRetype" name="passwordRetyped" placeholder="Password"
+            required>
+          <small id="passwordNotSame" class="form-text text-danger"></small>
+        </div>
+        <p class="lead"><% response %></p>
+        <button type="submit" class="btn btn-lg btn-primary">Reset</button>
       </form>
     </div>
   </section>
@@ -176,7 +160,7 @@
   <!-- Copyright Section -->
   <section class="copyright py-4 text-center text-white">
     <div class="container">
-      <small>Copyright &copy; Strava Segment Hunter 2020</small>
+      <small>Copyright &copy; Segment Hunter 2020</small>
     </div>
   </section>
 
@@ -190,6 +174,7 @@
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="js/password-reset-ajax.js"></script>
 
   <!-- Plugin JavaScript -->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

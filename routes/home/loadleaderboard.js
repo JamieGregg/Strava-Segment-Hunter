@@ -1,29 +1,26 @@
 require('dotenv').config();
-const express = require("express");
-const router = express.Router();
-const ClubData = require("../models/clubdata")
-const mongoose = require('mongoose')
-const passport = require('passport')
-const session = require('express-session')
-const segSchema = require("../models/segmentSchema")
-const resultsSchema = require("../models/results")
-var User = require("../models/user");
-const timeFrame = "this_week"
-var cookieParser = require('cookie-parser')
-let segmentId;
+const router = require("express").Router(),
+ ClubData = require("../../models/clubdata"),
+ mongoose = require('mongoose'),
+ passport = require('passport'),
+ segSchema = require("../../models/segmentSchema"),
+ resultsSchema = require("../../models/results"),
+ User = require("../../models/user"),
+ cookieParser = require('cookie-parser')
 
 router.use(passport.initialize());
 router.use(passport.session());
 router.use(cookieParser())
 
+let timeFrame = "this_week"
+let segmentId;
+
 router.post('/loadleaderboard', function (req, res) {
     if (req.isAuthenticated(req, res)) {
         loadLeaderboard(true, 'POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
-        
     } else {
         res.cookie('counter', req.body.clubs)
         loadLeaderboard(false, 'POST', segmentId, req.body.clubs, true, req.body.masters, req.body.gender, res, req)
-        
     }
 })
 
@@ -67,7 +64,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
         "client_secret": process.env.CLIENT_SECRET,
         "redirect_url": "https://www.stravasegmenthunter.com/"
     });
-    //Gathering Club Data
+    
     ClubData.find(async function (err, clubInfo) {
         if (err) {
             console.log(err)
@@ -227,7 +224,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                      }]
                                  }
 
-                                res.render('home', {
+                                res.render('pages/home', {
                                     data: segment,
                                     segmentInfo: segmentInfo,
                                     dayOne: dayOne,
@@ -247,11 +244,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 points: -1
                             }).exec(function (err, docs) {
                                 console.log(err);
-                            }); //collection
-                        } //Type Check
-                    } //Club Check
-                } //For
-            }) //Api call
+                            });
+                        } 
+                    } 
+                } 
+            }) 
         } else if ((ageFilter === 'false') && (gender != '')) {
             //no age but gender
             params = {
@@ -303,7 +300,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 points: -1
                             }).exec(function (err, docs) {
                                 console.log(err);
-                            }); //collection
+                            }); 
                         } else if (type === 'GET') {
                             collection.find(function (err, people) {
                                  if (people.length) {
@@ -316,7 +313,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                      }]
                                  }
 
-                                res.render('home', {
+                                res.render('pages/home', {
                                     data: segment,
                                     segmentInfo: segmentInfo,
                                     dayOne: dayOne,
@@ -336,11 +333,11 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                 points: -1
                             }).exec(function (err, docs) {
                                 console.log(err);
-                            }); //collection
-                        } //Type Check
-                    } //Club Check
-                } //For
-            }) //Api call
+                            }); 
+                        } 
+                    } 
+                } 
+            }) 
         } else if ((ageFilter === 'true') && (gender === '')) {
             //age but no gender
             params = {
@@ -412,7 +409,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                     points: -1
                                 }).exec(function (err, docs) {
                                     console.log(err);
-                                }); //collection
+                                }); 
                             } else if (type === 'GET') {
                                 collection.find(function (err, people) {
                                      if (people.length) {
@@ -425,7 +422,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                          }]
                                      }
 
-                                    res.render('home', {
+                                    res.render('pages/home', {
                                         data: segment,
                                         segmentInfo: segmentInfo,
                                         dayOne: dayOne,
@@ -445,14 +442,13 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                     points: -1
                                 }).exec(function (err, docs) {
                                     console.log(err);
-                                }); //collection
-                            } //Type Check
-                        } //Club Check
-                    } //For
-                }) //Api call 54
-            }) //Api call 64
+                                }); 
+                            } 
+                        } 
+                    } 
+                }) 
+            }) 
         } else if ((ageFilter === 'true') && (gender != '')) {
-            //age and gender
             //age but no gender
             params = {
                 "date_range": timeFrame,
@@ -554,7 +550,7 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                         }]
                                     }
 
-                                    res.render('home', {
+                                    res.render('pages/home', {
                                         data: segment,
                                         segmentInfo: segmentInfo,
                                         dayOne: dayOne,
@@ -574,15 +570,15 @@ async function loadLeaderboard(isAuthenticated, type, segmentId, clubId, reload,
                                     points: -1
                                 }).exec(function (err, docs) {
                                     console.log(err);
-                                }); //collection
-                            } //Type Check
-                        } //Club Check
-                    } //For
-                }) //Api call 54
-            }) // Api call 64
-        } //over looking if
+                                }); 
+                            } 
+                        } 
+                    } 
+                }) 
+            }) 
+        } 
     })
-} // function
+} 
 
 function convertSecondsToMinutes(seconds) {
     var minutes = Math.floor(seconds / 60);
