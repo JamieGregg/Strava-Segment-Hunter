@@ -1,5 +1,6 @@
+require('dotenv').config();
 const router = require("express").Router(),
-    stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY),
+    stripe = require("stripe")(process.env.STRIPE_SECRET_KEY),
     User = require("../../models/user"),
     passport = require('passport'),
     ClubData = require("../../models/clubdata"),
@@ -29,7 +30,7 @@ router.post("/check-card", async (request, response) => {
                 const subscription = await stripe.subscriptions.create({
                     customer: customer.id,
                     items: [{
-                        plan: process.env.TEST_STRIPE_PLAN
+                        plan: process.env.STRIPE_PLAN
                     }],
                     trial_end: Math.round(timestamp.add(timestamp.now(), '2w')),
                     expand: ["latest_invoice.payment_intent"]
