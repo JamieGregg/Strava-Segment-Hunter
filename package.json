@@ -23,7 +23,7 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
     "esm": "^3.2.25",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "1.17.0",
     "file-system": "2.2.2",
     "joi": "14.3.1",
